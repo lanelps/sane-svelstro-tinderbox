@@ -1,0 +1,31 @@
+@import url("./typography.css");
+
+@config "../../tailwind.config.mjs";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+
+@layer utilities {
+  .grid-sub {
+    @apply grid grid-cols-12 gap-4;
+  }
+
+  .grid-main {
+    @apply grid-sub px-4;
+  }
+
+  @media screen("sm-t") {
+    .grid-sub {
+      @apply grid grid-cols-6 gap-2;
+    }
+
+    .grid-main {
+      @apply px-2;
+    }
+  }
+}
+
+@layer components {
+}

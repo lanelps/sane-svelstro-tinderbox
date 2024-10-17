@@ -1,0 +1,28 @@
+/* @font-face {
+  font-family: "Helvetica Neue";
+  src:
+    local("Helvetica Neue"),
+    url("../assets/fonts/helveticaneue.woff") format("woff"),
+    url("../assets/fonts/helveticaneue.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+} */
+
+@layer utilities {
+  /* .text-h1 {
+    @apply font-main;
+  }
+
+  .text-h1 {
+    font-size: 1.625rem;
+    line-height: 0.9;
+    letter-spacing: 0;
+  } */
+
+  @media screen("sm-t") {
+    /* .text-h1 {
+      font-size: 4rem;
+      letter-spacing: -0.04em;
+    } */
+  }
+}
