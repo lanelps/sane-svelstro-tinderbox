@@ -30,3 +30,10 @@ export const settingsQuery = `*[_type == "settings"][0] {
         value,
     }
 }`;
+
+export const homePageQuery = `*[_type == "homePage"][0] {
+    title,
+    seo {
+        ${seoPage}
+    }
+}`;

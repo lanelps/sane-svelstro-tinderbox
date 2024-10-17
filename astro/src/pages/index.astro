@@ -1,7 +1,17 @@
 ---
+import { sanityClient } from "sanity:client";
+
+import { homePageQuery } from "@utils/queires";
+import { getPageSeo } from "@utils/helpers";
+
+import type { HomePageData } from "../types";
+
+const data: HomePageData = await sanityClient.fetch(homePageQuery);
+const pageSeo = getPageSeo(data);
+
 import Layout from "@layouts/Layout.astro";
 ---
 
-<Layout>
+<Layout seo={pageSeo}>
   <h1>Astro</h1>
 </Layout>
