@@ -1,0 +1,28 @@
+---
+import "@styles/index.css";
+import { ViewTransitions } from "astro:transitions";
+
+import Seo from "@components/Seo.astro";
+
+const { seo } = Astro.props;
+---
+
+<html lang="en" class="" transition:animate="none">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <ViewTransitions />
+
+    <Seo {...seo} />
+  </head>
+
+  <body class="grid-main relative h-full w-full overflow-hidden bg-white">
+    <main
+      class="min-h-body pointer-events-none fixed left-0 top-0 col-span-full h-full w-full opacity-0 transition-opacity"
+    >
+      <slot />
+    </main>
+  </body>
+</html>

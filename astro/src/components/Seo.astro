@@ -1,0 +1,40 @@
+---
+import { sanityClient } from "sanity:client";
+import { settingsQuery } from "@utils/queires";
+
+const settings = await sanityClient.fetch(settingsQuery);
+
+const { title, description, keywords, image } = Astro.props;
+
+const SEO = {
+  title: title
+    ? `${title} - ${settings.seo.title}`
+    : settings.seo.title,
+  description: description || settings?.seo?.description,
+  keywords: keywords || settings?.seo?.keywords,
+  image: image?.url || settings?.seo?.image?.url,
+  favicon: settings?.seo?.favicon?.url,
+};
+---
+
+{SEO?.title && (
+    <title>{SEO.title}</title>
+    <meta property="og:title" content={SEO.title} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={SEO.title} />
+)}
+
+{SEO?.description && (
+    <meta name="description" content={SEO?.description} />
+    <meta property="og:description" content={SEO?.description} />
+    <meta name="twitter:description" content={SEO?.description} />
+)}
+
+{SEO?.keywords && <meta name="keywords" content={SEO.keywords} />}
+
+{SEO?.image && (
+    <meta property="og:image" content={SEO.image} />
+    <meta name="twitter:image" content={SEO.image} />
+)}
+
+{SEO?.favicon && <link rel="icon" type="image/png" href={SEO.favicon} />}
