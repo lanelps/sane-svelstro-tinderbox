@@ -18,10 +18,8 @@ const { seo } = Astro.props;
     <Seo {...seo} />
   </head>
 
-  <body class="grid-main relative h-full w-full overflow-hidden bg-white">
-    <main
-      class="min-h-body pointer-events-none fixed left-0 top-0 col-span-full h-full w-full opacity-0 transition-opacity"
-    >
+  <body class="">
+    <main class="">
       <slot />
     </main>
   </body>
