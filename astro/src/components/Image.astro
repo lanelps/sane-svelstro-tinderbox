@@ -41,6 +41,7 @@ try {
         alt=""
         aria-hidden="true"
         role="presentation"
+        loading="eager"
       />
     </figure>
   )
@@ -59,6 +60,10 @@ try {
       img.onload = () => {
         placeholder.classList.add("opacity-0");
       };
+
+      if (img.complete) {
+        placeholder.classList.add("opacity-0");
+      }
     });
   });
 </script>
