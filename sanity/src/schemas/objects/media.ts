@@ -36,6 +36,13 @@ export default defineType({
       name: 'video',
       title: 'Video',
       type: 'video',
+      validation: (Rule: any) =>
+        Rule.custom((field: any, context: any) => {
+          if (context.parent.type === 'video' && !field) {
+            return 'An video is required'
+          }
+          return true
+        }),
       hidden: ({parent}: any) => parent?.type !== 'video',
     }),
     defineField({

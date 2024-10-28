@@ -9,7 +9,6 @@ export default defineType({
       name: 'url',
       title: 'URL',
       type: 'url',
-      validation: (Rule: any) => Rule.required(),
     }),
     defineField({
       name: 'mimeType',
@@ -23,13 +22,11 @@ export default defineType({
         ],
       },
       initialValue: 'video/mp4',
-      validation: (Rule: any) => Rule.required(),
     }),
     defineField({
       name: 'poster',
       title: 'Poster',
       type: 'altImage',
-      validation: (Rule: any) => Rule.required(),
     }),
   ],
 
