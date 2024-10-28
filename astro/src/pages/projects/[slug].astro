@@ -2,6 +2,7 @@
 import { sanityClient } from "sanity:client";
 
 import Layout from "@layouts/Layout.astro";
+import Media from "@components/Media.astro";
 
 import { projectsQuery } from "@utils/queires";
 import { getPageSeo } from "@utils/helpers";
@@ -29,4 +30,6 @@ const pageSeo = getPageSeo(project);
 
 <Layout seo={pageSeo}>
   <h1>{project.title}</h1>
+
+  {project.gallery.map((media) => <Media media={media} />)}
 </Layout>
