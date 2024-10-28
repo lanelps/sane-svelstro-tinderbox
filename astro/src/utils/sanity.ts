@@ -110,7 +110,7 @@ export const getImageProps: GetImageProps = ({
       width: retinaSizes[0],
       height: retinaSizes[0] / aspectRatio,
       aspectRatio,
-      placeholder: urlFor(img, { quality: 1 }).width(8).url(),
+      placeholder: urlFor(img, { quality: 50 }).width(16).url(),
     };
   };
 
