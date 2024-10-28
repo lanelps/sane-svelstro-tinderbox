@@ -1,21 +1,5 @@
 import type { ImageUrlBuilder } from "@sanity/image-url/lib/types/builder";
 
-export interface PageSeo {
-  title: string;
-  description: string;
-  keywords: string;
-  image: string;
-}
-
-export interface HomePageData {
-  title: string;
-  seo: PageSeo;
-}
-
-export type PageData = HomePageData;
-
-//
-
 export interface Image {
   src: string;
   srcset: string;
@@ -113,3 +97,33 @@ export type GetRetinaSizes = (
   maxWidth: number,
   minimumWidthStep: number
 ) => number[];
+
+//
+
+export interface PageSeo {
+  title: string;
+  description: string;
+  keywords: string;
+  image: string;
+}
+
+export interface Slug {
+  current: string;
+}
+
+export interface HomePageData {
+  title: string;
+  seo: PageSeo;
+}
+
+export interface Project {
+  _id: string;
+  title: string;
+  slug: Slug;
+  date: string;
+  thumbnail: Media;
+  gallery: Media[];
+  seo: PageSeo;
+}
+
+export type PageData = HomePageData | Project;
