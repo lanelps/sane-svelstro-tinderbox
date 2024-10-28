@@ -34,7 +34,7 @@ try {
         title={node.alt}
       />
       <img
-        class="absolute inset-0 left-0 top-0 h-full w-full object-cover"
+        class="absolute inset-0 left-0 top-0 h-full w-full object-cover transition-opacity"
         src={image.placeholder}
         alt=""
         aria-hidden="true"
@@ -43,3 +43,20 @@ try {
     </figure>
   )
 }
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    let figures = document.querySelectorAll("figure");
+
+    figures.forEach((figure) => {
+      let img = figure.querySelector("img");
+      let placeholder = figure.querySelector("img[role='presentation']");
+
+      if (!img || !placeholder) return;
+
+      img.onload = () => {
+        placeholder.classList.add("opacity-0");
+      };
+    });
+  });
+</script>
