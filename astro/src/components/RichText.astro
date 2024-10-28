@@ -4,7 +4,7 @@ import { PortableText } from "astro-portabletext";
 import Normal from "@components/rich-text/Normal.astro";
 import Link from "@components/rich-text/Link.astro";
 
-const { value } = Astro.props;
+const { class: className, value } = Astro.props;
 
 const components = {
   //   type: {
@@ -35,6 +35,6 @@ const components = {
 };
 ---
 
-<div class="space-y-6">
+<div class="space-y-6" class:list={className}>
   <PortableText value={value} components={components} />
 </div>

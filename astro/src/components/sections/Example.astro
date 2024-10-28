@@ -1,16 +1,15 @@
 ---
 import RichText from "@components/RichText.astro";
-import type { PortableTextBlock } from "../../types";
+import type { ExampleSection } from "../../types";
 
 interface Props {
-  heading: string;
-  content: PortableTextBlock[];
+  data: ExampleSection;
 }
 
-const { heading, content } = Astro.props;
+const { heading, content } = Astro.props.data;
 ---
 
-<section>
-  <h2>{heading}</h2>
+<section class="px-4 py-6">
+  <h2 class="text-h1">{heading}</h2>
   <RichText value={content} />
 </section>
