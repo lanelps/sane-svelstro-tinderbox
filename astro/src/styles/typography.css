@@ -1,4 +1,4 @@
-/* @font-face {
+@font-face {
   font-family: "Helvetica Neue";
   src:
     local("Helvetica Neue"),
@@ -6,10 +6,31 @@
     url("../assets/fonts/helveticaneue.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
-} */
+}
+
+@font-face {
+  font-family: "Helvetica Neue";
+  src:
+    local("Helvetica Neue"),
+    url("../assets/fonts/helveticaneue-bold.woff") format("woff"),
+    url("../assets/fonts/helveticaneue-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Helvetica Neue";
+  src:
+    local("Helvetica Neue"),
+    url("../assets/fonts/helveticaneue-italic.woff") format("woff"),
+    url("../assets/fonts/helveticaneue-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+}
 
 @layer utilities {
-  /* .text-h1 {
+  .text-h1,
+  .text-b1 {
     @apply font-main;
   }
 
@@ -17,12 +38,23 @@
     font-size: 1.625rem;
     line-height: 0.9;
     letter-spacing: 0;
-  } */
+  }
+
+  .text-b1 {
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: 0;
+  }
 
   @media screen("sm-t") {
-    /* .text-h1 {
+    .text-h1 {
       font-size: 4rem;
       letter-spacing: -0.04em;
-    } */
+    }
+
+    .text-b1 {
+      font-size: 1.125rem;
+      line-height: 1.6;
+    }
   }
 }
