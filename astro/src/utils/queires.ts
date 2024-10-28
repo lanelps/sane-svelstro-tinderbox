@@ -1,4 +1,4 @@
-import { media, seoSettings, seoPage } from "@utils/groq";
+import { media, sections, seoSettings, seoPage } from "@utils/groq";
 
 export const settingsQuery = `*[_type == "settings"][0] {
     seo {
@@ -32,6 +32,9 @@ export const projectsQuery = `*[_type == "project"] | order(date desc) {
     gallery[] {
         _key,
         ${media}
+    },
+    sections[] {
+        ${sections}
     },
     seo {
         ${seoPage}

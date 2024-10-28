@@ -1,10 +1,16 @@
 import {defineField, defineType} from 'sanity'
 
+import sections from '../../utils/sections'
+
 export default defineType({
   name: 'project',
   title: 'Project',
   type: 'document',
   groups: [
+    {
+      title: 'Content',
+      name: 'content',
+    },
     {
       title: 'SEO',
       name: 'seo',
@@ -47,6 +53,7 @@ export default defineType({
       of: [{type: 'media'}],
       validation: (Rule) => Rule.required().min(1),
     }),
+    sections,
     defineField({
       name: 'seo',
       title: 'SEO',

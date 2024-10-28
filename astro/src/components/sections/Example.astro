@@ -1,0 +1,16 @@
+---
+import RichText from "@components/RichText.astro";
+import type { PortableTextBlock } from "../../types";
+
+interface Props {
+  heading: string;
+  content: PortableTextBlock[];
+}
+
+const { heading, content } = Astro.props;
+---
+
+<section>
+  <h2>{heading}</h2>
+  <RichText value={content} />
+</section>

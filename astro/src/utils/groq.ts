@@ -52,6 +52,17 @@ export const media = `
     layout,
 `;
 
+export const sections = `
+    _key,
+    _type,
+
+    // Example Section
+    _type == "example.section" => {
+        heading,
+        content
+    },
+`;
+
 export const seoSettings = `
     title,
     description,

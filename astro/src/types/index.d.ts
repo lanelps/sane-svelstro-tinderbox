@@ -1,4 +1,7 @@
 import type { ImageUrlBuilder } from "@sanity/image-url/lib/types/builder";
+import type { PortableTextBlock } from "@portabletext/types";
+
+export type { PortableTextBlock };
 
 export interface Image {
   src: string;
@@ -97,6 +100,23 @@ export type GetRetinaSizes = (
   maxWidth: number,
   minimumWidthStep: number
 ) => number[];
+
+//
+
+export interface ExampleSection {
+  _key: string;
+  _type: "example.section";
+  heading: string;
+  content: PortableTextBlock[];
+}
+
+export type Section = ExampleSection;
+
+export type Sections = Section[];
+
+export type SectionMap = {
+  example: typeof ExampleSection;
+};
 
 //
 

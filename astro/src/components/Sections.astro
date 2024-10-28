@@ -1,0 +1,32 @@
+---
+import Example from "@components/sections/Example.astro";
+
+import type { SectionMap, Section } from "../types";
+
+type SectionType = "example";
+
+const sectionsMap: SectionMap = {
+  example: Example,
+};
+
+interface Props {
+  sections: Section[];
+}
+
+const { sections } = Astro.props;
+
+const renderSection = (section: Section) => {
+  const sectionKey = section._type
+    .replace(".section", "")
+    .toLowerCase() as SectionType;
+
+  return sectionsMap?.[sectionKey] ?? null;
+};
+---
+
+{
+  sections.map((section) => {
+    const SectionComponent = renderSection(section);
+    return <SectionComponent data={section} />;
+  })
+}
