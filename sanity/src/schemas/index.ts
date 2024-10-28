@@ -22,6 +22,7 @@ import scriptInline from './objects/scriptInline'
 import scriptSrc from './objects/scriptSrc'
 import seoPage from './objects/seo/page'
 import seoSettings from './objects/seo/settings'
+import video from './objects/video'
 
 const objects = [
   altImage,
@@ -31,6 +32,7 @@ const objects = [
   scriptSrc,
   seoPage,
   seoSettings,
+  video,
 ] as any[]
 
 export const schemaTypes = [...singletons, ...documents, ...sections, ...objects]

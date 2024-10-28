@@ -35,21 +35,7 @@ export default defineType({
     defineField({
       name: 'video',
       title: 'Video',
-      type: 'object',
-      fields: [
-        defineField({
-          name: 'url',
-          title: 'URL',
-          type: 'url',
-          validation: (Rule: any) => Rule.required(),
-        }),
-        defineField({
-          name: 'poster',
-          title: 'Poster',
-          type: 'image',
-          validation: (Rule: any) => Rule.required(),
-        }),
-      ],
+      type: 'video',
       hidden: ({parent}: any) => parent?.type !== 'video',
     }),
     defineField({
