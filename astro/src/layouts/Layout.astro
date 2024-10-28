@@ -1,8 +1,12 @@
 ---
-import "@styles/index.css";
 import { ViewTransitions } from "astro:transitions";
-
 import Seo from "@components/Seo.astro";
+import type { PageSeo } from "../types";
+import "@styles/index.css";
+
+interface Props {
+  seo: PageSeo;
+}
 
 const { seo } = Astro.props;
 ---
