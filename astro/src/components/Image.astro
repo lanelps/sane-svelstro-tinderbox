@@ -34,8 +34,10 @@ try {
         title={node.alt}
       />
       <img
-        class="absolute inset-0 left-0 top-0 h-full w-full object-cover transition-opacity"
+        class="pointer-events-none absolute inset-0 left-0 top-0 h-full w-full object-cover transition-opacity"
         src={image.placeholder}
+        width={image.width}
+        height={image.height}
         alt=""
         aria-hidden="true"
         role="presentation"
