@@ -1,8 +1,6 @@
 import type { ImageUrlBuilder } from "@sanity/image-url/lib/types/builder";
 import type { PortableTextBlock } from "@portabletext/types";
 
-export type { PortableTextBlock };
-
 export interface Image {
   src: string;
   srcset: string;
@@ -63,6 +61,8 @@ export interface Media {
   layout: "full" | "center" | "left" | "right";
 }
 
+export type PortableText = PortableTextBlock[];
+
 export type UrlFor = (
   imgRef: RawImage,
   options?: { quality?: number }
@@ -107,7 +107,7 @@ export interface ExampleSection {
   _key: string;
   _type: "example.section";
   heading: string;
-  content: PortableTextBlock[];
+  content: PortableText;
 }
 
 export type Section = ExampleSection;
@@ -143,6 +143,7 @@ export interface Project {
   date: string;
   thumbnail: Media;
   gallery: Media[];
+  sections: Sections;
   seo: PageSeo;
 }
 
