@@ -1,3 +1,5 @@
+import type { ImageUrlBuilder } from "@sanity/image-url/lib/types/builder";
+
 export interface PageSeo {
   title: string;
   description: string;
@@ -58,6 +60,20 @@ export interface RawImage {
       _ref: string;
     };
   };
+}
+
+export interface Video {
+  url: string;
+  mimeType: "video/mp4" | "video/webm" | "video/ogg";
+  poster: RawImage;
+}
+
+export interface Media {
+  _key?: string | undefined;
+  type: "image" | "video";
+  image?: RawImage;
+  video?: Video;
+  layout: "full" | "center" | "left" | "right";
 }
 
 export type UrlFor = (

@@ -1,0 +1,38 @@
+---
+import { getImageProps } from "@utils/sanity";
+import type { Video, Image } from "../types";
+
+interface Props {
+  video: Video;
+  class?: string;
+}
+
+const { class: className, video } = Astro.props;
+const poster: Image =
+  video.poster.asset && getImageProps({ image: video.poster });
+---
+
+<video
+  class="h-full w-full object-contain"
+  class:list={className}
+  autoplay
+  playsinline
+  loop
+  muted
+  poster={poster.src}
+>
+  <source src={video.url} type={video.mimeType} />
+  Your browser does not support the video tag.
+</video>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    let videoElements = document.querySelectorAll("video");
+
+    videoElements.forEach((vid) => {
+      if (vid.autoplay) {
+        vid.play();
+      }
+    });
+  });
+</script>
