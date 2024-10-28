@@ -44,6 +44,9 @@ importers:
       astro:
         specifier: ^4.16.5
         version: 4.16.5(rollup@4.24.0)(typescript@5.6.3)
+      astro-portabletext:
+        specifier: ^0.10.0
+        version: 0.10.0
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -1842,6 +1845,9 @@ packages:
   arrify@2.0.1:
     resolution: {integrity: sha512-3duEwti880xqi4eAMN8AyR4a0ByT90zoYdLlevfrvU43vb0YZwZVfxOgxWrLXXXpyugL0hNZc9G6BiB5B3nUug==}
     engines: {node: '>=8'}
+
+  astro-portabletext@0.10.0:
+    resolution: {integrity: sha512-07Un6W3R14bRfAf4TlSzAlBkWBXzyK8NPT3Xelm3+f6sVkr61Jlx5k2dXRB6ZZycqBbbLXIbzey2WOcddTl2AA==}
 
   astro@4.16.5:
     resolution: {integrity: sha512-v8mKWcEPN7hkfyVsMFWV0F8UgL4GUJKT172KTB7dePO3yJb64HBwCckC0QnA60QQh3jK6+2xwyWEc5QvCeqjtg==}
@@ -7161,6 +7167,11 @@ snapshots:
   arrify@1.0.1: {}
 
   arrify@2.0.1: {}
+
+  astro-portabletext@0.10.0:
+    dependencies:
+      '@portabletext/toolkit': 2.0.15
+      '@portabletext/types': 2.0.13
 
   astro@4.16.5(rollup@4.24.0)(typescript@5.6.3):
     dependencies:
