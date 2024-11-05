@@ -1,8 +1,9 @@
 ---
-import { sanityClient } from "sanity:client";
 import { settingsQuery } from "@utils/queires";
+import { loadQuery } from "@utils/loader-query"
+import type { SiteSettings } from "../types"
 
-const settings = await sanityClient.fetch(settingsQuery);
+const { data: settings }: { data: SiteSettings } = await loadQuery({query: settingsQuery});
 
 const { title, description, keywords, image } = Astro.props;
 

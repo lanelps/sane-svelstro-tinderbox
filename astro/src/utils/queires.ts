@@ -40,3 +40,27 @@ export const projectsQuery = `*[_type == "project"] | order(date desc) {
         ${seoPage}
     }
 }`;
+
+export const projectBySlugQuery = `*[_type == "project" && slug.current == $slug][0] {
+    _id,
+    slug, 
+    title,
+    description,
+    categories,
+    collaborators,
+    software,
+    date,
+    thumbnail {
+        ${media}
+    },
+    gallery[] {
+        _key,
+        ${media}
+    },
+    sections[] {
+        ${sections}
+    },
+    seo {
+        ${seoPage}
+    }
+}`;

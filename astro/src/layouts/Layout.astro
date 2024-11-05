@@ -1,6 +1,9 @@
 ---
 import { ViewTransitions } from "astro:transitions";
+import { VisualEditing } from "@sanity/astro/visual-editing";
+
 import Seo from "@components/Seo.astro";
+
 import type { PageSeo } from "../types";
 import "@styles/index.css";
 
@@ -9,6 +12,9 @@ interface Props {
 }
 
 const { seo } = Astro.props;
+
+const visualEditingEnabled =
+  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED == "true";
 ---
 
 <html lang="en" class="" transition:animate="none">
@@ -22,9 +28,17 @@ const { seo } = Astro.props;
     <Seo {...seo} />
   </head>
 
+  <header>
+    <nav class="space-x-4">
+      <a href="/">Home</a>
+      <a href="/projects/example">Example project</a>
+    </nav>
+  </header>
+
   <body class="">
     <main class="">
       <slot />
+      <VisualEditing enabled={visualEditingEnabled} zIndex={1000} />
     </main>
   </body>
 </html>

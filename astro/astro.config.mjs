@@ -7,6 +7,7 @@ import tailwind from "@astrojs/tailwind";
 import sanity from "@sanity/astro";
 
 import { loadEnv } from "vite";
+import react from "@astrojs/react";
 const env = {
   ...process.env,
   ...loadEnv(process.env.NODE_ENV, process.cwd(), ["SANITY_"]),
@@ -16,14 +17,19 @@ const env = {
 export default defineConfig({
   site: "https://sane-svelstro-tinderbox.com",
   integrations: [
-    svelte(),
-    tailwind(),
     sanity({
       projectId: env.SANITY_PROJECT_ID,
       dataset: env.SANITY_DATASET,
       token: env.SANITY_TOKEN,
-      useCdn: false,
+      useCdn: true,
+      // studioBasePath: env.SANITY_STUDIO_URL,
+      stega: {
+        studioUrl: env.SANITY_STUDIO_URL,
+      },
     }),
+    svelte(),
+    react(),
+    tailwind(),
     sitemap(),
     partytown({
       config: {
@@ -32,5 +38,5 @@ export default defineConfig({
     }),
   ],
   prefetch: true,
-  output: "static",
+  output: "server",
 });
