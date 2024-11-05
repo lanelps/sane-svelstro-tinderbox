@@ -1,0 +1,83 @@
+---
+import { ViewTransitions } from "astro:transitions";
+import { VisualEditing } from "@sanity/astro/visual-editing";
+
+import Seo from "@components/Seo.astro";
+
+import type { PageSeo } from "../types";
+import "@styles/index.css";
+
+interface Props {
+  seo: PageSeo;
+  live?: boolean;
+}
+
+const { seo, live } = Astro.props;
+
+const visualEditingEnabled =
+  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED == "true";
+
+globalThis.live = live;
+---
+
+<html lang="en" class="" transition:animate="none">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <ViewTransitions />
+
+    <Seo {...seo} />
+  </head>
+
+  <header>
+    <nav class="space-x-4">
+      <a href="/">Home</a>
+      <a href="/projects/example">Example project</a>
+    </nav>
+  </header>
+
+  <body id="layout">
+    <main>
+      <slot />
+      {live && <VisualEditing enabled={visualEditingEnabled} zIndex={1000} />}
+      <script>
+        const container = document.querySelector(
+          '[component-export="VisualEditingComponent"]'
+        );
+
+        if (container) {
+          if (window.self === window.top) {
+            container.remove();
+          }
+        }
+      </script>
+    </main>
+  </body>
+
+  <script>
+    if (globalThis.live) {
+      setTimeout(
+        function () {
+          const layout = document.getElementById("layout");
+          if (layout) {
+            layout.style.visibility = "visible";
+          }
+        },
+        Number(import.meta.env.PUBLIC_SANITY_FULL_RENDER_DELAY ?? "1")
+      );
+    } else {
+      const layout = document.getElementById("layout");
+      if (layout) {
+        layout.style.visibility = "visible";
+      }
+    }
+  </script>
+</html>
+
+<style is:global>
+  #layout {
+    visibility: hidden;
+  }
+</style>

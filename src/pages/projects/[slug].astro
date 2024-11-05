@@ -1,25 +1,27 @@
 ---
+import { sanityClient } from "sanity:client";
+
 import Layout from "@layouts/Layout.astro";
 import Media from "@components/Media.astro";
 import Sections from "@components/Sections.astro";
 
 import { projectBySlugQuery } from "@utils/queires";
 import { getPageSeo } from "@utils/helpers";
-import { loadQuery } from "@utils/loader-query";
 
 import type { Project } from "../../types";
 
+export const prerender = false;
+
 const params = Astro.params;
 
-const { data: project }: { data: Project } = await loadQuery({
-  query: projectBySlugQuery,
-  params: { slug: params.slug },
+const project: Project = await sanityClient.fetch(projectBySlugQuery, {
+  slug: params.slug,
 });
 
 const pageSeo = getPageSeo(project);
 ---
 
-<Layout seo={pageSeo}>
+<Layout seo={pageSeo} live>
   <h1 class="text-h1">{project.title}</h1>
 
   {project.gallery.map((media) => <Media media={media} />)}

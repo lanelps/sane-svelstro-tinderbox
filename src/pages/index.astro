@@ -1,18 +1,19 @@
 ---
+import { sanityClient } from "sanity:client";
+
 import Layout from "@layouts/Layout.astro";
 
 import { homePageQuery } from "@utils/queires";
 import { getPageSeo } from "@utils/helpers";
-import { loadQuery } from "@utils/loader-query";
 
 import type { HomePageData } from "../types";
 
-const { data }: { data: HomePageData } = await loadQuery({
-  query: homePageQuery,
-});
+export const prerender = false;
+
+const data: HomePageData = await sanityClient.fetch(homePageQuery);
 const pageSeo = getPageSeo(data);
 ---
 
-<Layout seo={pageSeo}>
+<Layout seo={pageSeo} live>
   <h1>Sane Sveltro Tinderbox</h1>
 </Layout>
