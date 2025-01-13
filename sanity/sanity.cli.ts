@@ -9,4 +9,5 @@ export default defineCliConfig({
     dataset: DATASET,
   },
   autoUpdates: true,
+  studioHost: 'boilerplate',
 })
