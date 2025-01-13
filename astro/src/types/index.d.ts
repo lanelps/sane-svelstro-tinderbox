@@ -148,3 +148,12 @@ export interface Project {
 }
 
 export type PageData = HomePageData | Project;
+
+export interface SiteSettings {
+  seo: SettingsSeo;
+  scripts?: {
+    _key: string;
+    title: string;
+    value: string;
+  }[];
+}
