@@ -6,7 +6,7 @@ import { visionTool } from "@sanity/vision";
 import type { PluginOptions } from "sanity";
 
 import { schemaTypes } from "./src/schemas";
-import { deskStructure } from "./src/desk";
+import { deskStructure } from "./src/utils/desk";
 import { locate } from "./src/structure/locate.ts";
 
 const isDev = import.meta.env.DEV;
