@@ -120,6 +120,14 @@ export type SectionMap = {
 
 //
 
+export interface SEO {
+  title?: string;
+  description?: string;
+  keywords?: string[];
+  image?: RawImage;
+  favicon?: RawImage;
+}
+
 export interface PageSeo {
   title: string;
   description: string;
