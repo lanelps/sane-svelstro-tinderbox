@@ -9,7 +9,7 @@ const { title, description, keywords, image } = Astro.props;
 const SEO = {
   title: title
     ? `${title} - ${settings.seo.title}`
-    : settings.seo.title,
+    : settings?.seo?.title || '',
   description: description || settings?.seo?.description,
   keywords: keywords || settings?.seo?.keywords,
   image: image?.url || settings?.seo?.image?.url,
