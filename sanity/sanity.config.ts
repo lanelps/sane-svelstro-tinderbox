@@ -15,7 +15,7 @@ const PREVIEW_URL = process.env.SANITY_STUDIO_PREVIEW_URL || 'http://localhost:4
 
 if (!PROJECT_ID || !DATASET) {
   throw new Error(
-    `Missing environment variable(s). Check if named correctly in .env file.\n\nShould be:\nPUBLIC_SANITY_STUDIO_PROJECT_ID=${PROJECT_ID}\nPUBLIC_SANITY_STUDIO_DATASET=${DATASET}\n\nAvailable environment variables:\n${JSON.stringify(
+    `Missing environment variable(s). Check if named correctly in .env file.\n\nShould be:\nSANITY_STUDIO_PROJECT_ID=${PROJECT_ID}\nSANITY_STUDIO_DATASET=${DATASET}\n\nAvailable environment variables:\n${JSON.stringify(
       process.env,
       null,
       2,
