@@ -1,15 +1,17 @@
 ---
 import { sanityClient } from "sanity:client";
-import { settingsQuery } from "@utils/queires";
 
-const settings = await sanityClient.fetch(settingsQuery);
+import { settingsQuery } from "@utils/queires";
+import type { SiteSettings } from "../types";
+
+const settings: SiteSettings = await sanityClient.fetch(settingsQuery);
 
 const { title, description, keywords, image } = Astro.props;
 
 const SEO = {
   title: title
     ? `${title} - ${settings.seo.title}`
-    : settings?.seo?.title || '',
+    : settings.seo.title,
   description: description || settings?.seo?.description,
   keywords: keywords || settings?.seo?.keywords,
   image: image?.url || settings?.seo?.image?.url,
