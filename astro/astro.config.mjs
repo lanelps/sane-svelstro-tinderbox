@@ -3,10 +3,10 @@ import { defineConfig } from "astro/config";
 import partytown from "@astrojs/partytown";
 import sitemap from "@astrojs/sitemap";
 import svelte from "@astrojs/svelte";
-import tailwind from "@astrojs/tailwind";
+import tailwindcss from "@tailwindcss/vite";
 import sanity from "@sanity/astro";
-
 import { loadEnv } from "vite";
+
 const env = {
   ...process.env,
   ...loadEnv(process.env.NODE_ENV, process.cwd(), ["SANITY_"]),
@@ -17,7 +17,6 @@ export default defineConfig({
   site: "https://sane-svelstro-tinderbox.com",
   integrations: [
     svelte(),
-    tailwind(),
     sanity({
       projectId: env.SANITY_PROJECT_ID,
       dataset: env.SANITY_DATASET,
@@ -31,6 +30,12 @@ export default defineConfig({
       },
     }),
   ],
-  prefetch: true,
   output: "static",
+  prefetch: {
+    prefetchAll: true,
+  },
+  vite: {
+    assetsInclude: ["**/*.glsl"],
+    plugins: [tailwindcss()],
+  },
 });
