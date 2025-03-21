@@ -1,0 +1,29 @@
+---
+import Example from "@components/sections/Example.astro";
+import Media from "@components/sections/Media.astro";
+import ProjectsList from "@components/sections/ProjectsList.astro";
+
+import type { Sections } from "@/types";
+
+type Props = {
+  sections: Sections;
+};
+
+const { sections } = Astro.props;
+---
+
+{
+  sections?.length > 0 &&
+    sections.map((section) => {
+      switch (section._type) {
+        case "example.section":
+          return <Example data={section} />;
+        case "media.section":
+          return <Media data={section} />;
+        case "projectsList.section":
+          return <ProjectsList data={section} />;
+        default:
+          return null;
+      }
+    })
+}

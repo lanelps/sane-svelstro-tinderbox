@@ -1,0 +1,15 @@
+---
+import RichText from "@components/RichText.astro";
+import type { ExampleSection } from "@/types";
+
+interface Props {
+  data: ExampleSection;
+}
+
+const { heading, content } = Astro.props.data;
+---
+
+<section class="px-4 py-6">
+  <h2 class="text-h1">{heading}</h2>
+  <RichText value={content} />
+</section>

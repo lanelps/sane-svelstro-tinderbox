@@ -1,0 +1,42 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Media from "@components/Media.astro";
+import Sections from "@components/Sections.astro";
+
+import { projectsQuery, projectQuery } from "@utils/queires";
+import { getPageSeo } from "@utils/helpers";
+
+import { loadQuery } from "@sanity/lib/load-query";
+import type { ProjectsData, ProjectData } from "@/types";
+
+export async function getStaticPaths() {
+  const { data: projects } = await loadQuery<ProjectsData>({
+    query: projectsQuery,
+  });
+
+  return projects.map((project) => {
+    return {
+      params: {
+        slug: project.slug.current,
+      },
+    };
+  });
+}
+
+const { params } = Astro;
+
+const { data: project } = await loadQuery<ProjectData>({
+  query: projectQuery,
+  params,
+});
+
+const pageSeo = getPageSeo(project);
+---
+
+<Layout seo={pageSeo}>
+  <h1 class="text-h1">{project.title}</h1>
+
+  {project.gallery.map((media) => <Media media={media} />)}
+
+  <Sections sections={project.sections} />
+</Layout>

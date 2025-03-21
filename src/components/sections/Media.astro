@@ -1,0 +1,14 @@
+---
+import MediaComponent from "@components/Media.astro";
+import type { MediaSection } from "@/types";
+
+interface Props {
+  data: MediaSection;
+}
+
+const { media } = Astro.props.data;
+---
+
+<section class="px-4 py-6">
+  <MediaComponent media={media} />
+</section>

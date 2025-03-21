@@ -1,0 +1,96 @@
+---
+import { getImageProps } from "@sanity/lib/image";
+import type { SEO, Image } from "../types";
+
+type Props = SEO;
+
+const { title, description, keywords, image, favicon, createdAt, updatedAt } = Astro.props;
+
+const resizedImage: Image | undefined =
+  image?.asset?._ref ? getImageProps({ image, maxWidth: 1200 }) : undefined;
+  
+const resizedFavicon = favicon && getImageProps({ image: favicon, maxWidth: 256 });
+
+// Construct JSON-LD data
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  headline: title,
+  description: description,
+  image: image?.url,
+  url: Astro.url.href,
+  datePublished: createdAt,
+  dateCreated: createdAt,
+  dateModified: updatedAt,
+  publisher: {
+    "@type": "Person",
+    name: "Emma Kaniuk",
+    email: "emma@emmakaniuk.com",
+    url: "https://emmakaniuk.com/"
+  },
+  creator: {
+    "@type": "Person",
+    name: "Emma Kaniuk",
+    email: "emma@emmakaniuk.com",
+    url: "https://emmakaniuk.com/"
+  },
+  contributor: {
+    "@type": "Person",
+    name: "Lane Wirihana Le Prevost-Smith",
+    url: "https://lanelps.xyz",
+    jobTitle: "Web Developer"
+  },
+   inLanguage: "en",
+   isPartOf: {
+    "@type": "WebSite",
+    name: "Emma Kaniuk",
+    url: "https://emmakaniuk.com"
+  },
+  mainEntity: {
+    "@type": "WebPageElement",
+    cssSelector: "main"
+  },
+  breadcrumb: {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+    title ? {
+        "@type": "ListItem",
+        position: 1,
+        name: title.split(" - ")[0],
+        item: "https://emmakaniuk.com"
+      } : null,
+    ]
+  },
+  keywords: keywords?.join(", "),
+};
+---
+
+{import.meta.env.IS_DEV === "true" && (
+  <meta name="robots" content="noindex" />
+)}
+
+{title && (
+    <title>{title}</title>
+    <meta property="og:title" content={title} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+)}
+
+{description && (
+    <meta name="description" content={description} />
+    <meta property="og:description" content={description} />
+    <meta name="twitter:description" content={description} />
+)}
+
+{keywords && <meta name="keywords" content={keywords.join(", ")} />}
+
+{resizedImage && (
+    <meta property="og:image" content={resizedImage.src} />
+    <meta name="twitter:image" content={resizedImage.src} />
+)}
+
+{favicon && resizedFavicon?.src && <link rel="icon" type="image/png" href={resizedFavicon.src} />}
+
+
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

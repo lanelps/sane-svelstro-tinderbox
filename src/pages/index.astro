@@ -1,0 +1,20 @@
+---
+import Layout from "@layouts/Layout.astro";
+
+import { homePageQuery } from "@utils/queires";
+import { getPageSeo } from "@utils/helpers";
+
+import { loadQuery } from "@sanity/lib/load-query";
+import type { HomePageData } from "@/types";
+
+const { data } = await loadQuery<HomePageData>({
+  query: homePageQuery,
+});
+const pageSeo = getPageSeo(data);
+---
+
+<Layout seo={pageSeo} grid>
+  <h1 class="col-span-full">
+    Welcome to Sane Svelstro Tinderbox {data.title} 🔥
+  </h1>
+</Layout>
