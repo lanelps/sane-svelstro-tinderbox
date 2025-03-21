@@ -1,4 +1,4 @@
-export const image = `
+export const imageObj = `
     asset {
         _ref,
     },
@@ -14,6 +14,18 @@ export const image = `
         y,
         height,
         width,
+    },
+    "dimensions": asset->metadata.dimensions {
+        aspectRatio,
+        width,
+        height,
+   },
+`;
+
+export const image = `
+   ${imageObj}
+   mobile {
+        ${imageObj}
     },
 `;
 

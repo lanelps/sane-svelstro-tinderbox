@@ -1,0 +1,19 @@
+---
+import Link from "@components/Link.astro";
+import type { Links } from "@/types";
+
+interface Props {
+  title: string;
+  links: Links;
+}
+
+const { title, links } = Astro.props;
+---
+
+<header class="p-pm sm-t:p-pd flex items-center justify-between">
+  <a href="/">{title}</a>
+
+  <nav class="space-x-gm sm-t:space-x-gd">
+    {links.map((link) => <Link link={link} />)}
+  </nav>
+</header>

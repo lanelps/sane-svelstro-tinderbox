@@ -1,7 +1,21 @@
 import type { ImageUrlBuilder } from "@sanity/image-url/lib/types/builder";
+import type {
+  SanityImageObject,
+  SanityImageDimensions,
+} from "@sanity/image-url/lib/types/types";
 import type { PortableTextBlock } from "@portabletext/types";
 
-export interface Image {
+export interface SanityImageRaw extends SanityImageObject {
+  alt?: string;
+  url?: string;
+  dimensions: SanityImageDimensions;
+}
+
+export interface RawImage extends SanityImageRaw {
+  mobile: SanityImageRaw;
+}
+
+export interface ImageObject {
   src: string;
   srcset: string;
   sizes: string;
@@ -9,47 +23,18 @@ export interface Image {
   height: number;
   aspectRatio: number;
   placeholder: string;
-  mobile?:
-    | {
-        src: string;
-        srcset: string;
-        sizes: string;
-        width: number;
-        height: number;
-        aspectRatio: number;
-        placeholder: string;
-      }
-    | undefined;
 }
 
-export interface RawImage {
-  alt?: string;
+export interface Image extends ImageObject {
+  mobile?: ImageObject;
+}
+
+export interface MuxVideo {
   asset: {
-    _ref: string;
+    playbackId: string;
+    assetId: string;
+    filename: string;
   };
-  url?: string;
-  crop?: {
-    left: number;
-    right: number;
-    top: number;
-    bottom: number;
-  };
-  hotspot?: {
-    x: number;
-    y: number;
-    height: number;
-    width: number;
-  };
-  mobile?: {
-    asset: {
-      _ref: string;
-    };
-  };
-}
-
-export interface Video {
-  url: string;
-  mimeType: "video/mp4" | "video/webm" | "video/ogg";
   poster: RawImage;
 }
 
@@ -57,9 +42,52 @@ export interface Media {
   _key?: string | undefined;
   type: "image" | "video";
   image?: RawImage;
-  video?: Video;
+  video?: MuxVideo;
   layout: "full" | "center" | "left" | "right";
 }
+
+export type Slug = {
+  current: string;
+};
+
+export type Reference = {
+  _id: string;
+  title: string;
+  slug: Slug;
+};
+
+export interface ObjLink {
+  label: string;
+  url: string;
+}
+
+export interface ExternalLink {
+  type: "external";
+  label: string;
+  url: string;
+  newTab: boolean;
+}
+
+export interface FileLink {
+  type: "file";
+  label: string;
+  file: {
+    _type: "file";
+    asset: {
+      url: string;
+    };
+  };
+}
+
+export interface InternalLink {
+  type: "internal";
+  label: string;
+  reference: Reference;
+}
+
+export type Link = ExternalLink | FileLink | InternalLink | ObjLink | string;
+
+export type Links = Link[];
 
 export type PortableText = PortableTextBlock[];
 
@@ -115,7 +143,7 @@ export type Section = ExampleSection;
 export type Sections = Section[];
 
 export type SectionMap = {
-  example: typeof ExampleSection;
+  example: ExampleSection;
 };
 
 //
@@ -133,10 +161,6 @@ export interface PageSeo {
   description: string;
   keywords: string;
   image: string;
-}
-
-export interface Slug {
-  current: string;
 }
 
 export interface HomePageData {

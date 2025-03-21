@@ -1,10 +1,10 @@
 ---
 import { getImageProps } from "@utils/sanity";
-import type { RawImage, Image } from "../types";
+import type { SanityImageRaw, Image } from "@/types";
 
 interface Props {
   class?: string;
-  image: RawImage;
+  image: SanityImageRaw;
   width?: number;
 }
 
@@ -34,7 +34,7 @@ try {
         title={node.alt}
       />
       <img
-        class="pointer-events-none absolute inset-0 left-0 top-0 h-full w-full object-cover transition-opacity"
+        class="pointer-events-none absolute inset-0 top-0 left-0 h-full w-full object-cover transition-opacity"
         src={image.placeholder}
         width={image.width}
         height={image.height}

@@ -3,7 +3,7 @@ import { sanityClient } from "sanity:client";
 
 import { settingsQuery } from "@utils/queires";
 
-import type { SiteSettings, SEO } from "../types";
+import type { SiteSettings, SEO } from "@/types";
 
 const settings: SiteSettings = await sanityClient.fetch(settingsQuery);
 

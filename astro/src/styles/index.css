@@ -16,6 +16,13 @@
   --breakpoint-xl-d: 108rem; /* 1728px */
   --breakpoint-xxl-d: 120rem; /* 1920px */
 
+  /* Spacing */
+  --spacing-pm: 1rem;
+  --spacing-pd: 1.5rem;
+
+  --spacing-gm: 0.5rem;
+  --spacing-gd: 1rem;
+
   /* Fonts */
   --font-main: "Helvetica Neue", ui-sans-serif, system-ui, sans-serif;
 
@@ -42,20 +49,21 @@
 @layer components {
   .grid-main,
   .grid-sub {
-    @apply grid grid-cols-12 gap-4;
+    @apply gap-gm grid grid-cols-6;
   }
 
   .grid-main {
-    @apply px-4;
+    @apply px-pm;
   }
 
   @variant sm-t {
+    .grid-main,
     .grid-sub {
-      @apply grid grid-cols-6 gap-2;
+      @apply gap-gd grid grid-cols-12;
     }
 
     .grid-main {
-      @apply px-2;
+      @apply px-pd;
     }
   }
 }

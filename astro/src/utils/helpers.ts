@@ -1,4 +1,4 @@
-import type { PageData } from "../types";
+import type { PageData } from "@/types";
 
 export const getPageSeo = (page: PageData) => {
   const seo = {

@@ -1,14 +1,16 @@
 ---
-import { ViewTransitions } from "astro:transitions";
+// import { ViewTransitions } from "astro:transitions";
 import Seo from "@components/Seo.astro";
-import type { PageSeo } from "../types";
+import Header from "@components/Header.astro";
+import type { PageSeo } from "@/types";
 import "@styles/index.css";
 
 interface Props {
   seo: PageSeo;
+  grid?: boolean;
 }
 
-const { seo } = Astro.props;
+const { seo, grid } = Astro.props;
 ---
 
 <html lang="en" class="" transition:animate="none">
@@ -17,20 +19,21 @@ const { seo } = Astro.props;
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
-    <ViewTransitions />
+    <!-- <ViewTransitions /> -->
 
     <Seo {...seo} />
   </head>
 
-  <header>
-    <nav class="space-x-4">
-      <a href="/">Home</a>
-      <a href="/projects/example">Example project</a>
-    </nav>
-  </header>
+  <body>
+    <Header
+      title="Home"
+      links={[
+        { url: "/projects/example-1", label: "Example 1" },
+        { url: "/projects/example-2", label: "Example 2" },
+      ]}
+    />
 
-  <body class="">
-    <main class="">
+    <main class:list={[grid && "grid-main"]}>
       <slot />
     </main>
   </body>

@@ -7,9 +7,10 @@ import type {
   ProcessImage,
   GetImageDimensions,
   GetRetinaSizes,
-} from "../types";
+} from "@/types";
 
 const LARGEST_VIEWPORT = 1920;
+const LARGEST_VIEWPORT_MOBILE = 768;
 
 const DEFAULT_MIN_STEP = 0.1;
 const DEFAULT_FULL_WIDTH_STEPS = [
@@ -123,7 +124,7 @@ export const getImageProps: GetImageProps = ({
   if (image?.mobile?.asset?._ref) {
     mobileImageProps = processImage(
       image.mobile,
-      typeof userMaxWidth === "number" ? userMaxWidth : LARGEST_VIEWPORT
+      typeof userMaxWidth === "number" ? userMaxWidth : LARGEST_VIEWPORT_MOBILE
     );
   }
 
