@@ -234,12 +234,20 @@ export type SiteData = {
   seo: SEOSite;
 };
 
+export type InlineScript = {
+  _type: "scriptInline";
+  content: string;
+};
+
+export type SrcScript = {
+  _type: "scriptSrc";
+  src: string;
+};
+
+export type Script = InlineScript | SrcScript;
+
 export type SettingsData = {
-  scripts: {
-    _type: "scriptInline" | "scriptSrc";
-    content?: string;
-    src?: string;
-  }[];
+  scripts: Script[];
   redirects: string[];
 };
 

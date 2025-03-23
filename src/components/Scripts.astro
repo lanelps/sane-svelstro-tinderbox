@@ -1,0 +1,19 @@
+---
+import type { Script } from "@/types";
+
+interface Props {
+  scripts: Script[];
+}
+
+const { scripts } = Astro.props;
+---
+
+{
+  scripts?.map((script) => {
+    if (script._type === "scriptInline") {
+      return <script type="text/partytown">{script.content}</script>;
+    } else {
+      return <script type="text/partytown" src={script.src} async />;
+    }
+  })
+}

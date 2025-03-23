@@ -1,8 +1,11 @@
 ---
 // import { ViewTransitions } from "astro:transitions";
 import { VisualEditing } from "@sanity/astro/visual-editing";
-import Seo from "@components/Seo.astro";
+
+import DevMark from "@components/DevMark.astro";
 import Header from "@components/Header.astro";
+import Seo from "@components/Seo.astro";
+import Scripts from "@components/Scripts.astro";
 
 import { siteQuery, settingsQuery } from "@utils/queires";
 import { loadQuery } from "@sanity/lib/load-query";
@@ -46,19 +49,11 @@ const siteSEO: SEO = {
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
+
     <!-- <ViewTransitions /> -->
-
     <Seo {...siteSEO} />
-
-    {
-      settings?.scripts?.map((script) => {
-        if (script._type === "scriptInline") {
-          return <script type="text/partytown">{script.content}</script>;
-        } else {
-          return <script type="text/partytown" src={script.src} async />;
-        }
-      })
-    }
+    <Scripts scripts={settings.scripts} />
+    <DevMark />
   </head>
 
   <body>
