@@ -1,6 +1,6 @@
 import { defineField, defineType } from "sanity";
 
-export default defineType({
+export const scriptSrcType = defineType({
   name: "scriptSrc",
   title: "Script Src",
   type: "object",

@@ -1,7 +1,7 @@
 import { defineField, defineType } from "sanity";
 import { PlayIcon } from "@sanity/icons";
 
-export default defineType({
+export const mediaType = defineType({
   name: "media",
   title: "Media",
   type: "object",

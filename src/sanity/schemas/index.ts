@@ -1,49 +1,49 @@
 import type { SchemaTypeDefinition } from "sanity";
 
 // singletons
-import homePage from "./singletons/homePage";
-import settings from "./singletons/settings";
-import site from "./singletons/site";
+import { homePageType } from "./singletons/homePage";
+import { settingsType } from "./singletons/settings";
+import { siteType } from "./singletons/site";
 
-const singletons = [homePage, settings, site] as any[];
+const singletons = [homePageType, settingsType, siteType] as any[];
 
 // documents
-import page from "./documents/page";
-import project from "./documents/project";
+import { pageType } from "./documents/page";
+import { projectType } from "./documents/project";
 
-const documents = [page, project] as any[];
+const documents = [pageType, projectType] as any[];
 
 // sections
-import exampleSection from "./sections/example";
-import mediaSection from "./sections/media";
-import projectsListSection from "./sections/projectsList";
+import { exampleSectionType } from "./sections/example";
+import { mediaSectionType } from "./sections/media";
+import { projectsListSectionType } from "./sections/projectsList";
 
-const sections = [exampleSection, mediaSection, projectsListSection] as any[];
+const sections = [exampleSectionType, mediaSectionType, projectsListSectionType] as any[];
 
 // objects
-import altImage from "./objects/altImage";
-import link from "./objects/link";
-import media from "./objects/media";
-import portableText from "./objects/portableText";
-import scriptInline from "./objects/scriptInline";
-import scriptSrc from "./objects/scriptSrc";
+import { altImageType } from "./objects/altImage";
+import { linkType } from "./objects/link";
+import { mediaType } from "./objects/media";
+import { portableTextType } from "./objects/portableText";
+import { scriptInlineType } from "./objects/scriptInline";
+import { scriptSrcType } from "./objects/scriptSrc";
 
 // SEO types
-import seoPage from "./objects/seo/page";
-import seoSite from "./objects/seo/site";
-import schemaJSON from "./objects/schema";
+import { seoPageType } from "./objects/seo/page";
+import { seoSiteType } from "./objects/seo/site";
+import { schemaJSONType } from "./objects/schema";
 
 const objects = [
-  altImage,
-  link,
-  media,
-  portableText,
-  scriptInline,
-  scriptSrc,
+  altImageType,
+  linkType,
+  mediaType,
+  portableTextType,
+  scriptInlineType,
+  scriptSrcType,
   // SEO types
-  seoPage,
-  seoSite,
-  schemaJSON,
+  seoPageType,
+  seoSiteType,
+  schemaJSONType,
 ] as any[];
 
 export const schema: { types: SchemaTypeDefinition[] } = {

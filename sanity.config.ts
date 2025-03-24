@@ -1,4 +1,4 @@
-import { defineConfig } from "sanity";
+import { defineConfig, isDev } from "sanity";
 import { structureTool } from "sanity/structure";
 import { presentationTool } from "sanity/presentation";
 import { visionTool } from "@sanity/vision";
@@ -10,7 +10,7 @@ import { schema } from "./src/sanity/schemas";
 import { deskStructure } from "./src/sanity/lib/desk";
 import { resolve } from "./src/sanity/lib/resolve";
 
-const isDev = import.meta.env.MODE === "development";
+const devOnlyPlugins = [visionTool()];
 
 export default defineConfig({
   name: "default",
@@ -22,7 +22,7 @@ export default defineConfig({
   plugins: [
     structureTool({ structure: deskStructure }),
     presentationTool({ resolve, previewUrl: location.origin }),
-    isDev ? visionTool() : null,
+    ...(isDev ? devOnlyPlugins : []),
     muxInput(),
   ].filter((plugin): plugin is PluginOptions => plugin !== null),
 

@@ -2,7 +2,7 @@ import { defineField, defineType } from "sanity";
 
 import sections from "@sanity/lib/sections";
 
-export default defineType({
+export const homePageType = defineType({
   name: "homePage",
   title: "Home",
   type: "document",

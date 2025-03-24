@@ -1,7 +1,7 @@
 import React from "react";
 import { defineField, defineType } from "sanity";
 
-export default defineType({
+export const scriptInlineType = defineType({
   name: "scriptInline",
   title: "Script Inline",
   type: "object",

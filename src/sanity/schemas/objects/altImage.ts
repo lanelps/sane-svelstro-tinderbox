@@ -1,6 +1,6 @@
 import { defineField, defineType } from "sanity";
 
-export default defineType({
+export const altImageType = defineType({
   name: "altImage",
   title: "Image (with alt)",
   type: "image",

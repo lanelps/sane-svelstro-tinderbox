@@ -1,6 +1,6 @@
 import { defineField, defineType } from "sanity";
 
-export default defineType({
+export const mediaSectionType = defineType({
   name: "media.section",
   title: "Media",
   type: "object",

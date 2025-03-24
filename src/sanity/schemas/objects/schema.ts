@@ -1,6 +1,6 @@
 import { defineField, defineType } from "sanity";
 
-export default defineType({
+export const schemaJSONType = defineType({
   name: "schema",
   title: "Schema Data (JSON-LD)",
   type: "object",
