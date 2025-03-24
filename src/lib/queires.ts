@@ -1,4 +1,4 @@
-import { image, link, sections, siteSEO, pageSEO, media } from "@utils/groq";
+import { image, link, sections, siteSEO, pageSEO, media } from "@lib/groq";
 
 export const siteQuery = `*[_type == "site"][0]{
 	navigation[]{

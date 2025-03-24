@@ -10,7 +10,7 @@
       "@assets/*": ["src/assets/*"],
       "@styles/*": ["src/styles/*"],
       "@stores/*": ["src/stores/*"],
-      "@utils/*": ["src/utils/*"],
+      "@lib/*": ["src/lib/*"],
       "@sanity/*": ["src/sanity/*"]
     }
   },
