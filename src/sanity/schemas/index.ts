@@ -23,9 +23,9 @@ const documents = [
 ] as any[];
 
 // sections
-import { exampleSectionType } from "./sections/example";
-import { mediaSectionType } from "./sections/media";
-import { projectsListSectionType } from "./sections/projectsList";
+import { exampleSectionType } from "./objects/sections/example";
+import { mediaSectionType } from "./objects/sections/media";
+import { projectsListSectionType } from "./objects/sections/projectsList";
 
 const sections = [
   exampleSectionType,
