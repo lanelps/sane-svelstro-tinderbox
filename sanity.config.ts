@@ -9,6 +9,8 @@ import type { PluginOptions } from "sanity";
 import { schema } from "./src/sanity/schemas";
 import { deskStructure } from "./src/sanity/lib/desk";
 import { resolve } from "./src/sanity/lib/resolve";
+import { customDocumentActions } from "./src/sanity/plugins/customDocumentActions";
+import Navbar from "./src/sanity/components/studio/Navbar";
 
 const devOnlyPlugins = [visionTool()];
 
@@ -24,7 +26,14 @@ export default defineConfig({
     presentationTool({ resolve, previewUrl: location.origin }),
     ...(isDev ? devOnlyPlugins : []),
     muxInput(),
+    customDocumentActions(),
   ].filter((plugin): plugin is PluginOptions => plugin !== null),
 
   schema,
+
+  studio: {
+    components: {
+      navbar: Navbar,
+    },
+  },
 });

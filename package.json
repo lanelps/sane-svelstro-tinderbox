@@ -22,6 +22,7 @@
     "astro-portabletext": "^0.11.1",
     "hls.js": "^1.5.20",
     "nanostores": "^0.11.4",
+    "pluralize-esm": "^9.0.5",
     "sanity": "^3.80.1",
     "sanity-plugin-mux-input": "^2.8.0",
     "svelte": "5.23.2",

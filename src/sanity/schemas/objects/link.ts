@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { PAGE_REFERENCES } from "../../constants";
 
 export const linkType = defineType({
   name: "link",
@@ -73,7 +74,7 @@ export const linkType = defineType({
       name: "reference",
       title: "Reference",
       type: "reference",
-      to: [{ type: "homePage" }, { type: "page" }, { type: "project" }],
+      to: PAGE_REFERENCES,
       validation: (Rule) =>
         Rule.custom((reference, { parent }: any) => {
           if (parent?.type === "internal" && !reference) {

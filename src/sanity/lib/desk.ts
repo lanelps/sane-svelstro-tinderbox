@@ -4,46 +4,112 @@ import type {
   ListItemBuilder,
   Divider,
 } from "sanity/structure";
-import { DocumentIcon } from "@sanity/icons";
-
-interface StructureParams {
-  title: string;
-  type: string;
-  icon?: ComponentType;
-  singleton?: boolean;
-  divider?: boolean;
-}
+import { DocumentIcon, InfoOutlineIcon } from "@sanity/icons";
 
 interface GroupStructureParams {
   title: string;
   type: "group";
   icon?: ComponentType;
-  items: StructureParams[];
+  items: DocumentItem[];
   divider?: boolean;
 }
 
 type StructureReturn = (ListItemBuilder | Divider)[];
 
+interface DocumentItem {
+  title: string;
+  type: string;
+  icon?: ComponentType;
+  singleton?: boolean;
+  divider?: boolean;
+  orderBy?: string;
+}
+
+interface GroupDocument {
+  title: string;
+  type: "group";
+  icon?: () => string;
+  items: DocumentItem[];
+  divider?: boolean;
+}
+
+type Document = DocumentItem | GroupDocument;
+
+export const productStructure = (S: StructureBuilder) =>
+  S.listItem()
+    .title("Products")
+    .schemaType("product")
+    .child(
+      S.documentTypeList("product")
+        // .defaultLayout('detail')
+        .child(async (id) =>
+          S.list()
+            .title("Product")
+            .canHandleIntent(
+              (intentName, params) =>
+                intentName === "edit" && params.type === "product"
+            )
+            .items([
+              // Details
+              S.listItem()
+                .title("Details")
+                .icon(InfoOutlineIcon)
+                .schemaType("product")
+                .id(id)
+                .child(S.document().schemaType("product").documentId(id)),
+              // Product variants
+              S.listItem()
+                .title("Variants")
+                .schemaType("productVariant")
+                .child(
+                  S.documentList()
+                    .title("Variants")
+                    .schemaType("productVariant")
+                    .filter(
+                      `
+                      _type == "productVariant"
+                      && store.productId == $productId
+                    `
+                    )
+                    .params({
+                      productId: Number(id.replace("shopifyProduct-", "")),
+                    })
+                    .canHandleIntent(
+                      (intentName, params) =>
+                        intentName === "edit" &&
+                        params.type === "productVariant"
+                    )
+                ),
+            ])
+        )
+    );
+
 export const generateDocumentStructure = (
   S: StructureBuilder,
-  { title, type, icon, divider }: StructureParams
+  { title, type, icon, divider, orderBy }: DocumentItem
 ): StructureReturn => {
-  const structure = S.listItem()
-    .title(title)
-    .icon(icon || DocumentIcon)
-    .schemaType(type)
-    .child(
-      S.documentTypeList(type).defaultOrdering([
-        { field: "title", direction: "asc" },
-      ])
-    );
+  const structure =
+    type === "product"
+      ? productStructure(S)
+      : S.listItem()
+          .title(title)
+          .icon(icon || DocumentIcon)
+          .schemaType(type)
+          .child(
+            S.documentTypeList(type).defaultOrdering([
+              {
+                field: orderBy || "title",
+                direction: "asc",
+              },
+            ])
+          );
 
   return divider ? [structure, S.divider()] : [structure];
 };
 
 export const generateSingletonStructure = (
   S: StructureBuilder,
-  { title, type, icon, divider }: StructureParams
+  { title, type, icon, divider }: DocumentItem
 ): StructureReturn => {
   const structure = S.listItem()
     .title(title)
@@ -78,7 +144,7 @@ const generateGroupStructure = (
 
 const generateStructure = (
   S: StructureBuilder,
-  document: StructureParams | GroupStructureParams
+  document: DocumentItem | GroupStructureParams
 ): StructureReturn => {
   if (document.type === "group") {
     return generateGroupStructure(S, document as GroupStructureParams);
@@ -91,30 +157,12 @@ const generateStructure = (
 
 export const generateDeskStructure = (
   S: StructureBuilder,
-  documents: (StructureParams | GroupStructureParams)[]
+  documents: (DocumentItem | GroupStructureParams)[]
 ): StructureReturn => {
   return documents.flatMap((document) => generateStructure(S, document));
 };
 
 //
-
-interface DocumentItem {
-  title: string;
-  type: string;
-  icon?: () => string;
-  singleton?: boolean;
-  divider?: boolean;
-}
-
-interface GroupDocument {
-  title: string;
-  type: "group";
-  icon?: () => string;
-  items: DocumentItem[];
-  divider?: boolean;
-}
-
-type Document = DocumentItem | GroupDocument;
 
 const documents: Document[] = [
   {
@@ -143,6 +191,18 @@ const documents: Document[] = [
     divider: true,
   },
   {
+    title: "Collections",
+    type: "collection",
+    icon: () => "📦",
+    orderBy: "titleProxy",
+  },
+  {
+    title: "Products",
+    type: "product",
+    icon: () => "🛍",
+    divider: true,
+  },
+  {
     title: "Site",
     type: "site",
     icon: () => "🌐",
@@ -156,9 +216,10 @@ const documents: Document[] = [
   },
 ];
 
+const hiddenDocuments = ["media.tag", "mux.videoAsset", "productVariant"];
+
 const DOCUMENT_TYPES_IN_STRUCTURE = [
-  "media.tag",
-  "mux.videoAsset",
+  ...hiddenDocuments,
   ...documents.flatMap((document) => {
     if (document.type === "group") {
       return (document as GroupDocument).items.map((item) => item.type);

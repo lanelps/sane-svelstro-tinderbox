@@ -1,21 +1,13 @@
 import { defineField, defineType } from "sanity";
 
-import sections from "@sanity/lib/sections";
+import sections from "../objects/sections";
+import { GROUPS } from "../../constants";
 
 export const projectType = defineType({
   name: "project",
   title: "Project",
   type: "document",
-  groups: [
-    {
-      title: "Content",
-      name: "content",
-    },
-    {
-      title: "SEO",
-      name: "seo",
-    },
-  ],
+  groups: GROUPS,
   fields: [
     defineField({
       name: "title",
