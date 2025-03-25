@@ -27,11 +27,12 @@ export const SHOPIFY_DOCUMENT_TYPES = [
 
 // References to include in 'internal' links
 export const PAGE_REFERENCES = [
-  defineArrayMember({ type: "collection" }),
-  defineArrayMember({ type: "homePage" }),
-  defineArrayMember({ type: "page" }),
-  // defineArrayMember({ type: "product" }),
-  defineArrayMember({ type: "project" }),
+  { type: "collection" },
+  { type: "homePage" },
+  { type: "page" },
+  // { type: "productVariant" },
+  { type: "product" },
+  { type: "project" },
 ];
 
 export const SECTION_REFERENCES = [
@@ -54,7 +55,7 @@ export const SANITY_API_VERSION = "2022-10-25";
 // This is the ID in your Shopify admin URL (e.g. 'my-store-name' in https://admin.shopify.com/store/my-store-name).
 // You only need to provide the ID, not the full URL.
 // Set this to enable helper links in document status banners and shortcut links on products and collections.
-export const SHOPIFY_STORE_ID = "";
+export const SHOPIFY_STORE_ID = "sprout-and-spore";
 
 // Field groups used through schema types
 export const GROUPS = [

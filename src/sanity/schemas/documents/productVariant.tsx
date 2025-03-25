@@ -1,7 +1,7 @@
 import { CopyIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 
-// import ProductVariantHiddenInput from "../../components/inputs/ProductVariantHidden";
+import ProductVariantHiddenInput from "../../components/inputs/ProductVariantHidden";
 import ShopifyDocumentStatus from "../../components/media/ShopifyDocumentStatus";
 import { GROUPS } from "../../constants";
 
@@ -15,9 +15,9 @@ export const productVariantType = defineType({
     defineField({
       name: "hidden",
       type: "string",
-      // components: {
-      //   field: ProductVariantHiddenInput,
-      // },
+      components: {
+        field: ProductVariantHiddenInput,
+      },
       hidden: ({ parent }) => {
         const isDeleted = parent?.store?.isDeleted;
 

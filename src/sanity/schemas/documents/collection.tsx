@@ -1,5 +1,4 @@
 import { defineField, defineType } from "sanity";
-import { getExtension } from "@sanity/asset-utils";
 import pluralize from "pluralize-esm";
 import CollectionHiddenInput from "../../components/inputs/CollectionHidden";
 import ShopifyDocumentStatus from "../../components/media/ShopifyDocumentStatus";

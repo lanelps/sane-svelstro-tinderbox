@@ -38,7 +38,6 @@ import { altImageType } from "./objects/altImage";
 import { linkType } from "./objects/link";
 import { mediaType } from "./objects/media";
 import { portableTextType } from "./objects/portableText";
-import { productLinkType } from "./objects/productLink";
 import { scriptInlineType } from "./objects/scriptInline";
 import { scriptSrcType } from "./objects/scriptSrc";
 
@@ -52,7 +51,6 @@ const objects = [
   linkType,
   mediaType,
   portableTextType,
-  productLinkType,
   scriptInlineType,
   scriptSrcType,
   // SEO types
@@ -64,11 +62,9 @@ const objects = [
 import { collectionRuleType } from "./objects/shopify/collectionRuleType";
 import { inventoryType } from "./objects/shopify/inventoryType";
 import { optionType } from "./objects/shopify/optionType";
-import { placeholderStringType } from "./objects/shopify/placeholderStringType";
 import { priceRangeType } from "./objects/shopify/priceRangeType";
 import { productWithVariantType } from "./objects/shopify/productWithVariantType";
 import { proxyStringType } from "./objects/shopify/proxyStringType";
-import { seoType } from "./objects/shopify/seoType";
 import { shopifyCollectionType } from "./objects/shopify/shopifyCollectionType";
 import { shopifyProductType } from "./objects/shopify/shopifyProductType";
 import { shopifyProductVariantType } from "./objects/shopify/shopifyProductVariantType";
@@ -77,33 +73,14 @@ const shopify = [
   collectionRuleType,
   inventoryType,
   optionType,
-  placeholderStringType,
   priceRangeType,
   productWithVariantType,
   proxyStringType,
-  seoType,
   shopifyCollectionType,
   shopifyProductType,
   shopifyProductVariantType,
 ] as any[];
 
-import { productFeaturesType } from "./objects/module/productFeaturesType";
-import { productReferenceType } from "./objects/module/productReferenceType";
-
-const modules = [productFeaturesType, productReferenceType] as any[];
-
-import { portableTextSimpleType } from "./portableText/portableTextSimpleType";
-
-const portableText = [portableTextSimpleType] as any[];
-
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [
-    ...singletons,
-    ...documents,
-    ...sections,
-    ...objects,
-    ...shopify,
-    ...modules,
-    ...portableText,
-  ],
+  types: [...singletons, ...documents, ...sections, ...objects, ...shopify],
 };
