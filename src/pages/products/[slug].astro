@@ -1,0 +1,54 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Sections from "@components/Sections.astro";
+
+import { productsQuery, productQuery } from "@lib/queires";
+import { stripHtml } from "@lib/helpers";
+
+import { loadQuery } from "@sanity/lib/load-query";
+import type { ProductsData, ProductData } from "@/types";
+
+export async function getStaticPaths() {
+  const { data: products } = await loadQuery<ProductsData>({
+    query: productsQuery,
+  });
+
+  return products.map((product) => {
+    return {
+      params: {
+        slug: product.slug.current,
+      },
+      props: {
+        productId: product.productId,
+      },
+    };
+  });
+}
+
+const { params, props } = Astro;
+const { productId } = props;
+
+const { data: product } = await loadQuery<ProductData>({
+  query: productQuery,
+  params: {
+    ...params,
+    productId,
+  },
+});
+
+const pageSeo = {
+  title: product?.details?.seo?.title || product?.details?.store?.title || "",
+  description:
+    product?.details?.seo?.description ||
+    stripHtml(product?.details?.store?.descriptionHtml) ||
+    "",
+  keywords: product?.details?.seo?.keywords || [],
+  image: product?.details?.store?.previewImageUrl,
+};
+---
+
+<Layout seo={pageSeo}>
+  <h1 class="text-h1">{product.details.store.title}</h1>
+
+  <Sections sections={product.details.sections} />
+</Layout>
