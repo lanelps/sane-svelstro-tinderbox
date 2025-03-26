@@ -1,8 +1,11 @@
+import { defineField, defineType } from "sanity";
 import pluralize from "pluralize-esm";
+
 import ProductHiddenInput from "../../components/inputs/ProductHidden";
 import ShopifyDocumentStatus from "../../components/media/ShopifyDocumentStatus";
-import { defineField, defineType } from "sanity";
+
 import { getPriceRange } from "../../utils/getPriceRange";
+import sections from "../objects/sections";
 import { GROUPS } from "../../constants";
 
 export const productType = defineType({
@@ -37,11 +40,7 @@ export const productType = defineType({
       type: "proxyString",
       options: { field: "store.slug.current" },
     }),
-    defineField({
-      name: "body",
-      type: "portableText",
-      group: "content",
-    }),
+    sections,
     defineField({
       name: "store",
       type: "shopifyProduct",
