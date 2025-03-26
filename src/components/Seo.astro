@@ -6,10 +6,22 @@ type Props = SEO;
 
 const { title, description, keywords, image, favicon, createdAt, updatedAt } = Astro.props;
 
-const resizedImage: Image | undefined =
-  image?.asset?._ref ? getImageProps({ image, maxWidth: 1200 }) : undefined;
+const resizedImage: Image | string | undefined =
+  typeof image !== "string" && image?.asset?._ref ? getImageProps({ image, maxWidth: 1920 }) : image as string || undefined;
   
 const resizedFavicon = favicon && getImageProps({ image: favicon, maxWidth: 256 });
+
+const getImageUrl = (image: Image | string | undefined) => {
+  if (typeof image === "string") {
+    return image;
+  }
+
+  if (image?.src) {
+    return image.src;
+  }
+
+  return undefined;
+};
 
 // Construct JSON-LD data
 const jsonLd = {
@@ -17,7 +29,7 @@ const jsonLd = {
   "@type": "WebPage",
   headline: title,
   description: description,
-  image: image?.url,
+  image: getImageUrl(resizedImage),
   url: Astro.url.href,
   datePublished: createdAt,
   dateCreated: createdAt,
@@ -84,9 +96,9 @@ const jsonLd = {
 
 {keywords && <meta name="keywords" content={keywords.join(", ")} />}
 
-{resizedImage && (
-    <meta property="og:image" content={resizedImage.src} />
-    <meta name="twitter:image" content={resizedImage.src} />
+{resizedImage && typeof resizedImage !== "string" && (
+    <meta property="og:image" content={getImageUrl(resizedImage)} />
+    <meta name="twitter:image" content={getImageUrl(resizedImage)} />
 )}
 
 {favicon && resizedFavicon?.src && <link rel="icon" type="image/png" href={resizedFavicon.src} />}

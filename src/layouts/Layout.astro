@@ -18,6 +18,8 @@ interface Props {
   grid?: boolean;
 }
 
+const isDev = import.meta.env.DEV;
+
 const visualEditingEnabled =
   import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED == "true";
 
@@ -53,7 +55,7 @@ const siteSEO: SEO = {
     <!-- <ViewTransitions /> -->
     <Seo {...siteSEO} />
     <Scripts scripts={settings.scripts} />
-    <DevMark />
+    {!isDev && <DevMark />}
   </head>
 
   <body>
