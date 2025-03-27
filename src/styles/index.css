@@ -67,3 +67,7 @@
     }
   }
 }
+
+button {
+  @apply cursor-pointer;
+}
