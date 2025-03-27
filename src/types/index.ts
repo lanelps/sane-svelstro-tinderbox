@@ -352,6 +352,17 @@ export interface ProductStore {
   }>;
 }
 
+export interface ProductDetails {
+  _createdAt: string;
+  _id: string;
+  _rev: string;
+  _type: "product";
+  _updatedAt: string;
+  store: ProductStore;
+  sections: Section[];
+  seo: SEOPage;
+}
+
 export interface Inventory {
   isAvailable: boolean;
   management: string;
@@ -378,25 +389,18 @@ export interface ProductVariantStore {
   previewImageUrl: string;
 }
 
+export interface ProductVariant {
+  _createdAt: string;
+  _id: string;
+  _rev: string;
+  _type: "productVariant";
+  _updatedAt: string;
+  store: ProductVariantStore;
+}
+
 export type ProductData = {
-  details: {
-    _createdAt: string;
-    _id: string;
-    _rev: string;
-    _type: "product";
-    _updatedAt: string;
-    store: ProductStore;
-    sections: Section[];
-    seo: SEOPage;
-  };
-  variants: {
-    _createdAt: string;
-    _id: string;
-    _rev: string;
-    _type: "productVariant";
-    _updatedAt: string;
-    store: ProductVariantStore;
-  }[];
+  details: ProductDetails;
+  variants: ProductVariant[];
 };
 
 export type ProductsData = {
@@ -411,3 +415,17 @@ export type PageTypes =
   | ProjectData
   | ProjectsData
   | ProductData;
+
+export interface CartItem {
+  variantId: string;
+  quantity: number;
+  title: string;
+  price: number;
+  image: string;
+}
+
+export interface CartStore {
+  isOpen: boolean;
+  items: CartItem[];
+  cartId: string | null;
+}

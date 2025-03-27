@@ -2,6 +2,7 @@
 // import { ViewTransitions } from "astro:transitions";
 import { VisualEditing } from "@sanity/astro/visual-editing";
 
+import Cart from "@components/Cart.svelte";
 import DevMark from "@components/DevMark.astro";
 import Header from "@components/Header.astro";
 import Seo from "@components/Seo.astro";
@@ -60,6 +61,7 @@ const siteSEO: SEO = {
 
   <body>
     <Header title="Home" links={site.navigation} />
+    <Cart client:load />
 
     <main class:list={[grid && "grid-main"]}>
       <slot />

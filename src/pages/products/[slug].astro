@@ -1,5 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import VariantSelector from "@components/VariantSelector.svelte";
 import Sections from "@components/Sections.astro";
 
 import { productsQuery, productQuery } from "@lib/queires";
@@ -49,6 +50,8 @@ const pageSeo = {
 
 <Layout seo={pageSeo}>
   <h1 class="text-h1">{product.details.store.title}</h1>
+
+  <VariantSelector variants={product.variants} client:load />
 
   <Sections sections={product.details.sections} />
 </Layout>
