@@ -48,20 +48,22 @@ try {
 }
 
 <script>
-  const figures = document.querySelectorAll("figure");
+  document.addEventListener("astro:page-load", () => {
+    const figures = document.querySelectorAll("figure");
 
-  figures.forEach((figure) => {
-    const img = figure.querySelector("img");
-    const placeholder = figure.querySelector("img[role='presentation']");
+    figures.forEach((figure) => {
+      const img = figure.querySelector("img");
+      const placeholder = figure.querySelector("img[role='presentation']");
 
-    if (!img || !placeholder) return;
+      if (!img || !placeholder) return;
 
-    img.onload = () => {
-      placeholder.classList.add("opacity-0");
-    };
+      img.onload = () => {
+        placeholder.classList.add("opacity-0");
+      };
 
-    if (img.complete) {
-      placeholder.classList.add("opacity-0");
-    }
+      if (img.complete) {
+        placeholder.classList.add("opacity-0");
+      }
+    });
   });
 </script>

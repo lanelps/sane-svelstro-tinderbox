@@ -33,29 +33,31 @@ const placeholder: string =
 <script>
   import Hls from "hls.js";
 
-  const figures = document.querySelectorAll("figure");
+  document.addEventListener("astro:page-load", () => {
+    const figures = document.querySelectorAll("figure");
 
-  figures.forEach((figure) => {
-    const video = figure.querySelector("video") as HTMLVideoElement;
-    const placeholder = figure.querySelector("img[role='presentation']");
+    figures.forEach((figure) => {
+      const video = figure.querySelector("video") as HTMLVideoElement;
+      const placeholder = figure.querySelector("img[role='presentation']");
 
-    if (!video) return;
+      if (!video) return;
 
-    const playbackId = video.dataset.playbackId;
-    const videoSrc = `https://stream.mux.com/${playbackId}.m3u8`;
+      const playbackId = video.dataset.playbackId;
+      const videoSrc = `https://stream.mux.com/${playbackId}.m3u8`;
 
-    if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = videoSrc;
-    } else if (Hls.isSupported()) {
-      var hls = new Hls();
-      hls.loadSource(videoSrc);
-      hls.attachMedia(video);
-    } else {
-      console.error("This browser does not support HLS.");
-    }
+      if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = videoSrc;
+      } else if (Hls.isSupported()) {
+        var hls = new Hls();
+        hls.loadSource(videoSrc);
+        hls.attachMedia(video);
+      } else {
+        console.error("This browser does not support HLS.");
+      }
 
-    video.addEventListener("loadeddata", () => {
-      placeholder?.classList.add("opacity-0");
+      video.addEventListener("loadeddata", () => {
+        placeholder?.classList.add("opacity-0");
+      });
     });
   });
 </script>
