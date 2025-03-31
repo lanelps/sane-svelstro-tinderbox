@@ -409,12 +409,7 @@ export type ProductsData = {
   productId: number;
 }[];
 
-export type PageTypes =
-  | HomePageData
-  | PageData
-  | ProjectData
-  | ProjectsData
-  | ProductData;
+export type PageTypes = HomePageData | PageData | ProjectData;
 
 export interface CartItem {
   variantId: string;
