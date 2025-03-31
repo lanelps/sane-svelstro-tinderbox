@@ -1,7 +1,7 @@
 import type { CartItem } from "@/types";
 
 export const shopifyConfig = {
-  isEnabled: import.meta.env.PUBLIC_ENABLE_SHOPIFY === "true",
+  isEnabled: import.meta.env.PUBLIC_ENABLE_SHOPIFY === "true", // todo: implement this
   storefrontToken: import.meta.env.PUBLIC_SHOPIFY_STOREFRONT_TOKEN,
   store: import.meta.env.PUBLIC_SHOPIFY_STORE,
 };
