@@ -11,7 +11,10 @@ interface Props {
 const { title, links } = Astro.props;
 ---
 
-<header class="p-pm sm-t:p-pd flex items-center justify-between">
+<header
+  class="p-pm sm-t:p-pd flex items-center justify-between"
+  transition:persist="site-header"
+>
   <a href="/">{title}</a>
 
   <nav class="space-x-gm sm-t:space-x-gd">
