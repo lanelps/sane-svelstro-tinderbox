@@ -1,5 +1,5 @@
 ---
-import MediaComponent from "@components/Media.astro";
+import MediaComponent from "@components/Media.svelte";
 import type { MediaSection } from "@/types";
 
 interface Props {
@@ -10,5 +10,5 @@ const { media } = Astro.props.data;
 ---
 
 <section class="px-4 py-6">
-  <MediaComponent media={media} />
+  <MediaComponent client:load media={media} />
 </section>
