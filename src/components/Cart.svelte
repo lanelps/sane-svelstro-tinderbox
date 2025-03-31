@@ -41,7 +41,7 @@
   bind:this={cartRef}
   class={[
     twMerge(
-      "fixed top-0 right-0 h-full w-96 bg-gray-100 p-4 pb-22 shadow-lg transition-transform",
+      "fixed top-0 right-0 z-50 h-full w-96 bg-gray-100 p-4 pb-22 shadow-lg transition-transform",
       $cart.isOpen ? "translate-x-0" : "translate-x-full"
     ),
   ]}
