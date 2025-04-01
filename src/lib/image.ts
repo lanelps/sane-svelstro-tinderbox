@@ -35,7 +35,14 @@ export const getAstroImage = async ({
   return {
     ...processedImage,
     sizes: `(min-width: ${width}px) ${width}px, 100vw`,
-    placeholder,
+    placeholder: {
+      ...placeholder,
+      attributes: {
+        ...placeholder.attributes,
+        width: processedImage.attributes.width,
+        height: processedImage.attributes.height,
+      },
+    },
   };
 };
 

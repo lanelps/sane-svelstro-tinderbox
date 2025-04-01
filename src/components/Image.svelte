@@ -49,8 +49,8 @@
       sizes={image.sizes}
       title={alt}
       {...image.attributes}
-      onload={handleImageLoaded}
       alt={alt || image.attributes?.alt || ""}
+      onload={handleImageLoaded}
     />
     {#if image.placeholder}
       <img
