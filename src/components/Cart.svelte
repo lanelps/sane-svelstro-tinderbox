@@ -9,18 +9,21 @@
     updateQuantity,
     closeCart,
     setCartId,
+    updateLineItemIds,
   } from "@stores/cart";
 
   import {
     initializeCart,
     getCheckoutURL,
+    getCart,
     addToCart as shopifyAddToCart,
     updateCart as shopifyUpdateCart,
     removeLineItem as shopifyRemoveLineItem,
   } from "@/lib/shopify";
 
+  import type { CartItem } from "@/types";
+
   let cartRef = $state<HTMLDivElement>();
-  let checkoutUrl = $state<string | null>(null);
   let isLoading = $state(false);
 
   // Initialize Shopify cart on component load
@@ -30,10 +33,37 @@
       const { cartId } = await initializeCart();
       setCartId(cartId);
 
-      // If we have a cart ID, get the checkout URL
+      // Fetch existing cart items if we have a cart ID
       if (cartId) {
-        const checkoutData = await getCheckoutURL({ cartId });
-        checkoutUrl = checkoutData.checkoutUrl;
+        const response = await getCart({ cartId });
+        // Check if response.cart exists and has lines
+        if (
+          response &&
+          response.cart &&
+          response.cart.lines &&
+          response.cart.lines.edges
+        ) {
+          // Convert Shopify cart items to your local format
+          const items: CartItem[] = response.cart.lines.edges.map(
+            ({ node }) => ({
+              id: node.id,
+              variantId: node.merchandise.id,
+              quantity: node.quantity,
+              title: node.merchandise.product.title,
+              price: parseFloat(node.merchandise.priceV2.amount),
+              image: node.merchandise.image?.originalSrc || "",
+            })
+          );
+
+          // Update the local cart with these items
+          cart.set({
+            ...$cart,
+            items: items,
+          });
+
+          // Update line item IDs in store
+          updateLineItemIds(response.cart);
+        }
       }
     } catch (error) {
       console.error("Failed to initialize cart:", error);
@@ -96,16 +126,52 @@
   // Enhanced removeItem that syncs with Shopify
   const handleRemoveItem = async (variantId: string, itemId: string) => {
     try {
-      if ($cart.cartId) {
+      // Remove from local cart state first for better UX
+      removeItem(variantId);
+
+      // Only try to remove from Shopify if we have both a cart ID and a valid line item ID
+      if ($cart.cartId && itemId && itemId.trim() !== "") {
         await shopifyRemoveLineItem({
           cartId: $cart.cartId,
           itemId,
         });
+      } else if ($cart.cartId) {
+        // If we don't have a valid ID but do have a cart, refresh the cart
+        // This will sync any differences between local and Shopify carts
+        const response = await getCart({ cartId: $cart.cartId });
+        if (response && response.cart) {
+          updateLineItemIds(response.cart);
+        }
       }
-      // Remove from local cart state
-      removeItem(variantId);
     } catch (error) {
       console.error("Failed to remove item:", error);
+      // If removing from Shopify fails, make sure the local state is correct
+      if ($cart.cartId) {
+        try {
+          const response = await getCart({ cartId: $cart.cartId });
+          if (response && response.cart) {
+            // Convert Shopify cart items to your local format and update the store
+            const items: CartItem[] = response.cart.lines.edges.map(
+              ({ node }) => ({
+                id: node.id,
+                variantId: node.merchandise.id,
+                quantity: node.quantity,
+                title: node.merchandise.product.title,
+                price: parseFloat(node.merchandise.priceV2.amount),
+                image: node.merchandise.image?.originalSrc || "",
+              })
+            );
+
+            // Update the local cart with these items
+            cart.set({
+              ...$cart,
+              items: items,
+            });
+          }
+        } catch (error) {
+          console.error("Failed to fetch cart after remove error:", error);
+        }
+      }
     }
   };
 
@@ -130,6 +196,18 @@
       updateQuantity(variantId, newQuantity);
     } catch (error) {
       console.error("Failed to update quantity:", error);
+    }
+  };
+
+  // Update handleClearCart to be an async function
+  const handleClearCart = async () => {
+    try {
+      isLoading = true;
+      await clearCart();
+    } catch (error) {
+      console.error("Failed to clear cart:", error);
+    } finally {
+      isLoading = false;
     }
   };
 </script>
@@ -205,7 +283,9 @@
     <div class="absolute right-0 bottom-0 left-0 h-22 p-4">
       <div class="flex w-full justify-between">
         <p>Total: ${totalPrice.toFixed(2)}</p>
-        <button onclick={clearCart} disabled={isLoading}>Clear Cart</button>
+        <button onclick={handleClearCart} disabled={isLoading}
+          >Clear Cart</button
+        >
       </div>
       <button
         onclick={handleCheckout}

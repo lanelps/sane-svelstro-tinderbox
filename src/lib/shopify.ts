@@ -56,7 +56,7 @@ export const initializeCart = async (): Promise<{ cartId: string }> => {
 };
 
 // Helper function to create a new cart and store its ID
-const createNewCart = async (): Promise<{ cartId: string }> => {
+export const createNewCart = async (): Promise<{ cartId: string }> => {
   const newCart = await createCart();
   const fullCartId = ensureFullCartId(newCart.id);
 
@@ -477,6 +477,86 @@ export const removeLineItem = async ({
     };
   } catch (error) {
     console.error("Failed to remove line item:", error);
+    throw error;
+  }
+};
+
+// Remove multiple items from cart
+export const removeLineItems = async ({
+  cartId,
+  itemIds,
+}: {
+  cartId: string;
+  itemIds: string[];
+}) => {
+  if (!itemIds.length) return { cart: null };
+
+  const formattedCartId = ensureFullCartId(cartId);
+  const query = `
+    mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+        cartLinesRemove(cartId: $cartId, lineIds: $lineIds ) {
+            cart {
+                id
+                checkoutUrl
+                totalQuantity
+                lines(first: 100) {
+                    edges {
+                        node {
+                            id
+                            quantity
+                            merchandise {
+                                ... on ProductVariant {
+                                    id
+                                    title
+                                    priceV2 {
+                                        amount
+                                        currencyCode
+                                    }
+                                    image {
+                                        originalSrc
+                                    }
+                                    product {
+                                        title
+                                        handle
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            userErrors {
+                field
+                message
+            }
+        }
+    }`;
+
+  try {
+    const data = await storefrontClient.fetch<{
+      cartLinesRemove: ShopifyCartResponse<ShopifyCart>;
+    }>(
+      query,
+      {
+        cartId: formattedCartId,
+        lineIds: itemIds,
+      },
+      "removeLineItems"
+    );
+
+    if (data.cartLinesRemove.userErrors?.length > 0) {
+      throw new Error(data.cartLinesRemove.userErrors[0].message);
+    }
+
+    if (!data.cartLinesRemove?.cart) {
+      throw new Error("Failed to remove items from cart");
+    }
+
+    return {
+      cart: data.cartLinesRemove.cart,
+    };
+  } catch (error) {
+    console.error("Failed to remove line items:", error);
     throw error;
   }
 };
