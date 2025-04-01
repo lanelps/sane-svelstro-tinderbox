@@ -41,7 +41,7 @@
 </script>
 
 {#if image?.src}
-  <figure class={twMerge("relative", className)}>
+  <figure class={twMerge("relative w-full", className)}>
     <img
       class="block h-full w-full object-cover"
       src={image.src}
@@ -59,7 +59,8 @@
           imageLoaded ? "opacity-0" : "opacity-100"
         )}
         src={placeholderSrc}
-        {...placeholderAttrs}
+        width={image.attributes?.width}
+        height={image.attributes?.height}
         alt=""
         aria-hidden="true"
         role="presentation"

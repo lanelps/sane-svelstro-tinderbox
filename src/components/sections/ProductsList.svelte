@@ -24,7 +24,7 @@
       },
     }}
       <li class="rounded-lg border border-gray-200 p-4">
-        <Link link={productLink}>
+        <Link link={productLink} class="block">
           <h2 class="text-h2">{product.title}</h2>
           <Image image={product.image} alt={product.title} />
         </Link>
