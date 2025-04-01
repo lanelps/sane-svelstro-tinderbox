@@ -8,6 +8,7 @@ export type Slug = {
 
 export type Reference = {
   _id: string;
+  _type: string;
   title: string;
   slug: Slug;
 };
