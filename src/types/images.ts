@@ -59,7 +59,7 @@ export interface MuxVideo {
 export interface Media {
   _key?: string;
   type: "image" | "video";
-  image?: SanityImageData;
+  image?: SanityImage;
   video?: MuxVideo;
   layout: "full" | "center" | "left" | "right";
 }
