@@ -11,9 +11,9 @@
 
   interface Props {
     class?: string;
-    link?: Link;
+    link: Link;
     label?: string;
-    children: Snippet;
+    children?: Snippet;
   }
 
   let { class: className, link, label, children }: Props = $props();
@@ -39,15 +39,27 @@
     "url" in link;
   const isStringLink = (link: Link): link is string => typeof link === "string";
 
+  // Helper function to determine if we need to include reference type in URL
+  const shouldIncludeType = (link: InternalLink): boolean => {
+    return link.reference._type !== "page";
+  };
+
   // Configuration object that defines how different types of links should be rendered
   const linkConfig = {
-    string: (link: string) => ({ href: link }),
+    string: (link: string) => ({ href: `/${link}/` }),
     external: (link: ExternalLink) => ({
       href: link.url,
       target: link.newTab ? "_blank" : "_self",
       rel: "noopener noreferrer",
     }),
-    internal: (link: InternalLink) => ({ href: link.reference.slug.current }),
+    internal: (link: InternalLink) => {
+      const typePath = shouldIncludeType(link)
+        ? `${link.reference._type}s/`
+        : "";
+      return {
+        href: `/${typePath}${link.reference.slug.current}/`,
+      };
+    },
     file: (link: FileLink) => ({
       href: link.file.asset.url,
       download: true,
