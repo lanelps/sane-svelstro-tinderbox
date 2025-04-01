@@ -1,10 +1,11 @@
 ---
 import Layout from "@layouts/Layout.astro";
-import Media from "@components/Media.astro";
+import Media from "@components/Media.svelte";
 import Sections from "@components/Sections.astro";
 
 import { projectsQuery, projectQuery } from "@lib/queires";
 import { getPageSeo } from "@lib/helpers";
+import { processNestedImages } from "@lib/image";
 
 import { loadQuery } from "@sanity/lib/load-query";
 import type { ProjectsData, ProjectData } from "@/types";
@@ -25,10 +26,12 @@ export async function getStaticPaths() {
 
 const { params } = Astro;
 
-const { data: project } = await loadQuery<ProjectData>({
+const { data: rawProject } = await loadQuery<ProjectData>({
   query: projectQuery,
   params,
 });
+
+const project = await processNestedImages(rawProject);
 
 const pageSeo = getPageSeo(project);
 ---
@@ -36,7 +39,7 @@ const pageSeo = getPageSeo(project);
 <Layout seo={pageSeo}>
   <h1 class="text-h1">{project.title}</h1>
 
-  {project.gallery.map((media) => <Media media={media} />)}
+  {project.gallery.map((media) => <Media client:load media={media} />)}
 
   <Sections sections={project.sections} />
 </Layout>

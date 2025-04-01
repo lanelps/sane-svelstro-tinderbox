@@ -5,12 +5,13 @@ import Sections from "@components/Sections.astro";
 
 import { productsQuery, productQuery } from "@lib/queires";
 import { stripHtml } from "@lib/helpers";
+import { processNestedImages } from "@lib/image";
 
 import { loadQuery } from "@sanity/lib/load-query";
 import type { ProductsData, ProductData } from "@/types";
 
 export async function getStaticPaths() {
-  const { data: products } = await loadQuery<ProductsData>({
+  const { data: products } = await loadQuery<ProductsData[]>({
     query: productsQuery,
   });
 
@@ -29,13 +30,15 @@ export async function getStaticPaths() {
 const { params, props } = Astro;
 const { productId } = props;
 
-const { data: product } = await loadQuery<ProductData>({
+const { data: rawProduct } = await loadQuery<ProductData>({
   query: productQuery,
   params: {
     ...params,
     productId,
   },
 });
+
+const product = await processNestedImages(rawProduct);
 
 const pageSeo = {
   title: product?.details?.seo?.title || product?.details?.store?.title || "",
