@@ -43,6 +43,9 @@ export const SECTION_REFERENCES = [
     type: "media.section",
   }),
   defineArrayMember({
+    type: "productsList.section",
+  }),
+  defineArrayMember({
     type: "projectsList.section",
   }),
 ];

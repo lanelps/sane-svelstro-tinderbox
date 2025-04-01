@@ -25,11 +25,13 @@ const documents = [
 // sections
 import { exampleSectionType } from "./objects/sections/example";
 import { mediaSectionType } from "./objects/sections/media";
+import { productsListSectionType } from "./objects/sections/productsList";
 import { projectsListSectionType } from "./objects/sections/projectsList";
 
 const sections = [
   exampleSectionType,
   mediaSectionType,
+  productsListSectionType,
   projectsListSectionType,
 ] as any[];
 

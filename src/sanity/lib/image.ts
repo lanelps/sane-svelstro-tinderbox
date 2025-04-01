@@ -4,7 +4,7 @@ import imageUrlBuilder from "@sanity/image-url";
 import type {
   UrlFor,
   GetImageProps,
-  ProcessImage,
+  ProcessSanityImage,
   GetImageDimensions,
   GetRetinaSizes,
 } from "@/types";
@@ -17,11 +17,20 @@ const DEFAULT_FULL_WIDTH_STEPS = [
   320, 375, 428, 768, 960, 1280, 1366, 1440, 1536, 1728,
 ];
 
-const imageBuilder = imageUrlBuilder(sanityClient);
+export const imageBuilder = imageUrlBuilder(sanityClient);
 
 export const urlFor: UrlFor = (imgRef, options) => {
-  const { quality = 100 } = options || {};
-  return imageBuilder.image(imgRef).fit("max").format("webp").quality(quality);
+  const { quality = 100, format } = options || {};
+
+  let builder = imageBuilder.image(imgRef).fit("max").quality(quality);
+
+  if (format) {
+    builder = builder.format(format);
+  } else {
+    builder = builder.auto("format");
+  }
+
+  return builder;
 };
 
 export const getImageDimensions: GetImageDimensions = (image) => {
@@ -79,15 +88,15 @@ const getRetinaSizes: GetRetinaSizes = (
 
 export const getImageProps: GetImageProps = ({
   image,
-  maxWidth: userMaxWidth,
+  maxWidth: userMaxWidth = LARGEST_VIEWPORT,
   minimumWidthStep = DEFAULT_MIN_STEP,
   customWidthSteps,
 }) => {
   if (!image?.asset?._ref) {
-    throw new Error(`getImageProps: image has no _ref`);
+    return undefined;
   }
 
-  const processImage: ProcessImage = (img, maxWidth) => {
+  const processImage: ProcessSanityImage = (img, maxWidth) => {
     const { width: imageWidth, aspectRatio } = getImageDimensions(img);
     const baseSizes = [
       maxWidth,
@@ -101,17 +110,24 @@ export const getImageProps: GetImageProps = ({
     );
 
     return {
+      attributes: {
+        alt: img?.alt || "",
+        decoding: "async",
+        height: imageWidth / aspectRatio,
+        loading: "lazy",
+        width: imageWidth,
+      },
       src: urlFor(img).width(maxWidth).url(),
-      srcset: retinaSizes
-        .map((size) => `${urlFor(img).width(size).url()} ${size}w`)
-        .join(", "),
+      srcSet: {
+        attribute: retinaSizes
+          .map((size) => `${urlFor(img).width(size).url()} ${size}w`)
+          .join(", "),
+        values: retinaSizes,
+      },
       sizes: userMaxWidth
         ? `(max-width: ${userMaxWidth}px) 100vw, ${userMaxWidth}px`
         : `(max-width: ${maxWidth}px) 100vw, ${maxWidth}px`,
-      width: retinaSizes[0],
-      height: retinaSizes[0] / aspectRatio,
-      aspectRatio,
-      placeholder: urlFor(img, { quality: 50 }).width(16).url(),
+      placeholder: urlFor(img, { quality: 100 }).width(32).url(),
     };
   };
 
