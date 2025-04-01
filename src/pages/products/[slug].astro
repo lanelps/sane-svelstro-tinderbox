@@ -54,7 +54,11 @@ const pageSeo = {
 <Layout seo={pageSeo}>
   <h1 class="text-h1">{product.details.store.title}</h1>
 
-  <VariantSelector variants={product.variants} client:load />
+  <VariantSelector
+    title={product.details.store.title}
+    variants={product.variants}
+    client:load
+  />
 
   <Sections sections={product.details.sections} />
 </Layout>

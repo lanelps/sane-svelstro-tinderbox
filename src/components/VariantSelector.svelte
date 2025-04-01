@@ -2,9 +2,10 @@
   import { addItem } from "@stores/cart";
   import { cart } from "@stores/cart";
   import { addToCart as shopifyAddToCart } from "@/lib/shopify";
-  import type { ProductVariant } from "@/types";
+  import type { CartItem, ProductVariant, ShopifyCartLineItem } from "@/types";
 
-  const { variants = null } = $props<{
+  const { title, variants = null } = $props<{
+    title: string;
     variants: ProductVariant[];
   }>();
 
@@ -12,6 +13,20 @@
   let quantity = $state(1);
   let isLoading = $state(false);
   let error = $state<string | null>(null);
+
+  // Helper function to create cart item data
+  const createCartItemData = (
+    variant: ProductVariant,
+    lineItemId = ""
+  ): CartItem => ({
+    id: lineItemId,
+    variantId: variant.store.gid,
+    quantity,
+    title: title,
+    variantTitle: variant.store.title,
+    price: variant.store.price,
+    image: variant.store.previewImageUrl || "",
+  });
 
   const addToCart = async () => {
     if (!selectedVariant) return;
@@ -36,25 +51,11 @@
           ({ node }) => node.merchandise.id === variant.store.gid
         );
 
-        // Then update local cart store with the correct ID from Shopify
-        addItem({
-          id: lineItem ? lineItem.node.id : "",
-          variantId: variant.store.gid,
-          quantity,
-          title: variant.store.title,
-          price: variant.store.price,
-          image: variant.store.previewImageUrl || "",
-        });
+        const lineItemId = lineItem ? lineItem.node.id : "";
+        addItem(createCartItemData(variant, lineItemId));
       } else {
         // No Shopify cart yet, just add to local store
-        addItem({
-          id: "",
-          variantId: variant.store.gid,
-          quantity,
-          title: variant.store.title,
-          price: variant.store.price,
-          image: variant.store.previewImageUrl || "",
-        });
+        addItem(createCartItemData(variant));
       }
 
       // Reset quantity after adding

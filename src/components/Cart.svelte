@@ -16,15 +16,47 @@
     initializeCart,
     getCheckoutURL,
     getCart,
-    addToCart as shopifyAddToCart,
     updateCart as shopifyUpdateCart,
     removeLineItem as shopifyRemoveLineItem,
   } from "@/lib/shopify";
 
-  import type { CartItem } from "@/types";
+  import type { CartItem, ShopifyCartLineItem } from "@/types";
 
   let cartRef = $state<HTMLDivElement>();
   let isLoading = $state(false);
+
+  // Helper function to convert Shopify cart items to local format
+  const convertShopifyCartItems = (response: any): CartItem[] => {
+    if (!response?.cart?.lines?.edges) return [];
+
+    return response.cart.lines.edges.map(
+      ({ node }: { node: ShopifyCartLineItem }) => ({
+        id: node.id,
+        variantId: node.merchandise.id,
+        quantity: node.quantity,
+        title: node.merchandise.product.title,
+        variantTitle: node.merchandise.title,
+        price: parseFloat(node.merchandise.priceV2.amount),
+        image: node.merchandise.image?.originalSrc || "",
+      })
+    );
+  };
+
+  // Helper function to sync Shopify cart with local cart
+  const syncCartFromShopify = async () => {
+    if (!$cart.cartId) return;
+
+    try {
+      const response = await getCart({ cartId: $cart.cartId });
+      if (response?.cart) {
+        const items = convertShopifyCartItems(response);
+        cart.set({ ...$cart, items });
+        updateLineItemIds(response.cart);
+      }
+    } catch (error) {
+      console.error("Failed to sync cart from Shopify:", error);
+    }
+  };
 
   // Initialize Shopify cart on component load
   onMount(async () => {
@@ -33,37 +65,8 @@
       const { cartId } = await initializeCart();
       setCartId(cartId);
 
-      // Fetch existing cart items if we have a cart ID
       if (cartId) {
-        const response = await getCart({ cartId });
-        // Check if response.cart exists and has lines
-        if (
-          response &&
-          response.cart &&
-          response.cart.lines &&
-          response.cart.lines.edges
-        ) {
-          // Convert Shopify cart items to your local format
-          const items: CartItem[] = response.cart.lines.edges.map(
-            ({ node }) => ({
-              id: node.id,
-              variantId: node.merchandise.id,
-              quantity: node.quantity,
-              title: node.merchandise.product.title,
-              price: parseFloat(node.merchandise.priceV2.amount),
-              image: node.merchandise.image?.originalSrc || "",
-            })
-          );
-
-          // Update the local cart with these items
-          cart.set({
-            ...$cart,
-            items: items,
-          });
-
-          // Update line item IDs in store
-          updateLineItemIds(response.cart);
-        }
+        await syncCartFromShopify();
       }
     } catch (error) {
       console.error("Failed to initialize cart:", error);
@@ -72,38 +75,7 @@
     }
   });
 
-  // Handle checkout
-  const handleCheckout = async () => {
-    if (!$cart.cartId) return;
-
-    try {
-      isLoading = true;
-
-      // Sync any remaining local cart changes to Shopify
-      for (const item of $cart.items) {
-        await shopifyAddToCart({
-          cartId: $cart.cartId,
-          variantId: item.variantId,
-          quantity: item.quantity,
-        });
-      }
-
-      // Get fresh checkout URL
-      const checkoutData = await getCheckoutURL({ cartId: $cart.cartId });
-
-      // Redirect to checkout
-      window.location.href = checkoutData.checkoutUrl;
-    } catch (error) {
-      console.error("Failed to checkout:", error);
-    } finally {
-      isLoading = false;
-    }
-  };
-
-  const totalPrice = $derived(
-    $cart.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  );
-
+  // Cart UI event handlers
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       closeCart();
@@ -112,7 +84,6 @@
 
   const handleClickOutside = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
-
     if (
       $cart.isOpen &&
       cartRef &&
@@ -123,59 +94,32 @@
     }
   };
 
-  // Enhanced removeItem that syncs with Shopify
+  // Calculate total price
+  const totalPrice = $derived(
+    $cart.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  );
+
+  // Cart operations with Shopify sync
   const handleRemoveItem = async (variantId: string, itemId: string) => {
     try {
-      // Remove from local cart state first for better UX
+      isLoading = true;
+      // Optimistic UI update
       removeItem(variantId);
 
-      // Only try to remove from Shopify if we have both a cart ID and a valid line item ID
-      if ($cart.cartId && itemId && itemId.trim() !== "") {
-        await shopifyRemoveLineItem({
-          cartId: $cart.cartId,
-          itemId,
-        });
+      if ($cart.cartId && itemId?.trim()) {
+        await shopifyRemoveLineItem({ cartId: $cart.cartId, itemId });
       } else if ($cart.cartId) {
-        // If we don't have a valid ID but do have a cart, refresh the cart
-        // This will sync any differences between local and Shopify carts
-        const response = await getCart({ cartId: $cart.cartId });
-        if (response && response.cart) {
-          updateLineItemIds(response.cart);
-        }
+        await syncCartFromShopify();
       }
     } catch (error) {
       console.error("Failed to remove item:", error);
-      // If removing from Shopify fails, make sure the local state is correct
-      if ($cart.cartId) {
-        try {
-          const response = await getCart({ cartId: $cart.cartId });
-          if (response && response.cart) {
-            // Convert Shopify cart items to your local format and update the store
-            const items: CartItem[] = response.cart.lines.edges.map(
-              ({ node }) => ({
-                id: node.id,
-                variantId: node.merchandise.id,
-                quantity: node.quantity,
-                title: node.merchandise.product.title,
-                price: parseFloat(node.merchandise.priceV2.amount),
-                image: node.merchandise.image?.originalSrc || "",
-              })
-            );
-
-            // Update the local cart with these items
-            cart.set({
-              ...$cart,
-              items: items,
-            });
-          }
-        } catch (error) {
-          console.error("Failed to fetch cart after remove error:", error);
-        }
-      }
+      // Restore correct state on failure
+      await syncCartFromShopify();
+    } finally {
+      isLoading = false;
     }
   };
 
-  // Enhanced updateQuantity that syncs with Shopify
   const handleUpdateQuantity = async (
     variantId: string,
     itemId: string,
@@ -184,6 +128,7 @@
     if (newQuantity < 1) return;
 
     try {
+      isLoading = true;
       if ($cart.cartId) {
         await shopifyUpdateCart({
           cartId: $cart.cartId,
@@ -196,16 +141,34 @@
       updateQuantity(variantId, newQuantity);
     } catch (error) {
       console.error("Failed to update quantity:", error);
+      await syncCartFromShopify();
+    } finally {
+      isLoading = false;
     }
   };
 
-  // Update handleClearCart to be an async function
   const handleClearCart = async () => {
     try {
       isLoading = true;
       await clearCart();
     } catch (error) {
       console.error("Failed to clear cart:", error);
+    } finally {
+      isLoading = false;
+    }
+  };
+
+  const handleCheckout = async () => {
+    if (!$cart.cartId) return;
+
+    try {
+      isLoading = true;
+
+      // Get checkout URL and redirect
+      const checkoutData = await getCheckoutURL({ cartId: $cart.cartId });
+      window.location.href = checkoutData.checkoutUrl;
+    } catch (error) {
+      console.error("Failed to checkout:", error);
     } finally {
       isLoading = false;
     }
@@ -223,13 +186,7 @@
     ),
   ]}
 >
-  {#if isLoading}
-    <p
-      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold"
-    >
-      Loading...
-    </p>
-  {:else if $cart.items.length === 0}
+  {#if $cart.items.length === 0}
     <p
       class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold uppercase"
     >
@@ -247,7 +204,7 @@
             />
           {/if}
           <div>
-            <h3>{item.title}</h3>
+            <h3>{item.title} - {item.variantTitle}</h3>
             <p>${item.price}</p>
             <div>
               <button
