@@ -25,7 +25,7 @@
       }}
 
       <li class="rounded-lg border border-gray-200 p-4">
-        <Link link={projectLink}>
+        <Link link={projectLink} class="block">
           <h2 class="text-h2">{project.title}</h2>
           <p>{project.date}</p>
           <Media media={project.thumbnail} />
