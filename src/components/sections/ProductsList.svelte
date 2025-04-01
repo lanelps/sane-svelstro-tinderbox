@@ -1,9 +1,9 @@
 <script lang="ts">
   import Image from "@components/Image.svelte";
-  import type { ProductsListSection, AstroImage } from "@/types";
+  import type { ProductsListSection } from "@/types";
 
   interface Props {
-    data: ProductsListSection<AstroImage>;
+    data: ProductsListSection;
   }
 
   const { data }: Props = $props();

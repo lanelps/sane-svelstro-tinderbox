@@ -1,5 +1,5 @@
 import type { PortableText } from "./portableText";
-import type { Media } from "./images";
+import type { Media, AstroImage } from "./images";
 import type { ProjectsData, ProductsData } from "./pages";
 
 // ==============================
@@ -27,9 +27,9 @@ export interface ProjectsListSection extends BaseSection {
   projects: ProjectsData;
 }
 
-export interface ProductsListSection<T = string> extends BaseSection {
+export interface ProductsListSection extends BaseSection {
   _type: "productsList.section";
-  products: ProductsData<T>[];
+  products: ProductsData<AstroImage>[];
 }
 
 export type Section =
