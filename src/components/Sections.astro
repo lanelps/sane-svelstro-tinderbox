@@ -1,6 +1,7 @@
 ---
 import Example from "@components/sections/Example.astro";
 import Media from "@components/sections/Media.astro";
+import ProductsList from "@components/sections/ProductsList.svelte";
 import ProjectsList from "@components/sections/ProjectsList.svelte";
 
 import type { Sections } from "@/types";
@@ -20,6 +21,8 @@ const { sections } = Astro.props;
           return <Example data={section} />;
         case "media.section":
           return <Media data={section} />;
+        case "productsList.section":
+          return <ProductsList client:load data={section} />;
         case "projectsList.section":
           return <ProjectsList client:load data={section} />;
         default:

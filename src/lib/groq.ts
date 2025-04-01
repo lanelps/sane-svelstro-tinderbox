@@ -130,6 +130,17 @@ export const sections = `
                 },
             },
         },
+
+        // Products List
+        _type == "productsList.section" => {
+            products[] -> {
+                _id,
+                "slug": store.slug,
+	            "productId": store.id,
+                "title": store.title,
+	            "image": store.previewImageUrl
+            },
+        },
     },
 `;
 
