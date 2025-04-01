@@ -14,6 +14,9 @@ import Navbar from "./src/sanity/components/studio/Navbar";
 
 const devOnlyPlugins = [visionTool()];
 
+const visualEditingEnabled = import.meta.env
+  .PUBLIC_SANITY_VISUAL_EDITING_ENABLED;
+
 export default defineConfig({
   name: "default",
   title: "boilerplate",
@@ -23,7 +26,9 @@ export default defineConfig({
 
   plugins: [
     structureTool({ structure: deskStructure }),
-    presentationTool({ resolve, previewUrl: location.origin }),
+    visualEditingEnabled
+      ? presentationTool({ resolve, previewUrl: location.origin })
+      : null,
     ...(isDev ? devOnlyPlugins : []),
     muxInput(),
     customDocumentActions(),
