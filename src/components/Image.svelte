@@ -1,61 +1,71 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { twMerge } from "tailwind-merge";
-  import { getImageProps } from "@sanity/lib/image";
-  import type { RawImage, Image as ImageType } from "@/types";
+  import type { Image } from "@/types";
 
   interface Props {
     class?: string;
-    image: RawImage;
-    width?: number;
+    image?: Image;
+    alt?: string;
   }
 
-  const { image: node, class: className, width }: Props = $props();
-
-  let image: ImageType | undefined = $state();
+  const { image, alt = "", class: className }: Props = $props();
   let imageLoaded = $state(false);
 
-  onMount(() => {
-    try {
-      if (node && node.asset) {
-        image = getImageProps({ image: node, maxWidth: width });
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  });
+  const srcSet = $derived(
+    !image?.srcSet
+      ? ""
+      : typeof image.srcSet === "string"
+        ? image.srcSet
+        : image.srcSet.attribute || ""
+  );
+
+  const placeholderSrc = $derived(
+    !image?.placeholder
+      ? ""
+      : typeof image.placeholder === "string"
+        ? image.placeholder
+        : image.placeholder.src || ""
+  );
+
+  const placeholderAttrs = $derived(
+    !image?.placeholder
+      ? {}
+      : typeof image.placeholder === "string"
+        ? {}
+        : image.placeholder?.attributes || {}
+  );
 
   const handleImageLoaded = () => {
     imageLoaded = true;
   };
 </script>
 
-{#if image}
+{#if image?.src}
   <figure class={twMerge("relative", className)}>
     <img
       class="block h-full w-full object-cover"
-      loading="lazy"
       src={image.src}
-      srcset={image.srcset}
+      srcset={srcSet}
       sizes={image.sizes}
-      width={image.width}
-      height={image.height}
-      alt={node.alt || ""}
-      title={node.alt}
+      title={alt}
+      {...image.attributes}
       onload={handleImageLoaded}
+      alt={alt || image.attributes?.alt || ""}
     />
-    <img
-      class={[
-        "pointer-events-none absolute inset-0 top-0 left-0 block h-full w-full object-cover transition-opacity",
-        imageLoaded ? "opacity-0" : "opacity-100",
-      ]}
-      src={image.placeholder}
-      width={image.width}
-      height={image.height}
-      alt=""
-      aria-hidden="true"
-      role="presentation"
-      loading="eager"
-    />
+    {#if image.placeholder}
+      <img
+        class={twMerge(
+          "pointer-events-none absolute inset-0 block h-full w-full object-cover transition-opacity",
+          imageLoaded ? "opacity-0" : "opacity-100"
+        )}
+        src={placeholderSrc}
+        {...placeholderAttrs}
+        alt=""
+        aria-hidden="true"
+        role="presentation"
+        loading="eager"
+        decoding="sync"
+      />
+    {/if}
   </figure>
 {/if}

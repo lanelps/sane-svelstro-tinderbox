@@ -16,6 +16,16 @@ const env = {
 // https://astro.build/config
 export default defineConfig({
   site: "https://sane-svelstro-tinderbox.com",
+  image: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.shopify.com",
+        port: "",
+        pathname: "/s/files/1/0811/2134/5851/files/**",
+      },
+    ],
+  },
   integrations: [
     sanity({
       projectId: env.PUBLIC_SANITY_PROJECT_ID,
