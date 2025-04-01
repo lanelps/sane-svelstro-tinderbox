@@ -1,7 +1,7 @@
 import type { Slug } from "./links";
 import type { SEOPage } from "./seo";
 import type { Media } from "./images";
-import type { Section, Sections } from "./sections";
+import type { Sections } from "./sections";
 
 // ==============================
 // Pages Data
