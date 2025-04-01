@@ -1,5 +1,6 @@
 <script lang="ts">
   import { twMerge } from "tailwind-merge";
+  import { onMount } from "svelte";
 
   import {
     cart,
@@ -7,9 +8,67 @@
     clearCart,
     updateQuantity,
     closeCart,
+    setCartId,
   } from "@stores/cart";
 
+  import {
+    initializeCart,
+    getCheckoutURL,
+    addToCart as shopifyAddToCart,
+    updateCart as shopifyUpdateCart,
+    removeLineItem as shopifyRemoveLineItem,
+  } from "@/lib/shopify";
+
   let cartRef = $state<HTMLDivElement>();
+  let checkoutUrl = $state<string | null>(null);
+  let isLoading = $state(false);
+
+  // Initialize Shopify cart on component load
+  onMount(async () => {
+    try {
+      isLoading = true;
+      const { cartId } = await initializeCart();
+      setCartId(cartId);
+
+      // If we have a cart ID, get the checkout URL
+      if (cartId) {
+        const checkoutData = await getCheckoutURL({ cartId });
+        checkoutUrl = checkoutData.checkoutUrl;
+      }
+    } catch (error) {
+      console.error("Failed to initialize cart:", error);
+    } finally {
+      isLoading = false;
+    }
+  });
+
+  // Handle checkout
+  const handleCheckout = async () => {
+    if (!$cart.cartId) return;
+
+    try {
+      isLoading = true;
+
+      // Sync any remaining local cart changes to Shopify
+      for (const item of $cart.items) {
+        await shopifyAddToCart({
+          cartId: $cart.cartId,
+          variantId: item.variantId,
+          quantity: item.quantity,
+        });
+      }
+
+      // Get fresh checkout URL
+      const checkoutData = await getCheckoutURL({ cartId: $cart.cartId });
+
+      // Redirect to checkout
+      window.location.href = checkoutData.checkoutUrl;
+    } catch (error) {
+      console.error("Failed to checkout:", error);
+    } finally {
+      isLoading = false;
+    }
+  };
 
   const totalPrice = $derived(
     $cart.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
@@ -33,6 +92,46 @@
       closeCart();
     }
   };
+
+  // Enhanced removeItem that syncs with Shopify
+  const handleRemoveItem = async (variantId: string, itemId: string) => {
+    try {
+      if ($cart.cartId) {
+        await shopifyRemoveLineItem({
+          cartId: $cart.cartId,
+          itemId,
+        });
+      }
+      // Remove from local cart state
+      removeItem(variantId);
+    } catch (error) {
+      console.error("Failed to remove item:", error);
+    }
+  };
+
+  // Enhanced updateQuantity that syncs with Shopify
+  const handleUpdateQuantity = async (
+    variantId: string,
+    itemId: string,
+    newQuantity: number
+  ) => {
+    if (newQuantity < 1) return;
+
+    try {
+      if ($cart.cartId) {
+        await shopifyUpdateCart({
+          cartId: $cart.cartId,
+          itemId,
+          variantId,
+          quantity: newQuantity,
+        });
+      }
+      // Update local cart state
+      updateQuantity(variantId, newQuantity);
+    } catch (error) {
+      console.error("Failed to update quantity:", error);
+    }
+  };
 </script>
 
 <svelte:window onkeydown={handleKeyDown} onclick={handleClickOutside} />
@@ -46,7 +145,13 @@
     ),
   ]}
 >
-  {#if $cart.items.length === 0}
+  {#if isLoading}
+    <p
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold"
+    >
+      Loading...
+    </p>
+  {:else if $cart.items.length === 0}
     <p
       class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold uppercase"
     >
@@ -69,15 +174,30 @@
             <div>
               <button
                 onclick={() =>
-                  updateQuantity(item.variantId, item.quantity - 1)}>-</button
+                  handleUpdateQuantity(
+                    item.variantId,
+                    item.id,
+                    item.quantity - 1
+                  )}
+                disabled={isLoading}>-</button
               >
               <span>{item.quantity}</span>
               <button
                 onclick={() =>
-                  updateQuantity(item.variantId, item.quantity + 1)}>+</button
+                  handleUpdateQuantity(
+                    item.variantId,
+                    item.id,
+                    item.quantity + 1
+                  )}
+                disabled={isLoading}>+</button
               >
             </div>
-            <button onclick={() => removeItem(item.variantId)}> Remove </button>
+            <button
+              onclick={() => handleRemoveItem(item.variantId, item.id)}
+              disabled={isLoading}
+            >
+              Remove
+            </button>
           </div>
         </li>
       {/each}
@@ -85,9 +205,15 @@
     <div class="absolute right-0 bottom-0 left-0 h-22 p-4">
       <div class="flex w-full justify-between">
         <p>Total: ${totalPrice.toFixed(2)}</p>
-        <button onclick={clearCart}>Clear Cart</button>
+        <button onclick={clearCart} disabled={isLoading}>Clear Cart</button>
       </div>
-      <button>Proceed to Checkout</button>
+      <button
+        onclick={handleCheckout}
+        disabled={isLoading || !$cart.cartId}
+        class="mt-2 w-full bg-black p-2 text-white disabled:bg-gray-400"
+      >
+        {isLoading ? "Processing..." : "Proceed to Checkout"}
+      </button>
     </div>
   {/if}
 </div>
