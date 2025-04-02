@@ -8,6 +8,8 @@ import tailwindcss from "@tailwindcss/vite";
 import sanity from "@sanity/astro";
 import { loadEnv } from "vite";
 
+import cloudflare from "@astrojs/cloudflare";
+
 const env = {
   ...process.env,
   ...loadEnv(process.env.NODE_ENV, process.cwd(), ["PUBLIC_SANITY_"]),
@@ -16,6 +18,7 @@ const env = {
 // https://astro.build/config
 export default defineConfig({
   site: "https://sane-svelstro-tinderbox.com",
+
   image: {
     remotePatterns: [
       {
@@ -26,6 +29,7 @@ export default defineConfig({
       },
     ],
   },
+
   integrations: [
     sanity({
       projectId: env.PUBLIC_SANITY_PROJECT_ID,
@@ -46,12 +50,17 @@ export default defineConfig({
       },
     }),
   ],
+
   output: "static",
+
   prefetch: {
     prefetchAll: true,
   },
+
   vite: {
     assetsInclude: ["**/*.glsl"],
     plugins: [tailwindcss()],
   },
+
+  adapter: cloudflare(),
 });
