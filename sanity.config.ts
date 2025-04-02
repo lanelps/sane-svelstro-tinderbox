@@ -3,6 +3,7 @@ import { structureTool } from "sanity/structure";
 import { presentationTool } from "sanity/presentation";
 import { visionTool } from "@sanity/vision";
 import { muxInput } from "sanity-plugin-mux-input";
+import { loadEnv } from "vite";
 
 import type { PluginOptions } from "sanity";
 
@@ -12,13 +13,15 @@ import { resolve } from "./src/sanity/lib/resolve";
 import { customDocumentActions } from "./src/sanity/plugins/customDocumentActions";
 import Navbar from "./src/sanity/components/studio/Navbar";
 
+const env = {
+  ...process.env,
+  ...loadEnv(process.env.NODE_ENV, process.cwd(), ["PUBLIC_SANITY_"]),
+};
+
 const devOnlyPlugins = [visionTool()];
 
-const projectId =
-  import.meta?.env?.PUBLIC_SANITY_PROJECT_ID ||
-  process.env.PUBLIC_SANITY_PROJECT_ID;
-const dataset =
-  import.meta?.env?.PUBLIC_SANITY_DATASET || process.env.PUBLIC_SANITY_DATASET;
+const projectId = env.PUBLIC_SANITY_PROJECT_ID;
+const dataset = env.PUBLIC_SANITY_DATASET;
 
 const visualEditingEnabled = process.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED;
 const previewUrl = process.env.SANITY_STUDIO_PREVIEW_URL;

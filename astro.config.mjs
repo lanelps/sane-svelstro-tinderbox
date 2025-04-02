@@ -6,14 +6,14 @@ import sitemap from "@astrojs/sitemap";
 import svelte from "@astrojs/svelte";
 import tailwindcss from "@tailwindcss/vite";
 import sanity from "@sanity/astro";
+import { loadEnv } from "vite";
 
 import cloudflare from "@astrojs/cloudflare";
 
-const projectId =
-  import.meta?.env?.PUBLIC_SANITY_PROJECT_ID ||
-  process.env.PUBLIC_SANITY_PROJECT_ID;
-const dataset =
-  import.meta?.env?.PUBLIC_SANITY_DATASET || process.env.PUBLIC_SANITY_DATASET;
+const env = {
+  ...process.env,
+  ...loadEnv(process.env.NODE_ENV, process.cwd(), ["PUBLIC_SANITY_"]),
+};
 
 // https://astro.build/config
 export default defineConfig({
@@ -32,8 +32,8 @@ export default defineConfig({
 
   integrations: [
     sanity({
-      projectId,
-      dataset,
+      projectId: env.PUBLIC_SANITY_PROJECT_ID,
+      dataset: env.PUBLIC_SANITY_DATASET,
       useCdn: false,
       apiVersion: "2025-03-21", // insert the current date to access the latest version of the API
       studioBasePath: "/admin", // If you want to access the Studio on a route
@@ -58,6 +58,12 @@ export default defineConfig({
   },
 
   vite: {
+    // resolve: {
+    //   alias: {
+    //     "react-dom/server": "react-dom/server.edge",
+    //     "react-dom/server.browser": "react-dom/server",
+    //   },
+    // },
     assetsInclude: ["**/*.glsl"],
     plugins: [tailwindcss()],
   },
