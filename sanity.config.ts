@@ -14,22 +14,28 @@ import Navbar from "./src/sanity/components/studio/Navbar";
 
 const devOnlyPlugins = [visionTool()];
 
-const visualEditingEnabled = import.meta.env
-  .PUBLIC_SANITY_VISUAL_EDITING_ENABLED;
+const projectId =
+  import.meta?.env?.PUBLIC_SANITY_PROJECT_ID ||
+  process.env.PUBLIC_SANITY_PROJECT_ID;
+const dataset =
+  import.meta?.env?.PUBLIC_SANITY_DATASET || process.env.PUBLIC_SANITY_DATASET;
+
+const visualEditingEnabled = process.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED;
+const previewUrl = process.env.SANITY_STUDIO_PREVIEW_URL;
 
 export default defineConfig({
   name: "default",
   title: "boilerplate",
 
-  projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID,
-  dataset: import.meta.env.PUBLIC_SANITY_DATASET,
+  projectId,
+  dataset,
 
   plugins: [
     structureTool({ structure: deskStructure }),
-    visualEditingEnabled
+    visualEditingEnabled && previewUrl
       ? presentationTool({
           resolve,
-          previewUrl: { origin: location.origin, preview: `?preview=true` },
+          previewUrl: { origin: previewUrl, preview: `?preview=true` },
         })
       : null,
     ...(isDev ? devOnlyPlugins : []),

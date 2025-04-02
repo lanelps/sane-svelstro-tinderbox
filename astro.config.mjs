@@ -9,6 +9,12 @@ import sanity from "@sanity/astro";
 
 import cloudflare from "@astrojs/cloudflare";
 
+const projectId =
+  import.meta?.env?.PUBLIC_SANITY_PROJECT_ID ||
+  process.env.PUBLIC_SANITY_PROJECT_ID;
+const dataset =
+  import.meta?.env?.PUBLIC_SANITY_DATASET || process.env.PUBLIC_SANITY_DATASET;
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://sane-svelstro-tinderbox.com",
@@ -26,8 +32,8 @@ export default defineConfig({
 
   integrations: [
     sanity({
-      projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID,
-      dataset: import.meta.env.PUBLIC_SANITY_DATASET,
+      projectId,
+      dataset,
       useCdn: false,
       apiVersion: "2025-03-21", // insert the current date to access the latest version of the API
       studioBasePath: "/admin", // If you want to access the Studio on a route
