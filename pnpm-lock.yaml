@@ -32,6 +32,9 @@ importers:
       '@sanity/client':
         specifier: ^6.28.4
         version: 6.28.4(debug@4.4.0)
+      '@sanity/image-url':
+        specifier: ^1.1.0
+        version: 1.1.0
       '@sanity/visual-editing':
         specifier: ^2.13.14
         version: 2.13.14(@emotion/is-prop-valid@1.2.2)(@sanity/client@6.28.4)(@sanity/types@3.81.0(@types/react@19.0.12))(react-dom@19.1.0(react@19.1.0))(react-is@18.3.1)(react@19.1.0)(styled-components@6.1.16(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(svelte@5.25.5)

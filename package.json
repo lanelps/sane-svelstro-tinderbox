@@ -18,6 +18,7 @@
     "@astrojs/svelte": "^7.0.9",
     "@sanity/astro": "^3.2.6",
     "@sanity/client": "^6.28.4",
+    "@sanity/image-url": "^1.1.0",
     "@sanity/visual-editing": "^2.13.14",
     "astro": "^5.5.6",
     "astro-portabletext": "^0.11.1",
