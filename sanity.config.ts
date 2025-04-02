@@ -27,7 +27,10 @@ export default defineConfig({
   plugins: [
     structureTool({ structure: deskStructure }),
     visualEditingEnabled
-      ? presentationTool({ resolve, previewUrl: location.origin })
+      ? presentationTool({
+          resolve,
+          previewUrl: { origin: location.origin, preview: `?preview=true` },
+        })
       : null,
     ...(isDev ? devOnlyPlugins : []),
     muxInput(),
