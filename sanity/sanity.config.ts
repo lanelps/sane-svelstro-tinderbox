@@ -32,7 +32,7 @@ export default defineConfig({
     visualEditingEnabled && previewUrl
       ? presentationTool({
           resolve,
-          previewUrl: {origin: previewUrl, preview: `?preview=true`},
+          previewUrl: {origin: previewUrl},
         })
       : null,
     muxInput(),
