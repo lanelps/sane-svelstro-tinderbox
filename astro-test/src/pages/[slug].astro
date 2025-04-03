@@ -1,0 +1,42 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Sections from "@components/Sections.astro";
+
+import { pagesQuery, pageQuery } from "@lib/queires";
+import { getPageSeo } from "@lib/helpers";
+import { processNestedImages } from "@lib/image";
+
+import { loadQuery } from "@lib/load-query";
+import type { PagesData, PageData } from "@/types";
+
+export async function getStaticPaths() {
+  const { data: pages } = await loadQuery<PagesData>({
+    query: pagesQuery,
+  });
+
+  return pages.map((page) => {
+    return {
+      params: {
+        slug: page.slug.current,
+      },
+    };
+  });
+}
+
+const { params } = Astro;
+
+const { data: rawPage } = await loadQuery<PageData>({
+  query: pageQuery,
+  params,
+});
+
+const page = await processNestedImages(rawPage);
+
+const pageSeo = getPageSeo(page);
+---
+
+<Layout seo={pageSeo}>
+  <h1 class="text-h1">{page.title}</h1>
+
+  <Sections sections={page.sections} />
+</Layout>
