@@ -4,6 +4,7 @@ import { sanityClient } from "sanity:client";
 const visualEditingEnabled =
   import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === "true";
 const token = import.meta.env.SANITY_TOKEN;
+const studioUrl = import.meta.env.PUBLIC_SANITY_STUDIO_URL;
 
 export async function loadQuery<QueryResponse>({
   query,
@@ -27,8 +28,8 @@ export async function loadQuery<QueryResponse>({
       filterResponse: false,
       perspective,
       resultSourceMap: visualEditingEnabled ? "withKeyArraySelector" : false,
-      stega: visualEditingEnabled,
-      ...(visualEditingEnabled ? { token } : {}),
+      stega: visualEditingEnabled && studioUrl,
+      ...(visualEditingEnabled ? { token, studioUrl } : {}),
     }
   );
 
