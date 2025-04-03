@@ -1,10 +1,11 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 
-import cloudflare from "@astrojs/cloudflare";
 import svelte from "@astrojs/svelte";
 import tailwindcss from "@tailwindcss/vite";
 import sanity from "@sanity/astro";
+import sitemap from "@astrojs/sitemap";
+import partytown from "@astrojs/partytown";
 
 import { loadEnv } from "vite";
 
@@ -20,11 +21,6 @@ if (!PUBLIC_SANITY_PROJECT_ID || !PUBLIC_SANITY_DATASET) {
 
 // https://astro.build/config
 export default defineConfig({
-  adapter: cloudflare({
-    platformProxy: {
-      enabled: true,
-    },
-  }),
   integrations: [
     svelte(),
     sanity({
@@ -33,6 +29,12 @@ export default defineConfig({
       token: SANITY_TOKEN,
       apiVersion: "2025-04-01",
       useCdn: false,
+    }),
+    sitemap(),
+    partytown({
+      config: {
+        forward: ["dataLayer.push"],
+      },
     }),
   ],
   vite: {
