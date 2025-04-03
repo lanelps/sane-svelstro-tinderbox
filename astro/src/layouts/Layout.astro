@@ -1,0 +1,77 @@
+---
+import { ClientRouter } from "astro:transitions";
+import { VisualEditing } from "@sanity/astro/visual-editing";
+
+import Cart from "@components/Cart.svelte";
+import DevMark from "@components/DevMark.astro";
+import Header from "@components/Header.astro";
+import Seo from "@components/Seo.astro";
+import Scripts from "@components/Scripts.astro";
+
+import { siteQuery, settingsQuery } from "@lib/queires";
+import { loadQuery } from "@lib/load-query";
+
+import type { SEOPage, SEO, SiteData, SettingsData } from "@/types";
+import "@styles/index.css";
+
+interface Props {
+  seo: SEOPage;
+  grid?: boolean;
+}
+
+const isDev = import.meta.env.DEV;
+
+const visualEditingEnabled =
+  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED == "true";
+
+const { seo, grid } = Astro.props;
+
+const { data: site } = await loadQuery<SiteData>({
+  query: siteQuery,
+});
+
+const { data: settings } = await loadQuery<SettingsData>({
+  query: settingsQuery,
+});
+
+const siteSEO: SEO = {
+  title:
+    seo?.title && site?.seo?.title
+      ? `${seo.title} - ${site.seo.title}`
+      : seo?.title || site?.seo?.title || "",
+  description: seo?.description || site?.seo?.description,
+  keywords: seo?.keywords || site?.seo?.keywords,
+  image: seo?.image || site?.seo?.image,
+  favicon: site?.seo?.favicon,
+};
+---
+
+<html
+  lang="en"
+  class=""
+  transition:name="site-html"
+  transition:animate="initial"
+>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <ClientRouter />
+    <Seo {...siteSEO} />
+    <Scripts scripts={settings.scripts} />
+    {!isDev && <DevMark />}
+  </head>
+
+  <body>
+    <Header title="Home" links={site.navigation} />
+    <Cart client:load transition:persist="site-cart" />
+
+    <main class:list={[grid && "grid-main"]}>
+      <slot />
+    </main>
+
+    <VisualEditing enabled={visualEditingEnabled} />
+  </body>
+</html>
