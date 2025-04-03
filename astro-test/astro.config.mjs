@@ -21,6 +21,21 @@ if (!PUBLIC_SANITY_PROJECT_ID || !PUBLIC_SANITY_DATASET) {
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://sane-svelstro-tinderbox.pages.dev",
+  output: "static",
+  prefetch: {
+    prefetchAll: true,
+  },
+  image: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.shopify.com",
+        port: "",
+        pathname: "/s/files/1/0811/2134/5851/files/**",
+      },
+    ],
+  },
   integrations: [
     svelte(),
     sanity({
