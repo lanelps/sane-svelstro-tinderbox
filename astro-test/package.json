@@ -1,37 +1,37 @@
 {
-	"name": "astro-test",
-	"type": "module",
-	"version": "0.0.1",
-	"scripts": {
-		"dev": "astro dev",
-		"build": "astro build",
-		"preview": "astro build && wrangler pages dev",
-		"astro": "astro",
-		"deploy": "astro build && wrangler pages deploy",
-		"cf-typegen": "wrangler types"
-	},
-	"dependencies": {
-		"@astrojs/partytown": "^2.1.4",
-		"@astrojs/sitemap": "^3.3.0",
-		"@astrojs/svelte": "^7.0.9",
-		"@sanity/astro": "^3.2.6",
-		"@sanity/client": "^6.28.4",
-		"@sanity/image-url": "^1.1.0",
-		"@tailwindcss/vite": "^4.1.1",
-		"astro": "^5.5.6",
-		"sanity": "^3.82.0",
-		"svelte": "^5.25.6",
-		"tailwindcss": "^4.1.1",
-		"typescript": "^5.8.2"
-	},
-	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20250402.0",
-		"@portabletext/types": "^2.0.13",
-		"prettier-plugin-astro": "^0.14.1",
-		"prettier-plugin-svelte": "^3.3.3",
-		"prettier-plugin-tailwindcss": "^0.6.11",
-		"schema-dts": "^1.1.5",
-		"vite": "^6.2.4",
-		"wrangler": "^4.7.0"
-	}
+  "name": "astro-test",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro build && wrangler pages dev",
+    "astro": "astro",
+    "deploy": "astro build && wrangler pages deploy",
+    "cf-typegen": "wrangler types"
+  },
+  "dependencies": {
+    "@astrojs/partytown": "^2.1.4",
+    "@astrojs/sitemap": "^3.3.0",
+    "@astrojs/svelte": "^7.0.9",
+    "@sanity/astro": "^3.2.6",
+    "@sanity/client": "^6.28.4",
+    "@sanity/image-url": "^1.1.0",
+    "@tailwindcss/vite": "^4.1.1",
+    "astro": "^5.5.6",
+    "sanity": "^3.82.0",
+    "svelte": "^5.25.6",
+    "tailwindcss": "^4.1.1",
+    "typescript": "^5.8.2"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250402.0",
+    "@portabletext/types": "^2.0.13",
+    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-svelte": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "schema-dts": "^1.1.5",
+    "vite": "^6.2.4",
+    "wrangler": "^4.7.0"
+  }
 }
