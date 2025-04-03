@@ -1,1 +1,69 @@
 @import "tailwindcss";
+@import "./typography.css";
+
+@theme {
+  /* Breakpoints */
+  --breakpoint-xs-m: 20rem; /* 320px */
+  --breakpoint-sm-m: 22.5rem; /* 360px */
+  --breakpoint-md-m: 25.875rem; /* 414px */
+  --breakpoint-lg-m: 26.75rem; /* 428px */
+  --breakpoint-sm-t: 46.5rem; /* 744px */
+  --breakpoint-md-t: 52.125rem; /* 834px */
+  --breakpoint-lg-t: 64rem; /* 1024px */
+  --breakpoint-sm-d: 80rem; /* 1280px */
+  --breakpoint-md-d: 90rem; /* 1440px */
+  --breakpoint-lg-d: 94.5rem; /* 1512px */
+  --breakpoint-xl-d: 108rem; /* 1728px */
+  --breakpoint-xxl-d: 120rem; /* 1920px */
+
+  /* Spacing */
+  --spacing-pm: 1rem;
+  --spacing-pd: 1.5rem;
+
+  --spacing-gm: 0.5rem;
+  --spacing-gd: 1rem;
+
+  /* Fonts */
+  --font-main: "Helvetica Neue", ui-sans-serif, system-ui, sans-serif;
+
+  --default-transition-timing-function: cubic-bezier(0.22, -0.01, 0.13, 0.99);
+  --default-transition-duration: 300ms;
+
+  --animate-fade-in: fadeIn var(--default-transition-duration)
+    var(--default-transition-timing-function) forwards;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+@utility animate-delay-* {
+  animation-delay: calc(1ms * --value(integer));
+}
+
+@layer components {
+  .grid-main,
+  .grid-sub {
+    @apply gap-gm grid grid-cols-6;
+  }
+
+  .grid-main {
+    @apply px-pm;
+  }
+
+  @variant sm-t {
+    .grid-main,
+    .grid-sub {
+      @apply gap-gd grid grid-cols-12;
+    }
+
+    .grid-main {
+      @apply px-pd;
+    }
+  }
+}
