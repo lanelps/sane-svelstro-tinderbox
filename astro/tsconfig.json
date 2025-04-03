@@ -16,5 +16,5 @@
   "composite": true,
   "disableSourceOfProjectReferenceRedirect": true,
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "node_modules/**/*", "../astro/**/*", "../sanity/**/*"]
+  "exclude": ["dist", "node_modules/**/*", "**/*", "../sanity/**/*"]
 }
