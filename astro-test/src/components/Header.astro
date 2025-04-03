@@ -1,0 +1,25 @@
+---
+import CartCount from "@components/CartCount.svelte";
+import Link from "@components/Link.svelte";
+import type { Links } from "@/types";
+
+interface Props {
+  title: string;
+  links: Links;
+}
+
+const { title, links } = Astro.props;
+---
+
+<header
+  class="p-pm sm-t:p-pd flex items-center justify-between"
+  transition:persist="site-header"
+>
+  <a href="/">{title}</a>
+
+  <nav class="gap-x-gm sm-t:gap-x-gd flex">
+    {links.map((link) => <Link link={link} />)}
+
+    <CartCount client:load />
+  </nav>
+</header>
