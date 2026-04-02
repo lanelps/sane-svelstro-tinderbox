@@ -12,12 +12,12 @@ const { title, links } = Astro.props;
 ---
 
 <header
-  class="p-pm sm-t:p-pd flex items-center justify-between"
+  class="flex items-center justify-between p-pm sm-t:p-pd"
   transition:persist="site-header"
 >
   <a href="/">{title}</a>
 
-  <nav class="gap-x-gm sm-t:gap-x-gd flex">
+  <nav class="flex gap-x-gm sm-t:gap-x-gd">
     {links.map((link) => <Link link={link} />)}
 
     <CartCount client:load />

@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { addItem } from "@stores/cart";
-  import { cart } from "@stores/cart";
+  import { cart, addItem } from "@stores/cart";
   import { addToCart as shopifyAddToCart } from "@/lib/shopify";
-  import type { CartItem, ProductVariant, ShopifyCartLineItem } from "@/types";
+  import type { CartItem, ProductVariant } from "@/types";
 
   const { title, variants = null } = $props<{
     title: string;
