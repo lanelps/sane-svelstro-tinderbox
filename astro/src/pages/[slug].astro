@@ -4,13 +4,12 @@ import Sections from "@components/Sections.astro";
 
 import { pagesQuery, pageQuery } from "@/utils/queires";
 import { getPageSeo } from "@/utils/helpers";
-import { processNestedImages } from "@/utils/image";
 
-import { loadQuery } from "@/utils/load-query";
+import { fetchQuery, fetchPage } from "@/utils/load-query";
 import type { PagesData, PageData } from "@/types";
 
 export async function getStaticPaths() {
-  const { data: pages } = await loadQuery<PagesData>({
+  const { data: pages } = await fetchQuery<PagesData>({
     query: pagesQuery,
   });
 
@@ -25,12 +24,10 @@ export async function getStaticPaths() {
 
 const { params } = Astro;
 
-const { data: rawPage } = await loadQuery<PageData>({
+const { data: page } = await fetchPage<PageData>({
   query: pageQuery,
   params,
 });
-
-const page = await processNestedImages(rawPage);
 
 const pageSeo = getPageSeo(page);
 ---

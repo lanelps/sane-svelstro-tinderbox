@@ -5,13 +5,12 @@ import Sections from "@components/Sections.astro";
 
 import { productsQuery, productQuery } from "@/utils/queires";
 import { stripHtml } from "@/utils/helpers";
-import { processNestedImages } from "@/utils/image";
 
-import { loadQuery } from "@/utils/load-query";
+import { fetchQuery, fetchPage } from "@/utils/load-query";
 import type { ProductsData, ProductData } from "@/types";
 
 export async function getStaticPaths() {
-  const { data: products } = await loadQuery<ProductsData[]>({
+  const { data: products } = await fetchQuery<ProductsData[]>({
     query: productsQuery,
   });
 
@@ -30,15 +29,13 @@ export async function getStaticPaths() {
 const { params, props } = Astro;
 const { productId } = props;
 
-const { data: rawProduct } = await loadQuery<ProductData>({
+const { data: product } = await fetchPage<ProductData>({
   query: productQuery,
   params: {
     ...params,
     productId,
   },
 });
-
-const product = await processNestedImages(rawProduct);
 
 const pageSeo = {
   title: product?.details?.seo?.title || product?.details?.store?.title || "",

@@ -3,16 +3,13 @@ import Layout from "@layouts/Layout.astro";
 
 import { homePageQuery } from "@/utils/queires";
 import { getPageSeo } from "@/utils/helpers";
-import { processNestedImages } from "@/utils/image";
 
-import { loadQuery } from "@/utils/load-query";
+import { fetchPage } from "@/utils/load-query";
 import type { HomePageData } from "@/types";
 
-const { data: rawPage } = await loadQuery<HomePageData>({
+const { data: page } = await fetchPage<HomePageData>({
   query: homePageQuery,
 });
-
-const page = await processNestedImages(rawPage);
 
 const pageSeo = getPageSeo(page);
 ---
