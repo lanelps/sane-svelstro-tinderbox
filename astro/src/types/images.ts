@@ -1,8 +1,8 @@
-import type { ImageUrlBuilder } from "@sanity/image-url/lib/types/builder";
+import type { ImageUrlBuilder } from "@sanity/image-url";
 import type {
   SanityImageObject,
   SanityImageDimensions,
-} from "@sanity/image-url/lib/types/types";
+} from "@sanity/image-url";
 import type { GetImageResult } from "astro";
 
 // ==============================
