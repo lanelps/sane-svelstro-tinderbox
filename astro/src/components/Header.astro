@@ -16,7 +16,7 @@ const { links } = Astro.props;
 >
   <a href="/">Home</a>
 
-  <nav class="flex gap-x-gm sm-t:gap-x-gd">
+  <nav class="flex gap-x-2 sm-t:gap-x-4">
     {links.map((link) => <Link link={link} />)}
 
     <CartCount client:load />
