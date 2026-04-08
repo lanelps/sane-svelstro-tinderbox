@@ -12,6 +12,7 @@ export const getPageSeo = (page: PageTypes) => {
 };
 
 // create a function that takes an HTML string and removes all the HTML tags and returns the plain text
+// Mainly used on product descriptions from Shopify
 export const stripHtml = (html: string) => {
   return html.replace(/<[^>]*>?/gm, "");
 };
