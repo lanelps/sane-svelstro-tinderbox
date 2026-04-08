@@ -2,10 +2,10 @@
 import Layout from "@layouts/Layout.astro";
 import Sections from "@components/Sections.astro";
 
-import { pagesQuery, pageQuery } from "@/utils/queires";
-import { getPageSeo } from "@/utils/helpers";
+import { pagesQuery, pageQuery } from "@utils/queires";
+import { getPageSeo } from "@utils/helpers";
 
-import { fetchQuery, fetchPage } from "@/utils/load-query";
+import { fetchQuery, fetchPage } from "@utils/load-query";
 import type { PagesData, PageData } from "@/types";
 
 export async function getStaticPaths() {

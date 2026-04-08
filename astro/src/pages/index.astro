@@ -1,10 +1,10 @@
 ---
 import Layout from "@layouts/Layout.astro";
 
-import { homePageQuery } from "@/utils/queires";
-import { getPageSeo } from "@/utils/helpers";
+import { homePageQuery } from "@utils/queires";
+import { getPageSeo } from "@utils/helpers";
 
-import { fetchPage } from "@/utils/load-query";
+import { fetchPage } from "@utils/load-query";
 import type { HomePageData } from "@/types";
 
 const { data: page } = await fetchPage<HomePageData>({

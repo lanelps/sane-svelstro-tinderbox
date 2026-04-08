@@ -1,5 +1,5 @@
-import { getImageProps } from "@/utils/image/sanity-image";
-import { getAstroImage } from "@/utils/image/astro-image";
+import { getImageProps } from "@utils/image/sanity-image";
+import { getAstroImage } from "@utils/image/astro-image";
 
 import type { SanityImageData, Image, AstroImage } from "@/types";
 

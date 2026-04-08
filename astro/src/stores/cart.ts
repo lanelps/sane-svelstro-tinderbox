@@ -1,6 +1,6 @@
 import { atom } from "nanostores";
 import type { CartStore, CartItem } from "@/types";
-import { removeLineItems, createNewCart } from "@/utils/shopify";
+import { removeLineItems, createNewCart } from "@utils/shopify";
 
 export const cart = atom<CartStore>({
   isOpen: false,

@@ -3,10 +3,10 @@ import Layout from "@layouts/Layout.astro";
 import VariantSelector from "@components/VariantSelector.svelte";
 import Sections from "@components/Sections.astro";
 
-import { productsQuery, productQuery } from "@/utils/queires";
-import { stripHtml } from "@/utils/helpers";
+import { productsQuery, productQuery } from "@utils/queires";
+import { stripHtml } from "@utils/helpers";
 
-import { fetchQuery, fetchPage } from "@/utils/load-query";
+import { fetchQuery, fetchPage } from "@utils/load-query";
 import type { ProductsData, ProductData } from "@/types";
 
 export async function getStaticPaths() {

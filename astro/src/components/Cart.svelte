@@ -18,7 +18,7 @@
     getCart,
     updateCart as shopifyUpdateCart,
     removeLineItem as shopifyRemoveLineItem,
-  } from "@/utils/shopify";
+  } from "@utils/shopify";
 
   import type { CartItem, ShopifyCartLineItem } from "@/types";
 
