@@ -1,20 +1,16 @@
 {
   "extends": "astro/tsconfigs/strict",
-  "compilerOptions": {
-    "types": ["@cloudflare/workers-types/2023-07-01"],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      "@layouts/*": ["src/layouts/*"],
-      "@components/*": ["src/components/*"],
-      "@assets/*": ["src/assets/*"],
-      "@styles/*": ["src/styles/*"],
-      "@stores/*": ["src/stores/*"],
-      "@lib/*": ["src/lib/*"]
-    }
-  },
-  "composite": true,
-  "disableSourceOfProjectReferenceRedirect": true,
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "node_modules", "../sanity/**/*"]
+  "exclude": ["dist"],
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"],
+      "@layouts/*": ["./src/layouts/*"],
+      "@components/*": ["./src/components/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@stores/*": ["./src/stores/*"],
+      "@utils/*": ["./src/utils/*"]
+    }
+  }
 }
