@@ -2,7 +2,7 @@
 import { getImageProps } from "@/utils/image/sanity-image";
 import type { SEO, Image } from "../types";
 
-type Props = SEO;
+interface Props extends SEO {}
 
 const { title, description, keywords, image, favicon, createdAt, updatedAt } = Astro.props;
 
