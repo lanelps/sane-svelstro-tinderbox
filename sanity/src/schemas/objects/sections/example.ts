@@ -1,7 +1,7 @@
 import {defineField, defineType} from 'sanity'
 
 export const exampleSectionType = defineType({
-  name: 'example.section',
+  name: 'section.example',
   title: 'Example',
   type: 'object',
   fields: [

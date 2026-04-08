@@ -27,16 +27,16 @@ export const PAGE_REFERENCES = [
 
 export const SECTION_REFERENCES = [
   defineArrayMember({
-    type: 'example.section',
+    type: 'section.example',
   }),
   defineArrayMember({
-    type: 'media.section',
+    type: 'section.media',
   }),
   defineArrayMember({
-    type: 'productsList.section',
+    type: 'section.productsList',
   }),
   defineArrayMember({
-    type: 'projectsList.section',
+    type: 'section.projectsList',
   }),
 ]
 

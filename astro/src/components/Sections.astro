@@ -17,13 +17,13 @@ const { sections } = Astro.props;
   sections?.length > 0 &&
     sections.map((section) => {
       switch (section._type) {
-        case "example.section":
+        case "section.example":
           return <Example data={section} />;
-        case "media.section":
+        case "section.media":
           return <Media data={section} />;
-        case "productsList.section":
+        case "section.productsList":
           return <ProductsList client:load data={section} />;
-        case "projectsList.section":
+        case "section.projectsList":
           return <ProjectsList client:load data={section} />;
         default:
           return null;

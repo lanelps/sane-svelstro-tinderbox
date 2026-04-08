@@ -104,20 +104,20 @@ export const sections = `
         _type,
 
         // Example
-        _type == "example.section" => {
+        _type == "section.example" => {
             heading,
             content,
         },
 
         // Media
-        _type == "media.section" => {
+        _type == "section.media" => {
             media {
                 ${media}
             },
         },
 
         // Projects List
-        _type == "projectsList.section" => {
+        _type == "section.projectsList" => {
             projects[] -> {
                 _id,
                 title,
@@ -132,7 +132,7 @@ export const sections = `
         },
 
         // Products List
-        _type == "productsList.section" => {
+        _type == "section.productsList" => {
             products[] -> {
                 _id,
                 "slug": store.slug,

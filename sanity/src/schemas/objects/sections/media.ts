@@ -1,7 +1,7 @@
 import {defineField, defineType} from 'sanity'
 
 export const mediaSectionType = defineType({
-  name: 'media.section',
+  name: 'section.media',
   title: 'Media',
   type: 'object',
   fields: [
