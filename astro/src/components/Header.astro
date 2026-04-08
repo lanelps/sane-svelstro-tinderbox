@@ -4,18 +4,17 @@ import Link from "@components/Link.svelte";
 import type { Links } from "@/types";
 
 interface Props {
-  title: string;
   links: Links;
 }
 
-const { title, links } = Astro.props;
+const { links } = Astro.props;
 ---
 
 <header
   class="flex items-center justify-between p-pm sm-t:p-pd"
   transition:persist="site-header"
 >
-  <a href="/">{title}</a>
+  <a href="/">Home</a>
 
   <nav class="flex gap-x-gm sm-t:gap-x-gd">
     {links.map((link) => <Link link={link} />)}
