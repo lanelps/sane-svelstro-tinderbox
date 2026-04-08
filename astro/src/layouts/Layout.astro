@@ -1,6 +1,5 @@
 ---
 import { ClientRouter } from "astro:transitions";
-import { VisualEditing } from "@sanity/astro/visual-editing";
 
 import Cart from "@components/Cart.svelte";
 import DevMark from "@components/DevMark.astro";
@@ -20,9 +19,6 @@ interface Props {
 }
 
 const isDev = import.meta.env.DEV;
-
-const visualEditingEnabled =
-  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED == "true";
 
 const { seo, grid } = Astro.props;
 
@@ -72,7 +68,5 @@ const siteSEO: SEO = {
     <main class:list={[grid && "grid-main"]}>
       <slot />
     </main>
-
-    <VisualEditing enabled={visualEditingEnabled} />
   </body>
 </html>
