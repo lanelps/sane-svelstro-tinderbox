@@ -20,6 +20,12 @@
   let videoElement = $state<HTMLVideoElement>();
   let videoLoaded = $state(false);
 
+  /**
+   * @name onMount
+   * @function
+   * @description Initializes HLS video playback on mount. Prefers native HLS when supported (Safari), falls back to hls.js for other browsers. Logs an error if neither is supported.
+   * @returns {void}
+   */
   onMount(() => {
     if (!videoElement) return;
 
@@ -37,12 +43,18 @@
     }
   });
 
+  /**
+   * @name handleVideoLoaded
+   * @function
+   * @description Callback fired when the video's data has loaded. Sets `videoLoaded` to true, triggering the placeholder fade-out.
+   * @returns {void}
+   */
   const handleVideoLoaded = () => {
     videoLoaded = true;
   };
 </script>
 
-<figure class="relative aspect-video bg-gray-200" class:class={className}>
+<figure class={["relative aspect-video bg-gray-200", className]}>
   <video
     bind:this={videoElement}
     data-playback-id={video.asset.playbackId}

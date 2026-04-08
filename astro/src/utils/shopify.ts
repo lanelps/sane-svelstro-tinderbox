@@ -11,7 +11,13 @@ export const shopifyConfig = {
 const CART_ID_KEY = "shopify_cart_id";
 const SHOPIFY_CART_PREFIX = "gid://shopify/Cart/";
 
-// Helper function to handle cart ID formatting
+/**
+ * @name ensureFullCartId
+ * @function
+ * @description Ensures a cart ID has the full Shopify GID prefix. If it already does, returns it unchanged.
+ * @param {string} cartId - The cart ID to normalize.
+ * @returns {string} The cart ID with the full Shopify GID prefix.
+ */
 const ensureFullCartId = (cartId: string): string => {
   if (!cartId.startsWith(SHOPIFY_CART_PREFIX)) {
     return `${SHOPIFY_CART_PREFIX}${cartId}`;
@@ -19,11 +25,23 @@ const ensureFullCartId = (cartId: string): string => {
   return cartId;
 };
 
+/**
+ * @name extractCartId
+ * @function
+ * @description Strips the Shopify GID prefix from a full cart ID, returning only the raw ID segment.
+ * @param {string} fullCartId - The full Shopify GID cart ID.
+ * @returns {string} The raw cart ID without the GID prefix.
+ */
 const extractCartId = (fullCartId: string): string => {
   return fullCartId.replace(SHOPIFY_CART_PREFIX, "");
 };
 
-// Initialize cart, checking storage and creating new cart if needed
+/**
+ * @name initializeCart
+ * @function
+ * @description Initializes the Shopify cart by checking localStorage for an existing cart ID and verifying it is still valid. Creates a new cart if none is found or the stored one is no longer valid.
+ * @returns {Promise<{ cartId: string }>} The full Shopify GID cart ID.
+ */
 export const initializeCart = async (): Promise<{ cartId: string }> => {
   try {
     if (typeof window === "undefined") {
@@ -55,7 +73,12 @@ export const initializeCart = async (): Promise<{ cartId: string }> => {
   }
 };
 
-// Helper function to create a new cart and store its ID
+/**
+ * @name createNewCart
+ * @function
+ * @description Creates a new Shopify cart, stores its stripped ID in localStorage, and returns the full GID cart ID.
+ * @returns {Promise<{ cartId: string }>} The full Shopify GID cart ID of the newly created cart.
+ */
 export const createNewCart = async (): Promise<{ cartId: string }> => {
   const newCart = await createCart();
   const fullCartId = ensureFullCartId(newCart.id);
@@ -70,6 +93,15 @@ export const createNewCart = async (): Promise<{ cartId: string }> => {
 
 export const storefrontClient = {
   endpoint: `https://${shopifyConfig.store}.myshopify.com/api/${shopifyConfig.apiVersion}/graphql.json`,
+  /**
+   * @name fetch
+   * @function
+   * @description Sends a GraphQL query or mutation to the Shopify Storefront API and returns the typed response data.
+   * @param {string} query - The GraphQL query or mutation string.
+   * @param {object} [variables] - Optional GraphQL variables to send with the query.
+   * @param {string} [caller] - An optional label identifying the calling function, used in error messages.
+   * @returns {Promise<T>} The typed data returned by the Shopify API.
+   */
   fetch: async <T>(query: string, variables = {}, caller = "Unknown") => {
     try {
       const response = await fetch(storefrontClient.endpoint, {
@@ -88,7 +120,9 @@ export const storefrontClient = {
       const { data, errors } = await response.json();
 
       if (errors && errors.length > 0) {
-        throw new Error(errors.map((e: any) => e.message).join(", "));
+        throw new Error(
+          (errors as { message: string }[]).map((e) => e.message).join(", ")
+        );
       }
 
       return data as T;
@@ -99,7 +133,12 @@ export const storefrontClient = {
   },
 };
 
-// Create a new cart
+/**
+ * @name createCart
+ * @function
+ * @description Creates a new empty Shopify cart via the Storefront API and returns the cart object with its ID.
+ * @returns {Promise<ShopifyCart & { id: string }>} The newly created Shopify cart with its ID stripped of the GID prefix.
+ */
 export const createCart = async () => {
   console.log("Creating new cart");
   const query = `
@@ -168,7 +207,13 @@ export const createCart = async () => {
   }
 };
 
-// Get an existing cart
+/**
+ * @name getCart
+ * @function
+ * @description Retrieves an existing Shopify cart by its ID, including all line items and their merchandise details.
+ * @param {{ cartId: string }} options - The full Shopify GID cart ID.
+ * @returns {Promise<{ cart: ShopifyCart }>} The cart data from the Shopify API.
+ */
 export const getCart = async ({ cartId }: { cartId: string }) => {
   if (!cartId) {
     throw new Error("Cart ID is required");
@@ -228,7 +273,13 @@ export const getCart = async ({ cartId }: { cartId: string }) => {
   }
 };
 
-// Add item to cart
+/**
+ * @name addToCart
+ * @function
+ * @description Adds a product variant as a line item to an existing Shopify cart.
+ * @param {{ cartId: string; variantId: string; quantity: number }} options - The cart ID, product variant GID, and quantity to add.
+ * @returns {Promise<{ cart: ShopifyCart }>} The updated cart returned by the Shopify API.
+ */
 export const addToCart = async ({
   cartId,
   variantId,
@@ -313,7 +364,13 @@ export const addToCart = async ({
   }
 };
 
-// Update cart item
+/**
+ * @name updateCart
+ * @function
+ * @description Updates the quantity of an existing line item in a Shopify cart.
+ * @param {{ cartId: string; itemId: string; variantId: string; quantity: number }} options - The cart ID, line item ID, variant GID, and new quantity.
+ * @returns {Promise<{ cart: ShopifyCart }>} The updated cart returned by the Shopify API.
+ */
 export const updateCart = async ({
   cartId,
   itemId,
@@ -403,7 +460,13 @@ export const updateCart = async ({
   }
 };
 
-// Remove item from cart
+/**
+ * @name removeLineItem
+ * @function
+ * @description Removes a single line item from a Shopify cart by its line item ID.
+ * @param {{ cartId: string; itemId: string }} options - The cart ID and line item ID to remove.
+ * @returns {Promise<{ cart: ShopifyCart }>} The updated cart returned by the Shopify API.
+ */
 export const removeLineItem = async ({
   cartId,
   itemId,
@@ -481,7 +544,13 @@ export const removeLineItem = async ({
   }
 };
 
-// Remove multiple items from cart
+/**
+ * @name removeLineItems
+ * @function
+ * @description Removes multiple line items from a Shopify cart in a single mutation.
+ * @param {{ cartId: string; itemIds: string[] }} options - The cart ID and array of line item IDs to remove.
+ * @returns {Promise<{ cart: ShopifyCart | null }>} The updated cart returned by the Shopify API, or null if itemIds was empty.
+ */
 export const removeLineItems = async ({
   cartId,
   itemIds,
@@ -561,7 +630,24 @@ export const removeLineItems = async ({
   }
 };
 
-// Fetch all products
+type ShopifyProductNode = {
+  id: string;
+  title: string;
+  handle: string;
+  description: string;
+  updatedAt: string;
+  images: { edges: { node: { originalSrc: string } }[] };
+  variants: {
+    edges: { node: { priceV2: { amount: string; currencyCode: string } } }[];
+  };
+};
+
+/**
+ * @name fetchAllProducts
+ * @function
+ * @description Fetches up to 100 products from Shopify, including their first image and first variant price.
+ * @returns {Promise<ShopifyProductNode[]>} An array of product nodes with inlined images and variants arrays.
+ */
 export const fetchAllProducts = async () => {
   const query = `
     {
@@ -597,15 +683,13 @@ export const fetchAllProducts = async () => {
   `;
 
   try {
-    const result = await storefrontClient.fetch<{ products: { edges: any[] } }>(
-      query,
-      {},
-      "fetchAllProducts"
-    );
+    const result = await storefrontClient.fetch<{
+      products: { edges: { node: ShopifyProductNode }[] };
+    }>(query, {}, "fetchAllProducts");
     return result.products.edges.map(({ node }) => ({
       ...node,
-      images: node.images.edges.map(({ node }: any) => node),
-      variants: node.variants.edges.map(({ node }: any) => node),
+      images: node.images.edges.map(({ node: imageNode }) => imageNode),
+      variants: node.variants.edges.map(({ node: variantNode }) => variantNode),
     }));
   } catch (error) {
     console.error("Failed to fetch all products:", error);
@@ -613,7 +697,39 @@ export const fetchAllProducts = async () => {
   }
 };
 
-// Fetch a single product by handle
+type ShopifyProductByHandle = {
+  id: string;
+  title: string;
+  handle: string;
+  description: string;
+  availableForSale: boolean;
+  material: { value: string } | null;
+  shipping: { value: string } | null;
+  images: { edges: { node: { originalSrc: string } }[] };
+  options: { id: string; name: string; values: string[] }[];
+  variants: {
+    edges: {
+      node: {
+        id: string;
+        sku: string;
+        title: string;
+        priceV2: { amount: string; currencyCode: string };
+        image: { originalSrc: string } | null;
+        availableForSale: boolean;
+        currentlyNotInStock: boolean;
+        quantityAvailable: number;
+      };
+    }[];
+  };
+};
+
+/**
+ * @name fetchProduct
+ * @function
+ * @description Fetches a single Shopify product by its URL handle, including all images, variants, options, and metafields.
+ * @param {string} handle - The product URL handle.
+ * @returns {Promise<ShopifyProductByHandle & { images: { originalSrc: string }[]; variants: ShopifyProductByHandle['variants']['edges'][number]['node'][] }>} The product with flattened images and variants arrays.
+ */
 export const fetchProduct = async (handle: string) => {
   const query = `
     query getProduct($handle: String!) {
@@ -665,20 +781,20 @@ export const fetchProduct = async (handle: string) => {
     `;
 
   try {
-    const result = await storefrontClient.fetch<{ productByHandle: any }>(
-      query,
-      { handle },
-      `fetchProduct(${handle})`
-    );
+    const result = await storefrontClient.fetch<{
+      productByHandle: ShopifyProductByHandle | null;
+    }>(query, { handle }, `fetchProduct(${handle})`);
     if (!result.productByHandle) {
       throw new Error(`Product with handle '${handle}' not found`);
     }
 
     return {
       ...result.productByHandle,
-      images: result.productByHandle.images.edges.map(({ node }: any) => node),
+      images: result.productByHandle.images.edges.map(
+        ({ node: imageNode }) => imageNode
+      ),
       variants: result.productByHandle.variants.edges.map(
-        ({ node }: any) => node
+        ({ node: variantNode }) => variantNode
       ),
     };
   } catch (error) {
@@ -687,7 +803,13 @@ export const fetchProduct = async (handle: string) => {
   }
 };
 
-// Get checkout URL for a cart
+/**
+ * @name getCheckoutURL
+ * @function
+ * @description Retrieves the Shopify checkout URL for an existing cart.
+ * @param {{ cartId: string }} options - The full Shopify GID cart ID.
+ * @returns {Promise<{ checkoutUrl: string }>} The checkout URL for redirecting the user.
+ */
 export const getCheckoutURL = async ({ cartId }: { cartId: string }) => {
   const formattedCartId = ensureFullCartId(cartId);
   const query = `

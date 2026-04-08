@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { twMerge } from "tailwind-merge";
   import { onMount } from "svelte";
 
   import {
@@ -20,13 +19,21 @@
     removeLineItem as shopifyRemoveLineItem,
   } from "@utils/shopify";
 
-  import type { CartItem, ShopifyCartLineItem } from "@/types";
+  import type { CartItem, ShopifyCart, ShopifyCartLineItem } from "@/types";
 
   let cartRef = $state<HTMLDivElement>();
   let isLoading = $state(false);
 
-  // Helper function to convert Shopify cart items to local format
-  const convertShopifyCartItems = (response: any): CartItem[] => {
+  /**
+   * @name convertShopifyCartItems
+   * @function
+   * @description Converts a Shopify cart API response into the local CartItem format used by the cart store.
+   * @param {{ cart: ShopifyCart | null }} response - The raw Shopify cart response object.
+   * @returns {CartItem[]} An array of normalized cart items, or an empty array if the response is invalid.
+   */
+  const convertShopifyCartItems = (response: {
+    cart: ShopifyCart | null;
+  }): CartItem[] => {
     if (!response?.cart?.lines?.edges) return [];
 
     return response.cart.lines.edges.map(
@@ -42,7 +49,12 @@
     );
   };
 
-  // Helper function to sync Shopify cart with local cart
+  /**
+   * @name syncCartFromShopify
+   * @function
+   * @description Fetches the current cart state from Shopify and syncs it into the local cart store, updating items and line item IDs.
+   * @returns {Promise<void>}
+   */
   const syncCartFromShopify = async () => {
     if (!$cart.cartId) return;
 
@@ -75,13 +87,26 @@
     }
   });
 
-  // Cart UI event handlers
+  /**
+   * @name handleKeyDown
+   * @function
+   * @description Handles keyboard events on the window. Closes the cart when the Escape key is pressed.
+   * @param {KeyboardEvent} event - The keyboard event.
+   * @returns {void}
+   */
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       closeCart();
     }
   };
 
+  /**
+   * @name handleClickOutside
+   * @function
+   * @description Handles global click events. Closes the cart when the user clicks outside the cart element.
+   * @param {MouseEvent} event - The mouse click event.
+   * @returns {void}
+   */
   const handleClickOutside = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
     if (
@@ -99,7 +124,14 @@
     $cart.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
   );
 
-  // Cart operations with Shopify sync
+  /**
+   * @name handleRemoveItem
+   * @function
+   * @description Removes a cart item by variant ID. Performs an optimistic local update first, then syncs with Shopify. Reverts on error.
+   * @param {string} variantId - The Shopify variant GID of the item to remove.
+   * @param {string} itemId - The Shopify line item ID.
+   * @returns {Promise<void>}
+   */
   const handleRemoveItem = async (variantId: string, itemId: string) => {
     try {
       isLoading = true;
@@ -120,6 +152,15 @@
     }
   };
 
+  /**
+   * @name handleUpdateQuantity
+   * @function
+   * @description Updates the quantity of a cart line item in Shopify and syncs the local cart store. Does nothing if newQuantity is less than 1.
+   * @param {string} variantId - The Shopify variant GID of the item.
+   * @param {string} itemId - The Shopify line item ID.
+   * @param {number} newQuantity - The desired new quantity.
+   * @returns {Promise<void>}
+   */
   const handleUpdateQuantity = async (
     variantId: string,
     itemId: string,
@@ -147,6 +188,12 @@
     }
   };
 
+  /**
+   * @name handleClearCart
+   * @function
+   * @description Clears all items from the cart by dispatching the clearCart store action.
+   * @returns {Promise<void>}
+   */
   const handleClearCart = async () => {
     try {
       isLoading = true;
@@ -158,6 +205,12 @@
     }
   };
 
+  /**
+   * @name handleCheckout
+   * @function
+   * @description Retrieves the Shopify checkout URL for the current cart and redirects the user to it.
+   * @returns {Promise<void>}
+   */
   const handleCheckout = async () => {
     if (!$cart.cartId) return;
 
@@ -180,10 +233,8 @@
 <div
   bind:this={cartRef}
   class={[
-    twMerge(
-      "fixed top-0 right-0 z-50 h-full w-96 bg-gray-100 p-4 pb-22 shadow-lg transition-transform",
-      $cart.isOpen ? "translate-x-0" : "translate-x-full"
-    ),
+    "fixed top-0 right-0 z-50 h-full w-96 bg-gray-100 p-4 pb-22 shadow-lg transition-transform",
+    $cart.isOpen ? "translate-x-0" : "translate-x-full",
   ]}
 >
   {#if $cart.items.length === 0}

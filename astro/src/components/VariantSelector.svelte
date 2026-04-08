@@ -13,7 +13,14 @@
   let isLoading = $state(false);
   let error = $state<string | null>(null);
 
-  // Helper function to create cart item data
+  /**
+   * @name createCartItemData
+   * @function
+   * @description Builds a CartItem object from a ProductVariant and an optional Shopify line item ID.
+   * @param {ProductVariant} variant - The selected product variant.
+   * @param {string} [lineItemId] - The Shopify line item ID (empty string if not yet synced).
+   * @returns {CartItem} The constructed cart item ready to be added to the store.
+   */
   const createCartItemData = (
     variant: ProductVariant,
     lineItemId = ""
@@ -27,6 +34,12 @@
     image: variant.store.previewImageUrl || "",
   });
 
+  /**
+   * @name addToCart
+   * @function
+   * @description Adds the selected product variant to the cart. If a Shopify cartId is available, syncs with Shopify first to obtain the line item ID, then commits to the local store.
+   * @returns {Promise<void>}
+   */
   const addToCart = async () => {
     if (!selectedVariant) return;
 
@@ -67,7 +80,19 @@
     }
   };
 
+  /**
+   * @name decrementQuantity
+   * @function
+   * @description Decrements the selected quantity by 1, with a minimum value of 1.
+   * @returns {void}
+   */
   const decrementQuantity = () => (quantity = Math.max(1, quantity - 1));
+  /**
+   * @name incrementQuantity
+   * @function
+   * @description Increments the selected quantity by 1.
+   * @returns {void}
+   */
   const incrementQuantity = () => (quantity += 1);
 </script>
 

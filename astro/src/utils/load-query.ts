@@ -35,7 +35,7 @@ export const fetchQuery = async <QueryResponse>({
  * @param {QueryParams} [options.params] - Optional GROQ query parameters.
  * @returns {Promise<{ data: QueryResponse }>} The query result with all nested images processed.
  */
-export const fetchPage = async <QueryResponse extends Record<string, any>>({
+export const fetchPage = async <QueryResponse>({
   query,
   params,
 }: {

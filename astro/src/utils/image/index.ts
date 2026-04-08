@@ -4,13 +4,17 @@ import { getAstroImage } from "@utils/image/astro-image";
 import type { SanityImageData, Image, AstroImage } from "@/types";
 
 /**
- * Process a raw image (either a URL string or Sanity image reference) into a format
- * that can be directly consumed by the Image Svelte component
+ * @name processImage
+ * @function
+ * @description Processes a raw image value (URL string or Sanity image reference) into a normalized Image or AstroImage object for use in the Image Svelte component.
+ * @param {SanityImageData | string | undefined | null} image - The raw image to process.
+ * @param {{ width?: number; alt?: string }} [options] - Optional width and alt text overrides.
+ * @returns {Promise<Image | AstroImage | undefined>} The processed image object, or undefined if the input is falsy or processing fails.
  */
-export async function processImage(
+export const processImage = async (
   image: SanityImageData | string | undefined | null,
   options: { width?: number; alt?: string } = {}
-): Promise<Image | AstroImage | undefined> {
+): Promise<Image | AstroImage | undefined> => {
   if (!image) return undefined;
 
   try {
@@ -31,15 +35,16 @@ export async function processImage(
     console.error("Failed to process image:", error);
     return undefined;
   }
-}
+};
 
 /**
- * Process image data in a deep structure like products or sections
- * Recursively traverses objects and arrays to find and process image fields
+ * @name processNestedImages
+ * @function
+ * @description Recursively traverses a deeply nested object or array and processes any image fields (keys named "image", "mainImage", "backgroundImage", or ending in "Image") into normalized Image objects.
+ * @param {T} data - The data structure to traverse and process.
+ * @returns {Promise<T>} The same data structure with all image fields replaced by processed image objects.
  */
-export async function processNestedImages<T extends Record<string, any>>(
-  data: T
-): Promise<T> {
+export const processNestedImages = async <T>(data: T): Promise<T> => {
   if (!data) return data;
 
   // Handle arrays
@@ -52,7 +57,7 @@ export async function processNestedImages<T extends Record<string, any>>(
 
   // Handle objects
   if (typeof data === "object") {
-    const processed = { ...data } as Record<string, any>;
+    const processed = { ...data } as Record<string, unknown>;
 
     for (const [key, value] of Object.entries(processed)) {
       // Check if this is an image field
@@ -68,7 +73,9 @@ export async function processNestedImages<T extends Record<string, any>>(
       }
       // Recursively process nested objects and arrays
       else if (typeof value === "object" && value !== null) {
-        processed[key] = await processNestedImages(value);
+        processed[key] = await processNestedImages(
+          value as Record<string, unknown>
+        );
       }
     }
 
@@ -77,4 +84,4 @@ export async function processNestedImages<T extends Record<string, any>>(
 
   // Return primitive values as is
   return data;
-}
+};

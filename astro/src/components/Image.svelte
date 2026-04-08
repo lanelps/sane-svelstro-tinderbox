@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { twMerge } from "tailwind-merge";
   import type { Image } from "@/types";
 
   interface Props {
@@ -35,13 +34,19 @@
         : image.placeholder?.attributes || {}
   );
 
+  /**
+   * @name handleImageLoaded
+   * @function
+   * @description Callback fired when the main image finishes loading. Sets `imageLoaded` to true, triggering the placeholder fade-out transition.
+   * @returns {void}
+   */
   const handleImageLoaded = () => {
     imageLoaded = true;
   };
 </script>
 
 {#if image?.src}
-  <figure class={twMerge("relative w-full", className)}>
+  <figure class={["relative w-full", className]}>
     <img
       class="block h-full w-full object-cover"
       src={image.src}
@@ -54,10 +59,10 @@
     />
     {#if image.placeholder}
       <img
-        class={twMerge(
+        class={[
           "pointer-events-none absolute inset-0 block h-full w-full object-cover transition-opacity",
-          imageLoaded ? "opacity-0" : "opacity-100"
-        )}
+          imageLoaded ? "opacity-0" : "opacity-100",
+        ]}
         src={placeholderSrc}
         width={image.attributes?.width}
         height={image.attributes?.height}

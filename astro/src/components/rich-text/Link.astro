@@ -1,5 +1,16 @@
 ---
-const props = Astro.props.node.markDef;
+interface LinkMarkDef {
+  href: string;
+  isExternal: boolean;
+}
+
+interface Props {
+  node: {
+    markDef: LinkMarkDef;
+  };
+}
+
+const props: LinkMarkDef = (Astro.props as Props).node.markDef;
 ---
 
 <a

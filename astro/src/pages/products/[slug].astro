@@ -9,7 +9,13 @@ import { stripHtml } from "@utils/helpers";
 import { fetchQuery, fetchPage } from "@utils/load-query";
 import type { ProductsData, ProductData } from "@/types";
 
-export async function getStaticPaths() {
+/**
+ * @name getStaticPaths
+ * @function
+ * @description Fetches all products from Sanity and generates static path params with productId props for each product slug.
+ * @returns {Promise<{ params: { slug: string }; props: { productId: string } }[]>} An array of static path objects with product data.
+ */
+export const getStaticPaths = async () => {
   const { data: products } = await fetchQuery<ProductsData[]>({
     query: productsQuery,
   });
@@ -24,7 +30,7 @@ export async function getStaticPaths() {
       },
     };
   });
-}
+};
 
 const { params, props } = Astro;
 const { productId } = props;

@@ -8,7 +8,13 @@ import { getPageSeo } from "@utils/helpers";
 import { fetchQuery, fetchPage } from "@utils/load-query";
 import type { PagesData, PageData } from "@/types";
 
-export async function getStaticPaths() {
+/**
+ * @name getStaticPaths
+ * @function
+ * @description Fetches all pages from Sanity and generates static path params for each page slug.
+ * @returns {Promise<{ params: { slug: string } }[]>} An array of static path parameter objects.
+ */
+export const getStaticPaths = async () => {
   const { data: pages } = await fetchQuery<PagesData>({
     query: pagesQuery,
   });
@@ -20,7 +26,7 @@ export async function getStaticPaths() {
       },
     };
   });
-}
+};
 
 const { params } = Astro;
 

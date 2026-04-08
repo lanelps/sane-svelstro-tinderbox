@@ -1,6 +1,6 @@
 ---
 import { getImageProps } from "@utils/image/sanity-image";
-import type { SEO, Image } from "../types";
+import type { SEO, Image } from "@/types";
 
 interface Props extends SEO {}
 
@@ -11,6 +11,13 @@ const resizedImage: Image | string | undefined =
   
 const resizedFavicon = favicon && getImageProps({ image: favicon, maxWidth: 256 });
 
+/**
+ * @name getImageUrl
+ * @function
+ * @description Extracts a plain URL string from either a string URL or an Image object, returning undefined if neither yields a URL.
+ * @param {Image | string | undefined} image - The image value to resolve.
+ * @returns {string | undefined} The image URL string, or undefined.
+ */
 const getImageUrl = (image: Image | string | undefined) => {
   if (typeof image === "string") {
     return image;

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { twMerge } from "tailwind-merge";
   import type { Snippet } from "svelte";
   import type {
     Link,
@@ -18,28 +17,75 @@
 
   let { class: className, link, label, children }: Props = $props();
 
-  // Helper function to check if a link matches a specific type
+  /**
+   * @name isType
+   * @function
+   * @description Generic type guard that checks whether a link object has a `type` property matching the given string.
+   * @param {Link} link - The link to inspect.
+   * @param {string} type - The expected type string to match against.
+   * @returns {link is T} True if the link's type property equals the given type.
+   */
   const isType = <T extends Link>(link: Link, type: string): link is T =>
     typeof link === "object" &&
     link !== null &&
     "type" in link &&
     link.type === type;
 
-  // Type guard functions to determine the specific type of link
+  /**
+   * @name isExternalLink
+   * @function
+   * @description Type guard: returns true if the link is an ExternalLink.
+   * @param {Link} link - The link to test.
+   * @returns {link is ExternalLink}
+   */
   const isExternalLink = (link: Link): link is ExternalLink =>
     isType<ExternalLink>(link, "external");
+  /**
+   * @name isFileLink
+   * @function
+   * @description Type guard: returns true if the link is a FileLink.
+   * @param {Link} link - The link to test.
+   * @returns {link is FileLink}
+   */
   const isFileLink = (link: Link): link is FileLink =>
     isType<FileLink>(link, "file");
+  /**
+   * @name isInternalLink
+   * @function
+   * @description Type guard: returns true if the link is an InternalLink.
+   * @param {Link} link - The link to test.
+   * @returns {link is InternalLink}
+   */
   const isInternalLink = (link: Link): link is InternalLink =>
     isType<InternalLink>(link, "internal");
+  /**
+   * @name isObjLink
+   * @function
+   * @description Type guard: returns true if the link is an ObjLink (an object with a `url` property but no `type` property).
+   * @param {Link} link - The link to test.
+   * @returns {link is ObjLink}
+   */
   const isObjLink = (link: Link): link is ObjLink =>
     typeof link === "object" &&
     link !== null &&
     !("type" in link) &&
     "url" in link;
+  /**
+   * @name isStringLink
+   * @function
+   * @description Type guard: returns true if the link is a plain string.
+   * @param {Link} link - The link to test.
+   * @returns {link is string}
+   */
   const isStringLink = (link: Link): link is string => typeof link === "string";
 
-  // Helper function to determine if we need to include reference type in URL
+  /**
+   * @name shouldIncludeType
+   * @function
+   * @description Determines whether the reference type segment should be prepended to the URL path for an internal link. Returns true for all reference types except 'page'.
+   * @param {InternalLink} link - The internal link to evaluate.
+   * @returns {boolean} True if the reference type should be included in the URL path.
+   */
   const shouldIncludeType = (link: InternalLink): boolean => {
     return link.reference._type !== "page";
   };
@@ -68,7 +114,12 @@
     obj: (link: ObjLink) => ({ href: link.url }),
   };
 
-  // Determine the appropriate link attributes based on the link type
+  /**
+   * @name getLinkAttributes
+   * @function
+   * @description Resolves the appropriate anchor attributes (href, target, rel, download) for the given link by testing each type guard in order.
+   * @returns {{ href: string; target?: string; rel?: string; download?: boolean } | null} The resolved attributes object, or null if the link is falsy or unrecognized.
+   */
   const getLinkAttributes = () => {
     if (!link) return null;
     if (isStringLink(link)) return linkConfig.string(link);
@@ -81,7 +132,6 @@
 
   // Base styling for all links with option to merge additional classes
   const linkClass = "inline-block text-b1";
-  let allLinkClasses = $derived(twMerge(linkClass, className));
 
   // Use provided label, link's label property, or fallback to slot content
   let displayLabel = $derived(
@@ -93,7 +143,7 @@
 </script>
 
 {#if attributes}
-  <a class={allLinkClasses} {...attributes}>
+  <a class={[linkClass, className]} {...attributes}>
     {#if displayLabel}
       {displayLabel}
     {:else}
@@ -101,5 +151,5 @@
     {/if}
   </a>
 {:else if displayLabel}
-  <span class={allLinkClasses}>{displayLabel}</span>
+  <span class={[linkClass, className]}>{displayLabel}</span>
 {/if}
