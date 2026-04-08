@@ -3,11 +3,11 @@ import Layout from "@layouts/Layout.astro";
 import VariantSelector from "@components/VariantSelector.svelte";
 import Sections from "@components/Sections.astro";
 
-import { productsQuery, productQuery } from "@lib/queires";
-import { stripHtml } from "@lib/helpers";
-import { processNestedImages } from "@lib/image";
+import { productsQuery, productQuery } from "@/utils/queires";
+import { stripHtml } from "@/utils/helpers";
+import { processNestedImages } from "@/utils/image";
 
-import { loadQuery } from "@lib/load-query";
+import { loadQuery } from "@/utils/load-query";
 import type { ProductsData, ProductData } from "@/types";
 
 export async function getStaticPaths() {

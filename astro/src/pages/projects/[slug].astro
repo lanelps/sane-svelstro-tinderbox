@@ -3,11 +3,11 @@ import Layout from "@layouts/Layout.astro";
 import Media from "@components/Media.svelte";
 import Sections from "@components/Sections.astro";
 
-import { projectsQuery, projectQuery } from "@lib/queires";
-import { getPageSeo } from "@lib/helpers";
-import { processNestedImages } from "@lib/image";
+import { projectsQuery, projectQuery } from "@/utils/queires";
+import { getPageSeo } from "@/utils/helpers";
+import { processNestedImages } from "@/utils/image";
 
-import { loadQuery } from "@lib/load-query";
+import { loadQuery } from "@/utils/load-query";
 import type { ProjectsData, ProjectData } from "@/types";
 
 export async function getStaticPaths() {

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Hls from "hls.js";
-  import { urlFor } from "@lib/image/sanity-image";
+  import { urlFor } from "@/utils/image/sanity-image";
   import type { MuxVideo } from "@/types";
 
   interface Props {

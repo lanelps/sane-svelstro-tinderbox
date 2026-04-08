@@ -2,11 +2,11 @@
 import Layout from "@layouts/Layout.astro";
 import Sections from "@components/Sections.astro";
 
-import { pagesQuery, pageQuery } from "@lib/queires";
-import { getPageSeo } from "@lib/helpers";
-import { processNestedImages } from "@lib/image";
+import { pagesQuery, pageQuery } from "@/utils/queires";
+import { getPageSeo } from "@/utils/helpers";
+import { processNestedImages } from "@/utils/image";
 
-import { loadQuery } from "@lib/load-query";
+import { loadQuery } from "@/utils/load-query";
 import type { PagesData, PageData } from "@/types";
 
 export async function getStaticPaths() {
