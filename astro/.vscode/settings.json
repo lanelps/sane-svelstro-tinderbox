@@ -1,5 +1,9 @@
 {
-	"files.associations": {
-		"wrangler.json": "jsonc"
-	}
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.validate": ["javascript", "typescript", "astro", "svelte"],
+  "prettier.documentSelectors": ["**/*.astro", "**/*.svelte"]
 }

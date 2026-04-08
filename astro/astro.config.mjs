@@ -6,6 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 import sanity from "@sanity/astro";
 import sitemap from "@astrojs/sitemap";
 import partytown from "@astrojs/partytown";
+import cloudflare from "@astrojs/cloudflare";
 
 import { loadEnv } from "vite";
 
@@ -21,10 +22,10 @@ if (!PUBLIC_SANITY_PROJECT_ID || !PUBLIC_SANITY_DATASET) {
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://sane-svelstro-tinderbox.pages.dev",
-  output: "static",
-  prefetch: {
-    prefetchAll: true,
+  site: "https://www.example.com",
+
+  vite: {
+    plugins: [tailwindcss()],
   },
   image: {
     remotePatterns: [
@@ -36,6 +37,7 @@ export default defineConfig({
       },
     ],
   },
+
   integrations: [
     svelte(),
     sanity({
@@ -52,7 +54,6 @@ export default defineConfig({
       },
     }),
   ],
-  vite: {
-    plugins: [tailwindcss()],
-  },
+
+  adapter: cloudflare(),
 });
