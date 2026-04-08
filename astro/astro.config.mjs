@@ -44,7 +44,7 @@ export default defineConfig({
       projectId: PUBLIC_SANITY_PROJECT_ID,
       dataset: PUBLIC_SANITY_DATASET,
       token: SANITY_TOKEN,
-      apiVersion: "2025-04-01",
+      apiVersion: "2026-04-01",
       useCdn: false,
     }),
     sitemap(),
