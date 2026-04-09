@@ -56,7 +56,7 @@ const siteSEO: SEO = {
     <meta name="generator" content={Astro.generator} />
 
     <ClientRouter />
-    <Seo {...siteSEO} />
+    <Seo {...siteSEO} organization={site?.organization} />
     <Scripts scripts={settings.scripts} />
     {!isDev && <DevMark />}
   </head>

@@ -1,15 +1,19 @@
 ---
 import { getImageProps } from "@utils/image/sanity-image";
-import type { SEO, Image } from "@/types";
+import type { SEO, SiteData, Image } from "@/types";
 
-interface Props extends SEO {}
+interface Props extends SEO {
+  organization?: SiteData["organization"];
+}
 
-const { title, description, keywords, image, favicon, createdAt, updatedAt } = Astro.props;
+const { title, description, keywords, image, favicon, createdAt, updatedAt, organization, schema } = Astro.props;
 
 const resizedImage: Image | string | undefined =
   typeof image !== "string" && image?.asset?._ref ? getImageProps({ image, maxWidth: 1920 }) : image as string || undefined;
   
 const resizedFavicon = favicon && getImageProps({ image: favicon, maxWidth: 256 });
+const orgLogoProps = organization?.logo?.asset?._ref ? getImageProps({ image: organization.logo, maxWidth: 256 }) : undefined;
+const authorImageProps = schema?.author?.image?.asset?._ref ? getImageProps({ image: schema.author.image, maxWidth: 256 }) : undefined;
 
 /**
  * @name getImageUrl
@@ -22,6 +26,7 @@ const getImageUrl = (image: Image | string | undefined) => {
   if (typeof image === "string") {
     return image;
   }
+  
 
   if (image?.src) {
     return image.src;
@@ -31,9 +36,38 @@ const getImageUrl = (image: Image | string | undefined) => {
 };
 
 // Construct JSON-LD data
+const orgName = organization?.name ?? title;
+const siteOrigin = Astro.url.origin;
+
+const publisher = {
+  "@type": "Organization" as const,
+  name: orgName,
+  url: siteOrigin,
+  ...(orgLogoProps?.src && { logo: orgLogoProps.src }),
+  ...(organization?.address && {
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: organization.address.street,
+      addressLocality: organization.address.city,
+      addressRegion: organization.address.state,
+      postalCode: organization.address.zipCode,
+      addressCountry: organization.address.country,
+    },
+  }),
+};
+
+const author = schema?.author
+  ? {
+      "@type": "Person" as const,
+      name: schema.author.name,
+      ...(schema.author.url && { url: schema.author.url }),
+      ...(authorImageProps?.src && { image: authorImageProps.src }),
+    }
+  : undefined;
+
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "WebPage",
+  "@type": schema?.type ?? "WebPage",
   headline: title,
   description: description,
   image: getImageUrl(resizedImage),
@@ -41,44 +75,37 @@ const jsonLd = {
   datePublished: createdAt,
   dateCreated: createdAt,
   dateModified: updatedAt,
-  publisher: {
-    "@type": "Person",
-    name: "Emma Kaniuk",
-    email: "emma@emmakaniuk.com",
-    url: "https://emmakaniuk.com/"
+  ...(author && { author }),
+  publisher,
+  creator: publisher,
+  copyrightYear: new Date().getFullYear(),
+  copyrightHolder: { 
+    "@type": "Organization",
+     name: orgName, 
+     url: siteOrigin 
   },
-  creator: {
-    "@type": "Person",
-    name: "Emma Kaniuk",
-    email: "emma@emmakaniuk.com",
-    url: "https://emmakaniuk.com/"
-  },
-  contributor: {
-    "@type": "Person",
-    name: "Lane Wirihana Le Prevost-Smith",
-    url: "https://lanelps.xyz",
-    jobTitle: "Web Developer"
-  },
-   inLanguage: "en",
-   isPartOf: {
+  inLanguage: "en",
+  isPartOf: {
     "@type": "WebSite",
-    name: "Emma Kaniuk",
-    url: "https://emmakaniuk.com"
+    name: orgName,
+    url: siteOrigin,
   },
   mainEntity: {
     "@type": "WebPageElement",
-    cssSelector: "main"
+    cssSelector: "main",
   },
   breadcrumb: {
     "@type": "BreadcrumbList",
     itemListElement: [
-    title ? {
-        "@type": "ListItem",
-        position: 1,
-        name: title.split(" - ")[0],
-        item: "https://emmakaniuk.com"
-      } : null,
-    ]
+      title
+        ? {
+            "@type": "ListItem",
+            position: 1,
+            name: title.split(" - ")[0],
+            item: siteOrigin,
+          }
+        : null,
+    ],
   },
   keywords: keywords?.join(", "),
 };
