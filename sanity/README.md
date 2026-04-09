@@ -1,9 +1,44 @@
-# Sanity Clean Content Studio
+# sanity/
 
-Congratulations, you have now installed the Sanity Content Studio, an open-source real-time content editing environment connected to the Sanity backend.
+Sanity v5 Studio for the Sane-Svelstro Tinderbox boilerplate. Manages all content consumed by the Astro frontend.
 
-Now you can do the following things:
+> For full setup instructions and environment variables see the [root README](../README.md).
 
-- [Read “getting started” in the docs](https://www.sanity.io/docs/introduction/getting-started?utm_source=readme)
-- [Join the community Slack](https://slack.sanity.io/?utm_source=readme)
-- [Extend and build plugins](https://www.sanity.io/docs/content-studio/extending?utm_source=readme)
+## Commands
+
+Run from `sanity/`:
+
+| Command       | Action                                  |
+| ------------- | --------------------------------------- |
+| `pnpm dev`    | Start Sanity Studio at `localhost:3333` |
+| `pnpm build`  | Build the studio for self-hosting       |
+| `pnpm deploy` | Deploy to `<project>.sanity.studio`     |
+
+## Schema Overview
+
+### Singletons
+
+- **Home Page** — landing page content and SEO
+- **Settings** — scripts and redirect rules
+- **Site** — global navigation, organization info, and site-level SEO
+
+### Documents
+
+- **Page** — generic content pages with a sections array
+- **Project** — portfolio/case study entries
+- **Product** — Shopify-synced product documents (optional)
+- **Product Variant** — Shopify-synced variant documents (optional)
+- **Collection** — Shopify-synced collection documents (optional)
+
+### Sections
+
+Sections are the content-block system. Each type maps 1:1 to an Astro/Svelte component in `astro/src/components/sections/`.
+
+| Type           | Description                     |
+| -------------- | ------------------------------- |
+| `example`      | Minimal starter section         |
+| `media`        | Full-bleed image or video block |
+| `productsList` | Grid of Shopify products        |
+| `projectsList` | Grid of project entries         |
+
+To add a new section type, see the section pattern in the [root README](../README.md#section-pattern).
