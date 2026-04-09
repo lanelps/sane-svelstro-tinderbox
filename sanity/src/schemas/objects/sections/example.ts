@@ -18,8 +18,10 @@ export const exampleSectionType = defineType({
   ],
 
   preview: {
-    select: {
-      title: 'heading',
-    },
+    select: {heading: 'heading'},
+    prepare: ({heading}: any) => ({
+      title: 'Example',
+      subtitle: heading || 'No heading',
+    }),
   },
 })

@@ -21,4 +21,8 @@ export const settingsType = defineType({
       of: [{type: 'string'}],
     }),
   ],
+  preview: {
+    select: {},
+    prepare: () => ({title: 'Settings'}),
+  },
 })

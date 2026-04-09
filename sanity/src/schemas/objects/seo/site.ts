@@ -39,6 +39,10 @@ export const seoSiteType = defineType({
         'Used for both search engine results and social cards. Image should have a 16:9 aspect ratio. eg. 1200 x 675 pixels',
     }),
   ],
+  preview: {
+    select: {title: 'title'},
+    prepare: ({title}: any) => ({title: title || 'Site SEO'}),
+  },
   options: {
     collapsible: true,
   },

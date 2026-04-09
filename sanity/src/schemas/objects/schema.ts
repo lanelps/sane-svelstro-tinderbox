@@ -72,4 +72,8 @@ export const schemaJSONType = defineType({
         'When was this content last updated? Leave empty to use the documents last edit date.',
     }),
   ],
+  preview: {
+    select: {title: 'type'},
+    prepare: ({title}: any) => ({title: title || 'Schema', subtitle: 'JSON-LD'}),
+  },
 })

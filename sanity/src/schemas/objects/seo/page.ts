@@ -42,6 +42,10 @@ export const seoPageType = defineType({
       type: 'schema',
     }),
   ],
+  preview: {
+    select: {title: 'title'},
+    prepare: ({title}: any) => ({title: title || 'Page SEO'}),
+  },
   options: {
     collapsible: true,
   },

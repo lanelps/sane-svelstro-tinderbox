@@ -25,4 +25,7 @@ export const homePageType = defineType({
       group: 'seo',
     }),
   ],
+  preview: {
+    select: {title: 'title'},
+  },
 })

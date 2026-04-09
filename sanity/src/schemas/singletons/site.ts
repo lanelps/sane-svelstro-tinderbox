@@ -55,11 +55,11 @@ export const siteType = defineType({
           title: 'Address',
           type: 'object',
           fields: [
-            {name: 'street', type: 'string', title: 'Street'},
-            {name: 'city', type: 'string', title: 'City'},
-            {name: 'state', type: 'string', title: 'State'},
-            {name: 'zipCode', type: 'string', title: 'Zip Code'},
-            {name: 'country', type: 'string', title: 'Country'},
+            defineField({name: 'street', type: 'string', title: 'Street'}),
+            defineField({name: 'city', type: 'string', title: 'City'}),
+            defineField({name: 'state', type: 'string', title: 'State'}),
+            defineField({name: 'zipCode', type: 'string', title: 'Zip Code'}),
+            defineField({name: 'country', type: 'string', title: 'Country'}),
           ],
           options: {
             collapsible: true,
@@ -82,4 +82,8 @@ export const siteType = defineType({
       group: 'seo',
     }),
   ],
+  preview: {
+    select: {},
+    prepare: () => ({title: 'Site'}),
+  },
 })

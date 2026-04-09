@@ -30,4 +30,10 @@ export const pageType = defineType({
       type: 'seo.page',
     }),
   ],
+  preview: {
+    select: {
+      title: 'title',
+      subtitle: 'slug.current',
+    },
+  },
 })
