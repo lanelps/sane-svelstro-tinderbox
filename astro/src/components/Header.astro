@@ -1,5 +1,4 @@
 ---
-import CartCount from "@components/CartCount.svelte";
 import Link from "@components/Link.svelte";
 import type { Links } from "@/types";
 
@@ -18,7 +17,5 @@ const { links } = Astro.props;
 
   <nav class="flex gap-x-2 sm-t:gap-x-4">
     {links.map((link) => <Link link={link} />)}
-
-    <CartCount client:load />
   </nav>
 </header>

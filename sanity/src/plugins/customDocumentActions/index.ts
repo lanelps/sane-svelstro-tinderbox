@@ -4,10 +4,8 @@ import {
   type DocumentActionsResolver,
   type NewDocumentOptionsResolver,
 } from 'sanity'
-import shopifyDelete from './shopifyDelete'
-import shopifyLink from './shopifyLink'
 
-import {LOCKED_DOCUMENT_TYPES, SHOPIFY_DOCUMENT_TYPES} from '../../constants'
+import {LOCKED_DOCUMENT_TYPES} from '../../constants'
 
 export const resolveDocumentActions: DocumentActionsResolver = (prev, {schemaType}) => {
   if (LOCKED_DOCUMENT_TYPES.includes(schemaType)) {
@@ -17,30 +15,12 @@ export const resolveDocumentActions: DocumentActionsResolver = (prev, {schemaTyp
     )
   }
 
-  if (SHOPIFY_DOCUMENT_TYPES.includes(schemaType)) {
-    prev = prev.filter(
-      (previousAction: DocumentActionComponent) =>
-        previousAction.action === 'publish' ||
-        previousAction.action === 'unpublish' ||
-        previousAction.action === 'discardChanges',
-    )
-
-    return [
-      ...prev,
-      shopifyDelete as DocumentActionComponent,
-      shopifyLink as DocumentActionComponent,
-    ]
-  }
-
   return prev
 }
 
 export const resolveNewDocumentOptions: NewDocumentOptionsResolver = (prev) => {
   const options = prev.filter((previousOption) => {
-    return (
-      !LOCKED_DOCUMENT_TYPES.includes(previousOption.templateId) &&
-      !SHOPIFY_DOCUMENT_TYPES.includes(previousOption.templateId)
-    )
+    return !LOCKED_DOCUMENT_TYPES.includes(previousOption.templateId)
   })
 
   return options

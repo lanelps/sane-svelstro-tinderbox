@@ -1,6 +1,6 @@
 import type { PortableText } from "./portableText";
-import type { Media, AstroImage } from "./images";
-import type { ProjectsData, ProductsData } from "./pages";
+import type { Media } from "./images";
+import type { ProjectsData } from "./pages";
 
 // ==============================
 // Sections
@@ -27,16 +27,10 @@ export interface ProjectsListSection extends BaseSection {
   projects: ProjectsData;
 }
 
-export interface ProductsListSection extends BaseSection {
-  _type: "section.productsList";
-  products: ProductsData<AstroImage>[];
-}
-
 export type Section =
   | ExampleSection
   | MediaSection
-  | ProjectsListSection
-  | ProductsListSection;
+  | ProjectsListSection;
 
 export type Sections = Section[];
 
@@ -44,5 +38,4 @@ export type SectionMap = {
   example: ExampleSection;
   media: MediaSection;
   projectsList: ProjectsListSection;
-  productsList: ProductsListSection;
 };

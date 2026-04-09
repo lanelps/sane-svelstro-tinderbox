@@ -45,12 +45,4 @@ export type ProjectsData = {
   thumbnail: Media;
 }[];
 
-export interface ProductsData<T = string> {
-  _id: string;
-  slug: Slug;
-  productId: number;
-  title: string;
-  image: T;
-}
-
 export type PageTypes = HomePageData | PageData | ProjectData;

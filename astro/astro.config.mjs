@@ -27,17 +27,6 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  image: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "cdn.shopify.com",
-        port: "",
-        pathname: "/s/files/1/0811/2134/5851/files/**",
-      },
-    ],
-  },
-
   integrations: [
     svelte(),
     sanity({

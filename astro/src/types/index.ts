@@ -6,5 +6,3 @@ export * from "./stores";
 export * from "./sections";
 export * from "./seo";
 export * from "./pages";
-export * from "./products";
-export * from "./cart";

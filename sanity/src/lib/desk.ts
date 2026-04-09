@@ -1,6 +1,6 @@
 import type {ComponentType} from 'react'
 import type {StructureBuilder, ListItemBuilder, Divider} from 'sanity/structure'
-import {DocumentIcon, InfoOutlineIcon} from '@sanity/icons'
+import {DocumentIcon} from '@sanity/icons'
 
 interface GroupStructureParams {
   title: string
@@ -31,61 +31,11 @@ interface GroupDocument {
 
 type Document = DocumentItem | GroupDocument
 
-export const productStructure = (S: StructureBuilder) =>
-  S.listItem()
-    .title('Products')
-    .schemaType('product')
-    .child(
-      S.documentTypeList('product')
-        // .defaultLayout('detail')
-        .child(async (id) =>
-          S.list()
-            .title('Product')
-            .canHandleIntent(
-              (intentName, params) => intentName === 'edit' && params.type === 'product',
-            )
-            .items([
-              // Details
-              S.listItem()
-                .title('Details')
-                .icon(InfoOutlineIcon)
-                .schemaType('product')
-                .id(id)
-                .child(S.document().schemaType('product').documentId(id)),
-              // Product variants
-              S.listItem()
-                .title('Variants')
-                .schemaType('productVariant')
-                .child(
-                  S.documentList()
-                    .title('Variants')
-                    .schemaType('productVariant')
-                    .filter(
-                      `
-                      _type == "productVariant"
-                      && store.productId == $productId
-                    `,
-                    )
-                    .params({
-                      productId: Number(id.replace('shopifyProduct-', '')),
-                    })
-                    .canHandleIntent(
-                      (intentName, params) =>
-                        intentName === 'edit' && params.type === 'productVariant',
-                    ),
-                ),
-            ]),
-        ),
-    )
-
 export const generateDocumentStructure = (
   S: StructureBuilder,
   {title, type, icon, divider, orderBy}: DocumentItem,
 ): StructureReturn => {
-  const structure =
-    type === 'product'
-      ? productStructure(S)
-      : S.listItem()
+  const structure = S.listItem()
           .title(title)
           .icon(icon || DocumentIcon)
           .schemaType(type)
@@ -185,18 +135,6 @@ const documents: Document[] = [
     divider: true,
   },
   {
-    title: 'Collections',
-    type: 'collection',
-    icon: () => '📦',
-    orderBy: 'titleProxy',
-  },
-  {
-    title: 'Products',
-    type: 'product',
-    icon: () => '🛍',
-    divider: true,
-  },
-  {
     title: 'Site',
     type: 'site',
     icon: () => '🌐',
@@ -210,7 +148,7 @@ const documents: Document[] = [
   },
 ]
 
-const hiddenDocuments = ['media.tag', 'mux.videoAsset', 'productVariant']
+const hiddenDocuments = ['media.tag', 'mux.videoAsset']
 
 const DOCUMENT_TYPES_IN_STRUCTURE = [
   ...hiddenDocuments,

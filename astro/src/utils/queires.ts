@@ -80,13 +80,3 @@ export const projectsQuery = `*[_type == "project"] | order(date desc) {
 	},
 }`;
 
-export const productQuery = `{
-	"details": *[_type == "product" && store.slug.current == $slug][0],
-	"variants": *[_type == "productVariant" && store.productId == $productId]
-}`;
-
-export const productsQuery = `*[_type == "product"] {
-	_id,
-	"slug": store.slug,
-	"productId": store.id,
-}`;
