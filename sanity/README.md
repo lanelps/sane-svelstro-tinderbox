@@ -26,31 +26,31 @@ Run from `sanity/`:
 
 - **Page** (`page`) — generic content pages with a sections array
 - **Project** (`project`) — portfolio/case study entries
-- **Product** (`product`) — Shopify-synced product documents (optional)
-- **Product Variant** (`productVariant`) — Shopify-synced variant documents (optional)
-- **Collection** (`collection`) — Shopify-synced collection documents (optional)
+- **Product** (`product`) — Shopify-synced product documents (`main-shopify` / `previews-shopify` branches only)
+- **Product Variant** (`productVariant`) — Shopify-synced variant documents (Shopify branches only)
+- **Collection** (`collection`) — Shopify-synced collection documents (Shopify branches only)
 
 ### Sections
 
 Sections are the content-block system. Each type maps 1:1 to an Astro/Svelte component in `astro/src/components/sections/`.
 
-| Type                   | Description                     |
-| ---------------------- | ------------------------------- |
-| `section.example`      | Minimal starter section         |
-| `section.media`        | Full-bleed image or video block |
-| `section.productsList` | Grid of Shopify products        |
-| `section.projectsList` | Grid of project entries         |
+| Type                   | Description                                      |
+| ---------------------- | ------------------------------------------------ |
+| `section.example`      | Minimal starter section                          |
+| `section.media`        | Full-bleed image or video block                  |
+| `section.projectsList` | Grid of project entries                          |
+| `section.productsList` | Grid of Shopify products (Shopify branches only) |
 
 ### Schema File Locations
 
-| Schema category | Location                                         |
-| --------------- | ------------------------------------------------ |
-| Singletons      | `src/schemas/singletons/<name>.ts`               |
-| Documents       | `src/schemas/documents/<name>.ts` / `.tsx`       |
-| Objects         | `src/schemas/objects/<name>.ts`                  |
-| Section schemas | `src/schemas/objects/sections/<name>.ts`         |
-| SEO objects     | `src/schemas/objects/seo/<name>.ts`              |
-| Shopify objects | `src/schemas/objects/shopify/<name>.ts` / `.tsx` |
+| Schema category | Location                                                                 |
+| --------------- | ------------------------------------------------------------------------ |
+| Singletons      | `src/schemas/singletons/<name>.ts`                                       |
+| Documents       | `src/schemas/documents/<name>.ts` / `.tsx`                               |
+| Objects         | `src/schemas/objects/<name>.ts`                                          |
+| Section schemas | `src/schemas/objects/sections/<name>.ts`                                 |
+| SEO objects     | `src/schemas/objects/seo/<name>.ts`                                      |
+| Shopify objects | `src/schemas/objects/shopify/<name>.ts` / `.tsx` (Shopify branches only) |
 
 ## Section Pattern
 
@@ -99,4 +99,4 @@ Shared config lives in `src/constants.ts`. Never duplicate these values in indiv
 | `GROUPS`                 | Field group definitions (`content`, `seo`)                         |
 | `PAGE_REFERENCES`        | Internal link reference types for `link` fields                    |
 | `LOCKED_DOCUMENT_TYPES`  | Singleton/system types excluded from create, duplicate, and delete |
-| `SHOPIFY_DOCUMENT_TYPES` | Shopify-synced document types                                      |
+| `SHOPIFY_DOCUMENT_TYPES` | Shopify-synced document types (Shopify branches only)              |
