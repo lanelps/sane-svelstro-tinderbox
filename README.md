@@ -6,17 +6,37 @@ A full-stack monorepo boilerplate for building content-driven websites. It pairs
 
 ## Tech Stack
 
-| Layer                 | Technology                                                                                                   |
-| --------------------- | ------------------------------------------------------------------------------------------------------------ |
-| Frontend              | [Astro 6](https://astro.build) — SSG on Cloudflare Workers (SSR opt-in per page)                             |
-| UI Components         | [Svelte 5](https://svelte.dev)                                                                               |
-| Styling               | [Tailwind CSS v4](https://tailwindcss.com)                                                                   |
-| CMS                   | [Sanity v5](https://sanity.io)                                                                               |
-| Deployment            | [Cloudflare Workers](https://workers.cloudflare.com) via `@astrojs/cloudflare`                               |
-| State                 | [Nanostores](https://github.com/nanostores/nanostores)                                                       |
-| Routing               | [Astro ClientRouter](https://docs.astro.build/en/guides/view-transitions/) (SPA-mode client-side navigation) |
-| Video                 | [Mux](https://mux.com) + [hls.js](https://github.com/video-dev/hls.js)                                       |
-| E-commerce (optional) | [Shopify Storefront API](https://shopify.dev/docs/api/storefront)                                            |
+| Layer                 | Technology                                                                                                            |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Frontend              | [Astro 6](https://astro.build) — SSG on Cloudflare Workers (SSR opt-in per page)                                      |
+| UI Components         | [Svelte 5](https://svelte.dev)                                                                                        |
+| Styling               | [Tailwind CSS v4](https://tailwindcss.com)                                                                            |
+| CMS                   | [Sanity v5](https://sanity.io)                                                                                        |
+| Deployment            | [Cloudflare Workers](https://workers.cloudflare.com) via `@astrojs/cloudflare`                                        |
+| State                 | [Nanostores](https://github.com/nanostores/nanostores)                                                                |
+| Routing               | [Astro ClientRouter](https://docs.astro.build/en/guides/view-transitions/) (SPA-mode client-side navigation)          |
+| Video                 | [Mux](https://mux.com) + [hls.js](https://github.com/video-dev/hls.js)                                                |
+| E-commerce (optional) | [Shopify Storefront API](https://shopify.dev/docs/api/storefront) — `main-shopify` / `previews-shopify` branches only |
+
+---
+
+## Branch Structure
+
+This boilerplate ships as four branches to cover common project configurations:
+
+| Branch             | Rendering | Shopify | Sanity Live Preview |
+| ------------------ | --------- | ------- | ------------------- |
+| `main`             | SSG       | ❌      | ❌                  |
+| `main-shopify`     | SSG       | ✅      | ❌                  |
+| `previews`         | SSR       | ❌      | ✅                  |
+| `previews-shopify` | SSR       | ✅      | ✅                  |
+
+- **SSG** — all pages prerendered at build time (Cloudflare Workers serves static output).
+- **SSR** — pages rendered on-demand (`prerender = false`), required for Sanity Live Preview.
+- **Shopify** branches include the full Storefront API integration (cart, product pages, variant selector).
+- **Preview** branches wire up `perspective: "previewDrafts"` and the Sanity `<VisualEditing />` overlay.
+
+Start from the branch that best matches your project's needs.
 
 ---
 
@@ -26,7 +46,7 @@ A full-stack monorepo boilerplate for building content-driven websites. It pairs
 - **pnpm** (recommended package manager)
 - A [Sanity](https://sanity.io) account and project
 - A [Cloudflare](https://cloudflare.com) account (for deployment)
-- _(Optional)_ A [Shopify](https://shopify.dev) store with a Storefront API token
+- _(Optional, Shopify branches)_ A [Shopify](https://shopify.dev) store with a Storefront API token
 
 ---
 
@@ -41,24 +61,23 @@ sane-svelstro-tinderbox/
 │       │   └── sections/         # One component per Sanity section type
 │       ├── layouts/              # Astro layout wrappers
 │       ├── pages/                # File-based routing ([slug].astro, etc.)
-│       ├── stores/               # Nanostores atoms (cart, nav)
+│       ├── stores/               # Nanostores atoms (nav)
 │       ├── styles/               # Global CSS & typography
 │       ├── types/                # Shared TypeScript types (barrel: index.ts)
 │       └── utils/
 │           ├── groq.ts           # Reusable GROQ field-selection fragments
 │           ├── queires.ts        # Full composed GROQ queries
 │           ├── load-query.ts     # fetchQuery / fetchPage / loadQuery helpers
-│           ├── image/            # Sanity image processing (processNestedImages)
-│           └── shopify.ts        # Shopify Storefront API client (optional)
+│           └── image/            # Sanity image processing (processNestedImages)
 └── sanity/                       # Sanity v5 Studio
     └── src/
         ├── schemas/
-        │   ├── documents/        # Page, Project, Product, Collection
+        │   ├── documents/        # Page, Project
         │   ├── objects/
         │   │   └── sections/     # One schema file per section type
         │   └── singletons/       # Home Page, Settings, Site
-        ├── lib/                  # Desk structure & visual editing resolve
-        └── plugins/              # Custom document actions (Shopify sync)
+        ├── lib/                  # Desk structure & presentation resolve
+        └── plugins/              # Custom document actions
 ```
 
 ---
@@ -114,11 +133,6 @@ PUBLIC_SANITY_DATASET="production"
 
 # Sanity Token — only needed for private Sanity projects
 # SANITY_TOKEN="your-sanity-read-token"
-
-# Shopify — optional (set PUBLIC_ENABLE_SHOPIFY="true" to enable)
-PUBLIC_ENABLE_SHOPIFY="false"
-# PUBLIC_SHOPIFY_STORE="your-store.myshopify.com"
-# PUBLIC_SHOPIFY_STOREFRONT_TOKEN="your-storefront-token"
 ```
 
 Start the dev server:
@@ -133,23 +147,23 @@ cd astro && pnpm dev
 
 ### `astro/`
 
-| Variable                          | Required     | Description                                          |
-| --------------------------------- | ------------ | ---------------------------------------------------- |
-| `PUBLIC_SANITY_PROJECT_ID`        | ✅           | Sanity project ID                                    |
-| `PUBLIC_SANITY_DATASET`           | ✅           | Sanity dataset (`production`)                        |
-| `SANITY_TOKEN`                    | —            | Read token — only needed for private Sanity projects |
-| `PUBLIC_ENABLE_SHOPIFY`           | —            | Set `"true"` to enable Shopify features              |
-| `PUBLIC_SHOPIFY_STORE`            | Shopify only | `your-store.myshopify.com`                           |
-| `PUBLIC_SHOPIFY_STOREFRONT_TOKEN` | Shopify only | Storefront API public token                          |
+| Variable                          | Required         | Description                                          |
+| --------------------------------- | ---------------- | ---------------------------------------------------- |
+| `PUBLIC_SANITY_PROJECT_ID`        | ✅               | Sanity project ID                                    |
+| `PUBLIC_SANITY_DATASET`           | ✅               | Sanity dataset (`production`)                        |
+| `SANITY_TOKEN`                    | —                | Read token — only needed for private Sanity projects |
+| `PUBLIC_ENABLE_SHOPIFY`           | Shopify branches | Set `"true"` to enable Shopify features              |
+| `PUBLIC_SHOPIFY_STORE`            | Shopify branches | `your-store.myshopify.com`                           |
+| `PUBLIC_SHOPIFY_STOREFRONT_TOKEN` | Shopify branches | Storefront API public token                          |
 
 ### `sanity/`
 
-| Variable                               | Required | Description                                                            |
-| -------------------------------------- | -------- | ---------------------------------------------------------------------- |
-| `SANITY_STUDIO_PROJECT_ID`             | ✅       | Sanity project ID                                                      |
-| `SANITY_STUDIO_DATASET`                | ✅       | Sanity dataset                                                         |
-| `SANITY_STUDIO_VISUAL_EDITING_ENABLED` | —        | Enables the Presentation tool (visual editing not yet integrated)      |
-| `SANITY_STUDIO_PREVIEW_URL`            | —        | Origin URL of the Astro dev server (visual editing not yet integrated) |
+| Variable                               | Required         | Description                                                     |
+| -------------------------------------- | ---------------- | --------------------------------------------------------------- |
+| `SANITY_STUDIO_PROJECT_ID`             | ✅               | Sanity project ID                                               |
+| `SANITY_STUDIO_DATASET`                | ✅               | Sanity dataset                                                  |
+| `SANITY_STUDIO_VISUAL_EDITING_ENABLED` | Preview branches | Set `"true"` to enable the Presentation tool for visual editing |
+| `SANITY_STUDIO_PREVIEW_URL`            | Preview branches | Origin URL of the Astro preview deployment                      |
 
 ---
 
@@ -187,7 +201,7 @@ Content flows from Sanity to Astro through a structured GROQ pipeline:
 
 - **`fetchQuery<T>()`** — raw GROQ fetch, no image processing.
 - **`fetchPage<T>()`** — fetches and auto-processes all nested Sanity images. Prefer this in page-level `.astro` files.
-- **`loadQuery<T>()`** — intended entry point for pages; will integrate Sanity Live Preview.
+- **`loadQuery<T>()`** — entry point for pages; delegates to `fetchQuery` on `main` / `main-shopify`, and to `fetchPage` with `perspective: "previewDrafts"` on the `previews` / `previews-shopify` branches.
 
 All Sanity image data must flow through `@utils/image`. Never construct image URLs manually.
 
@@ -203,23 +217,23 @@ Sections are the primary content building block. Every new section type requires
 | Astro/Svelte component | `astro/src/components/sections/<Name>.astro` or `.svelte` |
 | Astro registration     | `astro/src/components/Sections.astro`                     |
 
-Included section types: `example`, `media`, `productsList`, `projectsList`.
+Included section types: `example`, `media`, `projectsList`. (`productsList` is included on the Shopify branches.)
 
-### Shopify (Optional)
+### Shopify (Shopify branches only)
 
-Shopify integration is gated behind the `PUBLIC_ENABLE_SHOPIFY` environment variable. When disabled, all Shopify code is excluded at runtime.
+Shopify integration (`main-shopify`, `previews-shopify`) is gated behind the `PUBLIC_ENABLE_SHOPIFY` environment variable. When disabled, all Shopify code is excluded at runtime.
 
 - Check `shopifyConfig.isEnabled` from `@utils/shopify` before any Shopify logic.
-- Cart state lives in `@stores/cart` as a nanostores atom.
+- Cart state lives in `@stores/cart` as a nanostores atom (`cart`, `toggleCart`, `openCart`, `closeCart`, `removeItem`).
 
 ### State Management
 
 Client-side state uses nanostores atoms in `src/stores/`:
 
-- `@stores/cart` — Shopify cart (`cart`, `toggleCart`, `openCart`, `closeCart`, `removeItem`)
 - `@stores/nav` — Navigation open/close state
+- `@stores/cart` — Shopify cart state (Shopify branches only)
 
-Nanostores implements the Svelte store contract natively, so you can read store values in Svelte components using the `$` prefix (e.g. `$cart`, `$nav`) without any additional imports.
+Nanostores implements the Svelte store contract natively, so you can read store values in Svelte components using the `$` prefix (e.g. `$nav`) without any additional imports.
 
 ---
 
