@@ -1,47 +1,25 @@
 ---
+export const prerender = false;
+
 import Layout from "@layouts/Layout.astro";
 import VariantSelector from "@components/VariantSelector.svelte";
 import Sections from "@components/Sections.astro";
 
-import { productsQuery, productQuery } from "@utils/queires";
+import { productQuery } from "@utils/queires";
 import { stripHtml } from "@utils/helpers";
 
-import { fetchQuery, fetchPage } from "@utils/load-query";
-import type { ProductsData, ProductData } from "@/types";
+import { fetchPage } from "@utils/load-query";
+import type { ProductData } from "@/types";
+import type { QueryParams } from "sanity";
 
-/**
- * @name getStaticPaths
- * @function
- * @description Fetches all products from Sanity and generates static path params with productId props for each product slug.
- * @returns {Promise<{ params: { slug: string }; props: { productId: string } }[]>} An array of static path objects with product data.
- */
-export const getStaticPaths = async () => {
-  const { data: products } = await fetchQuery<ProductsData[]>({
-    query: productsQuery,
-  });
-
-  return products.map((product) => {
-    return {
-      params: {
-        slug: product.slug.current,
-      },
-      props: {
-        productId: product.productId,
-      },
-    };
-  });
-};
-
-const { params, props } = Astro;
-const { productId } = props;
+const params = Astro.params as QueryParams;
 
 const { data: product } = await fetchPage<ProductData>({
   query: productQuery,
-  params: {
-    ...params,
-    productId,
-  },
+  params,
 });
+
+if (!product) return Astro.redirect("/404");
 
 const pageSeo = {
   title: product?.details?.seo?.title || product?.details?.store?.title || "",

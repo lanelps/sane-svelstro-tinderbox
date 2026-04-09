@@ -80,9 +80,10 @@ export const projectsQuery = `*[_type == "project"] | order(date desc) {
 	},
 }`;
 
-export const productQuery = `{
-	"details": *[_type == "product" && store.slug.current == $slug][0],
-	"variants": *[_type == "productVariant" && store.productId == $productId]
+export const productQuery = `*[_type == "product" && store.slug.current == $slug][0] {
+	...,
+	"details": @,
+	"variants": *[_type == "productVariant" && store.productId == ^.store.id]
 }`;
 
 export const productsQuery = `*[_type == "product"] {
