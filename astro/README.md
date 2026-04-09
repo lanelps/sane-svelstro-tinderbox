@@ -25,15 +25,14 @@ src/
 │   └── sections/      # One component per Sanity section type
 ├── layouts/           # Astro layout wrappers
 ├── pages/             # File-based routing
-├── stores/            # Nanostores atoms (cart, nav)
+├── stores/            # Nanostores atoms (nav)
 ├── styles/            # Global CSS & typography
 ├── types/             # Shared TypeScript types
 └── utils/
     ├── groq.ts        # Reusable GROQ fragments
     ├── queires.ts     # Full composed GROQ queries
     ├── load-query.ts  # Data fetching helpers
-    ├── image/         # Sanity image processing
-    └── shopify.ts     # Shopify client (optional)
+    └── image/         # Sanity image processing
 ```
 
 ## Path Aliases
