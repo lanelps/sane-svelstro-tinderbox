@@ -20,7 +20,8 @@ export const fetchQuery = async <QueryResponse>({
   params?: QueryParams;
 }): Promise<{ data: QueryResponse }> => {
   const data = await sanityClient.fetch<QueryResponse>(query, params ?? {}, {
-    perspective: "published",
+    perspective: "previewDrafts",
+    useCdn: false,
   });
 
   return { data };
@@ -63,6 +64,6 @@ export const loadQuery = async <QueryResponse>({
   query: string;
   params?: QueryParams;
 }): Promise<{ data: QueryResponse }> => {
-  // TODO: integrate Sanity live preview
+  // Sanity live preview: fetch draft content
   return fetchQuery<QueryResponse>({ query, params });
 };

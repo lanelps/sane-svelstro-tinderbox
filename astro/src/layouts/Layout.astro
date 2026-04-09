@@ -1,5 +1,6 @@
 ---
 import { ClientRouter } from "astro:transitions";
+import { VisualEditing } from "@sanity/astro/visual-editing";
 
 import DevMark from "@components/DevMark.astro";
 import Header from "@components/Header.astro";
@@ -62,6 +63,7 @@ const siteSEO: SEO = {
 
   <body>
     <Header links={site.navigation} />
+    <VisualEditing zIndex={1000} />
 
     <main class:list={[grid && "grid-main"]}>
       <slot />

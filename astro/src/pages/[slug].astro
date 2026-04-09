@@ -1,39 +1,24 @@
 ---
+export const prerender = false;
+
 import Layout from "@layouts/Layout.astro";
 import Sections from "@components/Sections.astro";
 
-import { pagesQuery, pageQuery } from "@utils/queires";
+import { pageQuery } from "@utils/queires";
 import { getPageSeo } from "@utils/helpers";
 
-import { fetchQuery, fetchPage } from "@utils/load-query";
-import type { PagesData, PageData } from "@/types";
+import { fetchPage } from "@utils/load-query";
+import type { PageData } from "@/types";
+import type { QueryParams } from "sanity";
 
-/**
- * @name getStaticPaths
- * @function
- * @description Fetches all pages from Sanity and generates static path params for each page slug.
- * @returns {Promise<{ params: { slug: string } }[]>} An array of static path parameter objects.
- */
-export const getStaticPaths = async () => {
-  const { data: pages } = await fetchQuery<PagesData>({
-    query: pagesQuery,
-  });
-
-  return pages.map((page) => {
-    return {
-      params: {
-        slug: page.slug.current,
-      },
-    };
-  });
-};
-
-const { params } = Astro;
+const params = Astro.params as QueryParams;
 
 const { data: page } = await fetchPage<PageData>({
   query: pageQuery,
   params,
 });
+
+if (!page) return Astro.redirect("/404");
 
 const pageSeo = getPageSeo(page);
 ---
