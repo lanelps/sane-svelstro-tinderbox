@@ -20,7 +20,7 @@ export const fetchQuery = async <QueryResponse>({
   params?: QueryParams;
 }): Promise<{ data: QueryResponse }> => {
   const data = await sanityClient.fetch<QueryResponse>(query, params ?? {}, {
-    perspective: "previewDrafts",
+    perspective: "drafts",
     useCdn: false,
   });
 
