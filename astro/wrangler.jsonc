@@ -1,0 +1,5 @@
+{
+  "compatibility_flags": ["nodejs_compat"],
+  // Set this to today's date
+  "compatibility_date": "2026-04-15"
+}
