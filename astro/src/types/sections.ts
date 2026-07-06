@@ -27,10 +27,7 @@ export interface ProjectsListSection extends BaseSection {
   projects: ProjectsData;
 }
 
-export type Section =
-  | ExampleSection
-  | MediaSection
-  | ProjectsListSection;
+export type Section = ExampleSection | MediaSection | ProjectsListSection;
 
 export type Sections = Section[];
 

@@ -79,4 +79,3 @@ export const projectsQuery = `*[_type == "project"] | order(date desc) {
 		${media}
 	},
 }`;
-
