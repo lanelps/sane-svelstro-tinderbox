@@ -15,6 +15,8 @@
     "sanity"
   ],
   "dependencies": {
+    "@sanity/icons": "^5.0.0",
+    "@sanity/ui": "^3.3.1",
     "@sanity/vision": "^6.3.0",
     "pluralize-esm": "^9.0.5",
     "react": "^19.2.7",

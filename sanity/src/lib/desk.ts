@@ -1,6 +1,6 @@
 import type {ComponentType} from 'react'
 import type {StructureBuilder, ListItemBuilder, Divider} from 'sanity/structure'
-import {DocumentIcon} from '@sanity/icons'
+import {DocumentIcon} from '@sanity/icons/Document'
 
 interface GroupStructureParams {
   title: string
