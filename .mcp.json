@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "svelte": {
+      "url": "https://mcp.svelte.dev/mcp",
+      "type": "http"
+    },
+    "astro": {
+      "url": "https://mcp.docs.astro.build/mcp",
+      "type": "http"
+    },
+    "cloudflare-docs": {
+      "url": "https://docs.mcp.cloudflare.com/mcp",
+      "type": "http"
+    },
+    "tailwindcss-server": {
+      "command": "npx",
+      "args": ["-y", "tailwindcss-mcp-server"],
+      "type": "stdio"
+    }
+  }
+}
