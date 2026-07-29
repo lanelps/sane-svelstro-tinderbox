@@ -39,6 +39,10 @@ const REGION_END = "#endregion shopify";
 const SKIP_DIRS = new Set([
   "node_modules",
   ".git",
+  // Agent tooling, not shipped project source. The setup skill detects whether
+  // Shopify has already been stripped by checking the root package.json scripts,
+  // so it stays correct in both states without being rewritten here.
+  ".claude",
   "dist",
   "build",
   ".astro",
@@ -260,13 +264,22 @@ if (residue.length) {
 console.log("\nReinstalling dependencies and formatting…");
 for (const pkg of ["astro", "sanity"]) {
   const cwd = path.join(ROOT, pkg);
-  if (!fs.existsSync(cwd)) continue;
-  try {
-    execSync("pnpm install", { cwd, stdio: "inherit" });
-    execSync("pnpm format", { cwd, stdio: "inherit" });
-  } catch {
-    console.warn(`  ! post-strip step failed in ${pkg}/ — run it manually`);
-  }
+  const pkgJson = path.join(cwd, "package.json");
+  if (!fs.existsSync(pkgJson)) continue;
+
+  const run = (cmd, label) => {
+    try {
+      execSync(cmd, { cwd, stdio: "inherit" });
+    } catch {
+      console.warn(`  ! ${label} failed in ${pkg}/ — run it manually`);
+    }
+  };
+
+  run("pnpm install", "install");
+
+  // Not every sub-project defines a format script.
+  const { scripts = {} } = JSON.parse(fs.readFileSync(pkgJson, "utf8"));
+  if (scripts.format) run("pnpm format", "format");
 }
 
 console.log(`
