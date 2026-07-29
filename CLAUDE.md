@@ -36,6 +36,7 @@ One env var, `PUBLIC_BUILD_MODE`, produces the two Cloudflare Worker deployments
 | Astro `output` | `static` (SSG) | `server` (SSR) |
 | Sanity perspective | `published` | `drafts` |
 | `<VisualEditing />` | excluded from bundle | rendered |
+| Redirects | `_redirects` written at build time | `src/middleware.ts`, per request |
 
 Both Workers build from `main`. The preview Worker exists only to back the Studio's
 Presentation panel; production stays fully static.
@@ -51,6 +52,12 @@ Rules when touching this:
   SSR), read params as `Astro.params as QueryParams`, and guard with
   `if (!data) return Astro.redirect("/404")`.
 - Never add `export const prerender`. `output` decides, in `astro.config.mjs`.
+- Middleware only runs per request in `preview`. A static build has no request to run it
+  in, so anything request-shaped needs a build-time equivalent — redirects are the worked
+  example: `astro/integrations/sanity-redirects.ts` bakes them into a `_redirects` file
+  that Cloudflare serves at the edge, and the middleware short-circuits outside preview.
+  Editors therefore see redirect changes immediately in preview, but only after a rebuild
+  in production.
 
 <!-- #region shopify -->
 
@@ -73,7 +80,31 @@ examples: the `specialStructures` record in `sanity/src/lib/desk.ts`, the multi-
 `types` array in `sanity/src/schemas/index.ts`, and the `ShopifyNavbar` extraction. Do not
 add special cases to the strip script.
 
+Generated files are the one exception — they cannot carry markers, so they are listed in
+the script's `SKIP_PATHS`/`SKIP_EXT` instead. **Run `pnpm typegen` again after stripping**
+to regenerate Shopify-free types.
+
 <!-- #endregion shopify -->
+
+## Sanity TypeGen
+
+`cd sanity && pnpm typegen` extracts the schema to `sanity/schema.json` and generates
+`astro/src/types/sanity.types.ts` — a `*QueryResult` type per exported GROQ query, plus a
+type per schema document/object. Both are configured by `sanity/sanity-typegen.json`.
+
+- **Re-run it after any schema or query change.** Nothing runs it automatically, so stale
+  types are silent.
+- Queries are only picked up when tagged with `` groq`…` `` and exported from
+  `astro/src/utils/queires.ts`. That file imports its fragments with a **relative** path —
+  typegen resolves modules from `sanity/` and cannot see astro's `@utils/*` alias.
+- Prefer deriving hand-written types from the generated ones
+  (`type SettingsData = NonNullable<SettingsQueryResult>`) over restating field shapes.
+  `astro/src/types/seo.ts` shows the pattern.
+- `schema.json` is gitignored; `sanity.types.ts` is committed so a fresh clone typechecks
+  without Sanity credentials.
+- Typegen prints a `prettier-plugin-astro` resolution warning when formatting its output.
+  Harmless — the plugin lives in the astro workspace, and the generated file is already
+  formatted.
 
 ## Project Setup & Deployment
 

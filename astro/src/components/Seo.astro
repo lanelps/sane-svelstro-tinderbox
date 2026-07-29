@@ -54,6 +54,12 @@ const getImageUrl = (image: Image | string | undefined) => {
 // Construct JSON-LD data
 const orgName = organization?.name ?? title;
 const siteOrigin = Astro.url.origin;
+const canonicalUrl = `${siteOrigin}${Astro.url.pathname}`;
+
+// Article-family schema types map to og:type "article"; everything else defaults to "website"
+const ARTICLE_SCHEMA_TYPES = new Set(["Article", "BlogPosting", "NewsArticle"]);
+const ogType =
+  schema?.type && ARTICLE_SCHEMA_TYPES.has(schema.type) ? "article" : "website";
 
 const publisher = {
   "@type": "Organization" as const,
@@ -128,6 +134,11 @@ const jsonLd = {
 ---
 
 {import.meta.env.IS_DEV === "true" && <meta name="robots" content="noindex" />}
+
+<link rel="canonical" href={canonicalUrl} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:type" content={ogType} />
+{orgName && <meta property="og:site_name" content={orgName} />}
 
 {
   title && (

@@ -12,6 +12,10 @@ import type {
 } from "schema-dts";
 import type { SanityImageData } from "./images";
 import type { Links } from "./links";
+import type {
+  SettingsQueryResult,
+  RedirectsQueryResult,
+} from "./sanity.types";
 
 // ==============================
 // SEO
@@ -99,19 +103,17 @@ export type SiteData = {
   seo: SEOSite;
 };
 
-export type InlineScript = {
-  _type: "scriptInline";
-  content: string;
-};
+// Derived from Sanity TypeGen output so these stay in step with the schema and the GROQ
+// projections automatically — regenerate with `pnpm typegen` in `sanity/`.
 
-export type SrcScript = {
-  _type: "scriptSrc";
-  src: string;
-};
+export type SettingsData = NonNullable<SettingsQueryResult>;
 
-export type Script = InlineScript | SrcScript;
+export type Script = NonNullable<SettingsData["scripts"]>[number];
 
-export type SettingsData = {
-  scripts: Script[];
-  redirects: string[];
-};
+export type InlineScript = Extract<Script, { _type: "scriptInline" }>;
+
+export type SrcScript = Extract<Script, { _type: "scriptSrc" }>;
+
+export type RedirectsData = NonNullable<RedirectsQueryResult>;
+
+export type Redirect = NonNullable<RedirectsData["redirects"]>[number];

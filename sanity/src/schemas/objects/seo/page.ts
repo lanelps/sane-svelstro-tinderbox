@@ -9,7 +9,8 @@ export const seoPageType = defineType({
       name: 'title',
       title: 'Title',
       type: 'string',
-      description: 'Defaults to the documents title',
+      description:
+        "Falls back to the document's title if left empty. Recommended: a unique, descriptive title written for search results, 50-60 characters.",
     }),
     defineField({
       name: 'description',
@@ -42,6 +43,39 @@ export const seoPageType = defineType({
       type: 'schema',
     }),
   ],
+  // Field-level `required().warning()` rules on an object's children only run once the
+  // object itself has a value, so an entirely empty `seo` block shows no warnings at all.
+  // A single object-level custom rule always runs, even against `undefined`.
+  validation: (Rule) =>
+    Rule.custom((value: {title?: string; description?: string; image?: unknown} | undefined) => {
+      const warnings: {message: string; path: string[]}[] = []
+
+      if (!value?.title) {
+        warnings.push({
+          message:
+            "Add a page title — without one this page reuses the document's title rather than one written for search results and social shares.",
+          path: ['title'],
+        })
+      }
+
+      if (!value?.description) {
+        warnings.push({
+          message:
+            'Add a description — without one this page falls back to the site-wide description, which is worse for search engines and social shares.',
+          path: ['description'],
+        })
+      }
+
+      if (!value?.image) {
+        warnings.push({
+          message:
+            'Add an image — without one this page falls back to the site-wide image (or nothing), which weakens link previews on social platforms.',
+          path: ['image'],
+        })
+      }
+
+      return warnings.length > 0 ? warnings : true
+    }).warning(),
   preview: {
     select: {title: 'title'},
     prepare: ({title}: any) => ({title: title || 'Page SEO'}),

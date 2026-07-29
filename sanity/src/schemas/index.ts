@@ -47,9 +47,11 @@ const sections = [
 
 // objects
 import {altImageType} from './objects/altImage'
+import {inlineLinkType} from './objects/inlineLink'
 import {linkType} from './objects/link'
 import {mediaType} from './objects/media'
 import {portableTextType} from './objects/portableText'
+import {redirectType} from './objects/redirect'
 import {scriptInlineType} from './objects/scriptInline'
 import {scriptSrcType} from './objects/scriptSrc'
 
@@ -60,9 +62,11 @@ import {schemaJSONType} from './objects/schema'
 
 const objects = [
   altImageType,
+  inlineLinkType,
   linkType,
   mediaType,
   portableTextType,
+  redirectType,
   scriptInlineType,
   scriptSrcType,
   // SEO types

@@ -97,7 +97,63 @@ export const pageSEO = `
     },
 `;
 
+// Link Templates
+export const link = `
+    type,
+    label,
+    url,
+    newTab,
+    file {
+        asset -> {
+            url,
+        },
+    },
+    reference -> {
+        _type,
+        _id,
+        title,
+        slug {
+            current,
+        },
+    },
+`;
+
+// The portable-text annotation counterpart to `link` — same shape, no label, since the
+// annotated text is the label.
+export const inlineLink = `
+    type,
+    url,
+    newTab,
+    file {
+        asset -> {
+            url,
+        },
+    },
+    reference -> {
+        _type,
+        _id,
+        title,
+        slug {
+            current,
+        },
+    },
+`;
+
 // Content Templates
+
+// Spreads each block, then re-projects markDefs so `inlineLink` annotations arrive with their
+// file assets and internal references resolved — without this the frontend only ever sees an
+// unresolved `_ref` and cannot build an href.
+export const portableText = `
+    ...,
+    markDefs[] {
+        ...,
+        _type == "inlineLink" => {
+            ${inlineLink}
+        },
+    },
+`;
+
 export const sections = `
     sections[] {
         _key,
@@ -106,7 +162,9 @@ export const sections = `
         // Example
         _type == "section.example" => {
             heading,
-            content,
+            content[] {
+                ${portableText}
+            },
         },
 
         // Media
@@ -144,25 +202,5 @@ export const sections = `
         },
         // #endregion shopify
 
-    },
-`;
-
-export const link = `
-    type,
-    label,
-    url,
-    newTab,
-    file {
-        asset -> {
-            url,
-        },
-    },
-    reference -> {
-        _type,
-        _id,
-        title,
-        slug {
-            current,
-        },
     },
 `;

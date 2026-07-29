@@ -1,21 +1,25 @@
 ---
-interface LinkMarkDef {
-  href: string;
-  isExternal: boolean;
-}
+import { getLinkAttributes } from "@utils/links";
+
+import type { InlineLinkMarkDef } from "@/types";
 
 interface Props {
   node: {
-    markDef: LinkMarkDef;
+    markDef: InlineLinkMarkDef;
   };
 }
 
-const props: LinkMarkDef = (Astro.props as Props).node.markDef;
+const { node } = Astro.props as Props;
+
+const attributes = getLinkAttributes(node.markDef);
 ---
 
-<a
-  href={props.href}
-  target={props.isExternal ? "_blank" : "_self"}
-  rel="noreferrer noopener"
-  class="text-b1"><slot /></a
->
+{
+  attributes ? (
+    <a {...attributes} class="text-b1 underline">
+      <slot />
+    </a>
+  ) : (
+    <slot />
+  )
+}

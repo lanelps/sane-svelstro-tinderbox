@@ -1,6 +1,10 @@
-import { image, link, sections, siteSEO, pageSEO, media } from "@utils/groq";
+import groq from "groq";
 
-export const siteQuery = `*[_type == "site"][0]{
+// Relative import: Sanity's typegen module resolver runs from the `sanity/`
+// workspace and can't see astro's `@utils/*` tsconfig path alias.
+import { image, link, sections, siteSEO, pageSEO, media } from "./groq";
+
+export const siteQuery = groq`*[_type == "site"][0]{
 	navigation[]{
 		_key,
 		${link}
@@ -22,21 +26,28 @@ export const siteQuery = `*[_type == "site"][0]{
 	${siteSEO}
 }`;
 
-export const settingsQuery = `*[_type == "settings"][0]{
-	scripts[]{
+export const settingsQuery = groq`*[_type == "settings"][0]{
+	"scripts": coalesce(scripts[]{
 		_type,
-		content,
-		src
-	},
-	redirects
+		title,
+		value
+	}, [])
 }`;
 
-export const homePageQuery = `*[_type == "homePage"][0] {
+export const redirectsQuery = groq`*[_type == "settings"][0]{
+	"redirects": coalesce(redirects[]{
+		source,
+		destination,
+		permanent
+	}, [])
+}`;
+
+export const homePageQuery = groq`*[_type == "homePage"][0] {
 	title,
 	${pageSEO}
 }`;
 
-export const pageQuery = `*[_type == "page" && slug.current == $slug][0] {
+export const pageQuery = groq`*[_type == "page" && slug.current == $slug][0] {
 	_id,
 	title,
 	slug {
@@ -46,7 +57,7 @@ export const pageQuery = `*[_type == "page" && slug.current == $slug][0] {
 	${pageSEO}
 }`;
 
-export const pagesQuery = `*[_type == "page"] {
+export const pagesQuery = groq`*[_type == "page"] {
 	_id,
 	title,
 	slug {
@@ -54,7 +65,7 @@ export const pagesQuery = `*[_type == "page"] {
 	},
 }`;
 
-export const projectQuery = `*[_type == "project" && slug.current == $slug][0] {
+export const projectQuery = groq`*[_type == "project" && slug.current == $slug][0] {
 	_id,
 	title,
 	slug {
@@ -68,7 +79,7 @@ export const projectQuery = `*[_type == "project" && slug.current == $slug][0] {
 	${pageSEO}
 }`;
 
-export const projectsQuery = `*[_type == "project"] | order(date desc) {
+export const projectsQuery = groq`*[_type == "project"] | order(date desc) {
 	_id,
 	title,
 	slug {
@@ -83,13 +94,13 @@ export const projectsQuery = `*[_type == "project"] | order(date desc) {
 // #region shopify
 // Self-joins variants via `^.store.id` so the query needs only `$slug`.
 // This works identically for SSG (getStaticPaths) and SSR builds.
-export const productQuery = `*[_type == "product" && store.slug.current == $slug][0] {
+export const productQuery = groq`*[_type == "product" && store.slug.current == $slug][0] {
 	...,
 	"details": @,
 	"variants": *[_type == "productVariant" && store.productId == ^.store.id]
 }`;
 
-export const productsQuery = `*[_type == "product"] {
+export const productsQuery = groq`*[_type == "product"] {
 	_id,
 	"slug": store.slug,
 	"productId": store.id,

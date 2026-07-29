@@ -27,7 +27,7 @@ export const portableTextType = defineType({
         annotations: [
           {
             name: 'link',
-            type: 'link',
+            type: 'inlineLink',
           },
         ],
       },

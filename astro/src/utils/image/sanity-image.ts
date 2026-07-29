@@ -30,7 +30,15 @@ export const imageBuilder = createImageUrlBuilder(sanityClient);
 export const urlFor: UrlFor = (imgRef, options) => {
   const { quality = 100, format } = options || {};
 
-  let builder = imageBuilder.image(imgRef).fit("max").quality(quality);
+  // The image-url builder only needs asset/crop/hotspot, and expects
+  // `undefined` rather than the `null` GROQ resolves unset fields to.
+  const source = {
+    asset: imgRef.asset ?? undefined,
+    crop: imgRef.crop ?? undefined,
+    hotspot: imgRef.hotspot ?? undefined,
+  };
+
+  let builder = imageBuilder.image(source).fit("max").quality(quality);
 
   if (format) {
     builder = builder.format(format);
@@ -50,6 +58,10 @@ export const urlFor: UrlFor = (imgRef, options) => {
  */
 export const getImageDimensions: GetImageDimensions = (image) => {
   const { asset, crop } = image;
+
+  if (!asset?._ref) {
+    throw new Error("Unable to determine image dimensions");
+  }
 
   const [originalWidth, originalHeight] = asset._ref
     .split("-")[2]

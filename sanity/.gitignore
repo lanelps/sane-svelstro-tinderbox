@@ -25,6 +25,9 @@
 # Typescript
 *.tsbuildinfo
 
+# Typegen: extracted schema representation, regenerate with `pnpm typegen`
+/schema.json
+
 # Dotenv and similar local-only files
 *.local
 

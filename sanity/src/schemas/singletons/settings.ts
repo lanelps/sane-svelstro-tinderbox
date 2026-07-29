@@ -16,9 +16,10 @@ export const settingsType = defineType({
     defineField({
       name: 'redirects',
       title: 'Redirects',
-      description: 'Configure URL redirects',
+      description:
+        'Send visitors from an old path to a new one. Applied before the page is served, so a redirect always wins over a real page at the same path.',
       type: 'array',
-      of: [{type: 'string'}],
+      of: [{type: 'redirect'}],
     }),
   ],
   preview: {

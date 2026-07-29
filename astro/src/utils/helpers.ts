@@ -3,19 +3,21 @@ import type { PageTypes } from "@/types";
 /**
  * @name getPageSeo
  * @function
- * @description Extracts SEO metadata from a page object, falling back to sensible defaults for missing fields.
+ * @description Extracts SEO metadata from a page object. `seo.title` takes precedence over the
+ * document title, so the SEO override actually wins on documents that have both. Fields left unset
+ * in Sanity resolve to `undefined` rather than empty strings/arrays, so Layout.astro's `||` merge
+ * can fall through to the site-wide SEO defaults instead of short-circuiting on an empty-but-truthy
+ * value (`[]` is truthy).
  * @param {PageTypes} page - The page object containing title, seo, and related fields.
- * @returns {{ title: string; description: string; keywords: string[]; image: string }} A normalized SEO object.
+ * @returns {{ title?: string; description?: string; keywords?: string[]; image?: SEOPage["image"] }} A normalized SEO object.
  */
 export const getPageSeo = (page: PageTypes) => {
-  const seo = {
-    title: page?.title || page?.seo?.title || "",
-    description: page?.seo?.description || "",
-    keywords: page?.seo?.keywords || [],
-    image: page?.seo?.image || "",
+  return {
+    title: page?.seo?.title || page?.title || undefined,
+    description: page?.seo?.description || undefined,
+    keywords: page?.seo?.keywords?.length ? page.seo.keywords : undefined,
+    image: page?.seo?.image || undefined,
   };
-
-  return seo;
 };
 
 // #region shopify

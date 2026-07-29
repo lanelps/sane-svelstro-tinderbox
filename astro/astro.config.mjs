@@ -8,6 +8,8 @@ import sitemap from "@astrojs/sitemap";
 import partytown from "@astrojs/partytown";
 import cloudflare from "@astrojs/cloudflare";
 
+import { sanityRedirects } from "./integrations/sanity-redirects";
+
 import { loadEnv } from "vite";
 
 const {
@@ -82,6 +84,16 @@ export default defineConfig({
       config: {
         forward: ["dataLayer.push"],
       },
+    }),
+    // Static builds have no request to run middleware in, so redirects are baked into a
+    // `_redirects` file Cloudflare serves at the edge. Preview is SSR — `src/middleware.ts`
+    // resolves them per request there instead, so this is a no-op.
+    sanityRedirects({
+      projectId: PUBLIC_SANITY_PROJECT_ID,
+      dataset: PUBLIC_SANITY_DATASET,
+      apiVersion: "2026-04-01",
+      token: SANITY_TOKEN,
+      enabled: !isPreview,
     }),
   ],
 

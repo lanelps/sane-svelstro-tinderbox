@@ -1,0 +1,5 @@
+{
+  "path": "../astro/src/**/*.ts",
+  "schema": "schema.json",
+  "generates": "../astro/src/types/sanity.types.ts"
+}
