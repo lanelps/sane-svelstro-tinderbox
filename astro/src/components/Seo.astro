@@ -6,14 +6,31 @@ interface Props extends SEO {
   organization?: SiteData["organization"];
 }
 
-const { title, description, keywords, image, favicon, createdAt, updatedAt, organization, schema } = Astro.props;
+const {
+  title,
+  description,
+  keywords,
+  image,
+  favicon,
+  createdAt,
+  updatedAt,
+  organization,
+  schema,
+} = Astro.props;
 
 const resizedImage: Image | string | undefined =
-  typeof image !== "string" && image?.asset?._ref ? getImageProps({ image, maxWidth: 1920 }) : image as string || undefined;
-  
-const resizedFavicon = favicon && getImageProps({ image: favicon, maxWidth: 256 });
-const orgLogoProps = organization?.logo?.asset?._ref ? getImageProps({ image: organization.logo, maxWidth: 256 }) : undefined;
-const authorImageProps = schema?.author?.image?.asset?._ref ? getImageProps({ image: schema.author.image, maxWidth: 256 }) : undefined;
+  typeof image !== "string" && image?.asset?._ref
+    ? getImageProps({ image, maxWidth: 1920 })
+    : (image as string) || undefined;
+
+const resizedFavicon =
+  favicon && getImageProps({ image: favicon, maxWidth: 256 });
+const orgLogoProps = organization?.logo?.asset?._ref
+  ? getImageProps({ image: organization.logo, maxWidth: 256 })
+  : undefined;
+const authorImageProps = schema?.author?.image?.asset?._ref
+  ? getImageProps({ image: schema.author.image, maxWidth: 256 })
+  : undefined;
 
 /**
  * @name getImageUrl
@@ -26,7 +43,6 @@ const getImageUrl = (image: Image | string | undefined) => {
   if (typeof image === "string") {
     return image;
   }
-  
 
   if (image?.src) {
     return image.src;
@@ -79,10 +95,10 @@ const jsonLd = {
   publisher,
   creator: publisher,
   copyrightYear: new Date().getFullYear(),
-  copyrightHolder: { 
+  copyrightHolder: {
     "@type": "Organization",
-     name: orgName, 
-     url: siteOrigin 
+    name: orgName,
+    url: siteOrigin,
   },
   inLanguage: "en",
   isPartOf: {
@@ -111,32 +127,48 @@ const jsonLd = {
 };
 ---
 
-{import.meta.env.IS_DEV === "true" && (
-  <meta name="robots" content="noindex" />
-)}
+{import.meta.env.IS_DEV === "true" && <meta name="robots" content="noindex" />}
 
-{title && (
-    <title>{title}</title>
-    <meta property="og:title" content={title} />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-)}
+{
+  title && (
+    <>
+      <title>{title}</title>
+      <meta property="og:title" content={title} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+    </>
+  )
+}
 
-{description && (
-    <meta name="description" content={description} />
-    <meta property="og:description" content={description} />
-    <meta name="twitter:description" content={description} />
-)}
+{
+  description && (
+    <>
+      <meta name="description" content={description} />
+      <meta property="og:description" content={description} />
+      <meta name="twitter:description" content={description} />
+    </>
+  )
+}
 
 {keywords && <meta name="keywords" content={keywords.join(", ")} />}
 
-{resizedImage && typeof resizedImage !== "string" && (
-    <meta property="og:image" content={getImageUrl(resizedImage)} />
-    <meta name="twitter:image" content={getImageUrl(resizedImage)} />
-)}
+{
+  resizedImage && typeof resizedImage !== "string" && (
+    <>
+      <meta property="og:image" content={getImageUrl(resizedImage)} />
+      <meta name="twitter:image" content={getImageUrl(resizedImage)} />
+    </>
+  )
+}
 
-{favicon && resizedFavicon?.src && <link rel="icon" type="image/png" href={resizedFavicon.src} />}
+{
+  favicon && resizedFavicon?.src && (
+    <link rel="icon" type="image/png" href={resizedFavicon.src} />
+  )
+}
 
-
-
-<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+<script
+  is:inline
+  type="application/ld+json"
+  set:html={JSON.stringify(jsonLd)}
+/>
