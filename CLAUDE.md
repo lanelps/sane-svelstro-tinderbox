@@ -83,7 +83,8 @@ the **`setup-project`** skill in `.claude/skills/setup-project/`.
 
 ## Known Repo Issues
 
-- `astro check` fails repo-wide: TypeScript 7 does not expose the programmatic API the
-  Astro language server requires. Use `pnpm build` as the typecheck.
+- TypeScript is pinned to **6.x on purpose**. TypeScript 7 does not expose the programmatic
+  API the Astro language server needs, which breaks `astro check` entirely. Do not bump it
+  to 7 until Astro ships support.
 - `astro/src/components/Seo.astro` fails Prettier (adjacent JSX without a fragment), so
   `pnpm format` exits non-zero. Pre-existing.

@@ -79,8 +79,8 @@ cd sanity && pnpm build
 The preview build logs `getStaticPaths() ignored in dynamic page …` once per dynamic
 route. That is expected — the same page files serve both modes.
 
-Note: `astro check` currently fails repo-wide (TypeScript 7 does not expose the API the
-Astro language server needs). The builds are the effective typecheck.
+`pnpm exec astro check` should report 0 errors. If it fails to run at all, something has
+bumped TypeScript to 7 — pin it back to 6.x, which is what the Astro language server needs.
 
 ## 6. Deploy
 
