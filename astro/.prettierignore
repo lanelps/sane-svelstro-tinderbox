@@ -1,0 +1,15 @@
+# build output
+dist/
+
+# generated types / cache
+.astro/
+
+# dependencies
+node_modules/
+
+# wrangler
+.wrangler/
+worker-configuration.d.ts
+
+# lockfile
+pnpm-lock.yaml
