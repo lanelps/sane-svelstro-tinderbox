@@ -1,4 +1,3 @@
-import React from 'react'
 import {defineField, defineType} from 'sanity'
 
 export const scriptInlineType = defineType({
@@ -16,11 +15,7 @@ export const scriptInlineType = defineType({
       name: 'value',
       title: 'Value',
       type: 'text',
-      description: (
-        <>
-          Be sure to remove any <code>{'<script>'}</code> tags from the code.
-        </>
-      ),
+      description: 'Be sure to remove any <script> tags from the code.',
     }),
   ],
   preview: {
