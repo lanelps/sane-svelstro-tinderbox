@@ -1,4 +1,7 @@
 {
+  // Production Worker — SSG, published content, publicly reachable.
+  // Built by `pnpm build`.
+  "name": "sane-svelstro-tinderbox",
   "compatibility_flags": ["nodejs_compat"],
   // Set this to today's date
   "compatibility_date": "2026-04-15",

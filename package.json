@@ -1,0 +1,13 @@
+{
+  "name": "sane-svelstro-tinderbox",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "strip:shopify": "node scripts/strip-shopify.mjs",
+    "strip:shopify:dry": "node scripts/strip-shopify.mjs --dry-run"
+  }
+}

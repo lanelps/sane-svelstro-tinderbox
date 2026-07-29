@@ -8,6 +8,9 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "build:preview": "PUBLIC_BUILD_MODE=preview astro build",
+    "deploy": "wrangler deploy",
+    "deploy:preview": "wrangler deploy -c wrangler.preview.jsonc",
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier --write .",

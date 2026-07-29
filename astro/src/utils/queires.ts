@@ -79,3 +79,19 @@ export const projectsQuery = `*[_type == "project"] | order(date desc) {
 		${media}
 	},
 }`;
+
+// #region shopify
+// Self-joins variants via `^.store.id` so the query needs only `$slug`.
+// This works identically for SSG (getStaticPaths) and SSR builds.
+export const productQuery = `*[_type == "product" && store.slug.current == $slug][0] {
+	...,
+	"details": @,
+	"variants": *[_type == "productVariant" && store.productId == ^.store.id]
+}`;
+
+export const productsQuery = `*[_type == "product"] {
+	_id,
+	"slug": store.slug,
+	"productId": store.id,
+}`;
+// #endregion shopify

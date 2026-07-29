@@ -1,6 +1,6 @@
 # Sane-Svelstro Tinderbox
 
-A full-stack monorepo boilerplate for building content-driven websites. It pairs a **Sanity v5** CMS studio with an **Astro 6** frontend deployed to **Cloudflare Workers**, using **Svelte 5** for interactive components and **Tailwind CSS v4** for styling.
+A full-stack monorepo boilerplate for building content-driven websites. It pairs a **Sanity v6** CMS studio with an **Astro 7** frontend deployed to **Cloudflare Workers**, using **Svelte 5** for interactive components and **Tailwind CSS v4** for styling.
 
 ---
 
@@ -8,35 +8,63 @@ A full-stack monorepo boilerplate for building content-driven websites. It pairs
 
 | Layer                 | Technology                                                                                                            |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Frontend              | [Astro 6](https://astro.build) — SSG on Cloudflare Workers (SSR opt-in per page)                                      |
+| Frontend              | [Astro 7](https://astro.build) — SSG on Cloudflare Workers (SSR opt-in per page)                                      |
 | UI Components         | [Svelte 5](https://svelte.dev)                                                                                        |
 | Styling               | [Tailwind CSS v4](https://tailwindcss.com)                                                                            |
-| CMS                   | [Sanity v5](https://sanity.io)                                                                                        |
+| CMS                   | [Sanity v6](https://sanity.io)                                                                                        |
 | Deployment            | [Cloudflare Workers](https://workers.cloudflare.com) via `@astrojs/cloudflare`                                        |
 | State                 | [Nanostores](https://github.com/nanostores/nanostores)                                                                |
 | Routing               | [Astro ClientRouter](https://docs.astro.build/en/guides/view-transitions/) (SPA-mode client-side navigation)          |
 | Video                 | [Mux](https://mux.com) + [hls.js](https://github.com/video-dev/hls.js)                                                |
-| E-commerce (optional) | [Shopify Storefront API](https://shopify.dev/docs/api/storefront) — `main-shopify` / `previews-shopify` branches only |
 
 ---
 
-## Branch Structure
+## Deployment Model
 
-This boilerplate ships as four branches to cover common project configurations:
+This boilerplate lives on a **single branch**. Everything is configured through build
+mode and a one-time setup script, rather than through per-variant branches.
 
-| Branch             | Rendering | Shopify | Sanity Live Preview |
-| ------------------ | --------- | ------- | ------------------- |
-| `main`             | SSG       | ❌      | ❌                  |
-| `main-shopify`     | SSG       | ✅      | ❌                  |
-| `previews`         | SSR       | ❌      | ✅                  |
-| `previews-shopify` | SSR       | ✅      | ✅                  |
+### Two Workers, one branch
 
-- **SSG** — all pages prerendered at build time (Cloudflare Workers serves static output).
-- **SSR** — pages rendered on-demand (`prerender = false`), required for Sanity Live Preview.
-- **Shopify** branches include the full Storefront API integration (cart, product pages, variant selector).
-- **Preview** branches wire up `perspective: "previewDrafts"` and the Sanity `<VisualEditing />` overlay.
+A project deploys as two Cloudflare Workers, both built from `main`:
 
-Start from the branch that best matches your project's needs.
+| | Production | Preview |
+| --- | --- | --- |
+| Build command | `pnpm build` | `pnpm build:preview` |
+| `PUBLIC_BUILD_MODE` | `production` | `preview` |
+| Astro `output` | `static` (SSG) | `server` (SSR) |
+| Sanity perspective | `published` | `drafts` |
+| `<VisualEditing />` | excluded from the bundle | rendered |
+| Wrangler config | `wrangler.jsonc` | `wrangler.preview.jsonc` |
+| Access | public | **Cloudflare Access** |
+
+The preview Worker exists solely to back the Studio's Presentation tab — it is what
+`SANITY_STUDIO_PREVIEW_URL` points at. Production stays fully static.
+
+Cloudflare Workers Builds lets each Worker define its own build command, so both watch
+`main` and neither needs a dedicated branch.
+
+> **⚠️ Protect the preview Worker.** It serves unpublished draft content. Put a
+> Zero Trust Access policy in front of it (Cloudflare dashboard → Zero Trust → Access →
+> Applications) scoped to your team's email domain, before pointing the Studio at it.
+> Without one, anyone with the URL can read your drafts.
+
+<!-- #region shopify -->
+### Removing Shopify
+
+The boilerplate ships **with** the Shopify Storefront API integration. If a project
+doesn't need e-commerce, strip it once at project setup:
+
+```bash
+pnpm strip:shopify:dry   # preview what will be removed
+pnpm strip:shopify       # do it
+```
+
+This deletes the Shopify files and code regions outright, then reinstalls and
+reformats. It is a one-way operation — run it on a fresh clone, before you start
+building. See [`scripts/strip-shopify.mjs`](scripts/strip-shopify.mjs) for how the
+markers work; adding new Shopify code means adding markers, not editing the script.
+<!-- #endregion shopify -->
 
 ---
 
@@ -46,7 +74,6 @@ Start from the branch that best matches your project's needs.
 - **pnpm** (recommended package manager)
 - A [Sanity](https://sanity.io) account and project
 - A [Cloudflare](https://cloudflare.com) account (for deployment)
-- _(Optional, Shopify branches)_ A [Shopify](https://shopify.dev) store with a Storefront API token
 
 ---
 
@@ -54,14 +81,14 @@ Start from the branch that best matches your project's needs.
 
 ```
 sane-svelstro-tinderbox/
-├── astro/                        # Astro 6 frontend
+├── astro/                        # Astro 7 frontend
 │   ├── public/
 │   └── src/
 │       ├── components/           # Shared & section components
 │       │   └── sections/         # One component per Sanity section type
 │       ├── layouts/              # Astro layout wrappers
 │       ├── pages/                # File-based routing ([slug].astro, etc.)
-│       ├── stores/               # Nanostores atoms (nav)
+│       ├── stores/               # Nanostores atoms (nav, cart)
 │       ├── styles/               # Global CSS & typography
 │       ├── types/                # Shared TypeScript types (barrel: index.ts)
 │       └── utils/
@@ -69,10 +96,10 @@ sane-svelstro-tinderbox/
 │           ├── queires.ts        # Full composed GROQ queries
 │           ├── load-query.ts     # fetchQuery / fetchPage / loadQuery helpers
 │           └── image/            # Sanity image processing (processNestedImages)
-└── sanity/                       # Sanity v5 Studio
+└── sanity/                       # Sanity v6 Studio
     └── src/
         ├── schemas/
-        │   ├── documents/        # Page, Project
+        │   ├── documents/        # Page, Project, Product, Collection
         │   ├── objects/
         │   │   └── sections/     # One schema file per section type
         │   └── singletons/       # Home Page, Settings, Site
@@ -147,23 +174,22 @@ cd astro && pnpm dev
 
 ### `astro/`
 
-| Variable                          | Required         | Description                                          |
-| --------------------------------- | ---------------- | ---------------------------------------------------- |
-| `PUBLIC_SANITY_PROJECT_ID`        | ✅               | Sanity project ID                                    |
-| `PUBLIC_SANITY_DATASET`           | ✅               | Sanity dataset (`production`)                        |
-| `SANITY_TOKEN`                    | —                | Read token — only needed for private Sanity projects |
-| `PUBLIC_ENABLE_SHOPIFY`           | Shopify branches | Set `"true"` to enable Shopify features              |
-| `PUBLIC_SHOPIFY_STORE`            | Shopify branches | `your-store.myshopify.com`                           |
-| `PUBLIC_SHOPIFY_STOREFRONT_TOKEN` | Shopify branches | Storefront API public token                          |
+| Variable                          | Required        | Description                                                            |
+| --------------------------------- | --------------- | ---------------------------------------------------------------------- |
+| `PUBLIC_SANITY_PROJECT_ID`        | ✅              | Sanity project ID                                                      |
+| `PUBLIC_SANITY_DATASET`           | ✅              | Sanity dataset (`production`)                                          |
+| `SANITY_TOKEN`                    | Preview Worker  | Read token. **Required** in preview mode — `drafts` needs auth         |
+| `PUBLIC_BUILD_MODE`               | —               | `production` (default) or `preview`. `pnpm build:preview` sets it      |
+| `PUBLIC_SITE_URL`                 | —               | Canonical site URL; feeds `site` in astro.config (sitemap + canonicals) |
 
 ### `sanity/`
 
-| Variable                               | Required         | Description                                                     |
-| -------------------------------------- | ---------------- | --------------------------------------------------------------- |
-| `SANITY_STUDIO_PROJECT_ID`             | ✅               | Sanity project ID                                               |
-| `SANITY_STUDIO_DATASET`                | ✅               | Sanity dataset                                                  |
-| `SANITY_STUDIO_VISUAL_EDITING_ENABLED` | Preview branches | Set `"true"` to enable the Presentation tool for visual editing |
-| `SANITY_STUDIO_PREVIEW_URL`            | Preview branches | Origin URL of the Astro preview deployment                      |
+| Variable                               | Required | Description                                                              |
+| -------------------------------------- | -------- | ------------------------------------------------------------------------ |
+| `SANITY_STUDIO_PROJECT_ID`             | ✅       | Sanity project ID                                                        |
+| `SANITY_STUDIO_DATASET`                | ✅       | Sanity dataset                                                           |
+| `SANITY_STUDIO_VISUAL_EDITING_ENABLED` | —        | Set `"true"` to enable the Presentation tool                             |
+| `SANITY_STUDIO_PREVIEW_URL`            | —        | Bare origin of the **preview** Worker. No path, no trailing slash        |
 
 ---
 
@@ -171,11 +197,30 @@ cd astro && pnpm dev
 
 ### `astro/`
 
-| Command        | Action                                     |
-| -------------- | ------------------------------------------ |
-| `pnpm dev`     | Start Astro dev server at `localhost:4321` |
-| `pnpm build`   | Type-check + build for production          |
-| `pnpm preview` | Preview the production build locally       |
+| Command               | Action                                                        |
+| --------------------- | ------------------------------------------------------------- |
+| `pnpm dev`            | Start Astro dev server at `localhost:4321`                    |
+| `pnpm build`          | Build the production (SSG) Worker                             |
+| `pnpm build:preview`  | Build the preview (SSR + Visual Editing) Worker               |
+| `pnpm deploy`         | Deploy the production Worker                                  |
+| `pnpm deploy:preview` | Deploy the preview Worker (`wrangler.preview.jsonc`)          |
+| `pnpm preview`        | Serve the built output locally                                |
+
+`build:preview` sets `PUBLIC_BUILD_MODE` inline, which is POSIX shell syntax. On
+Windows, set the variable separately or run the builds through WSL / Cloudflare Builds.
+
+In preview mode Astro logs `getStaticPaths() ignored in dynamic page …` once per
+dynamic route. That is expected — the same page files serve both modes, and
+`getStaticPaths` is only used by the SSG build.
+
+<!-- #region shopify -->
+### Repo root
+
+| Command                  | Action                                             |
+| ------------------------ | -------------------------------------------------- |
+| `pnpm strip:shopify:dry` | List what the Shopify strip would remove           |
+| `pnpm strip:shopify`     | Permanently remove the Shopify integration         |
+<!-- #endregion shopify -->
 
 ### `sanity/`
 
@@ -201,7 +246,11 @@ Content flows from Sanity to Astro through a structured GROQ pipeline:
 
 - **`fetchQuery<T>()`** — raw GROQ fetch, no image processing.
 - **`fetchPage<T>()`** — fetches and auto-processes all nested Sanity images. Prefer this in page-level `.astro` files.
-- **`loadQuery<T>()`** — entry point for pages; delegates to `fetchQuery` on `main` / `main-shopify`, and to `fetchPage` with `perspective: "previewDrafts"` on the `previews` / `previews-shopify` branches.
+- **`loadQuery<T>()`** — entry point for site-level data; delegates to `fetchQuery`.
+
+`fetchQuery` selects its Sanity perspective from the build mode: `published` in
+production builds, `drafts` in preview builds. Vite inlines `PUBLIC_BUILD_MODE` at build
+time, so only one branch survives into each bundle.
 
 All Sanity image data must flow through `@utils/image`. Never construct image URLs manually.
 
@@ -217,21 +266,30 @@ Sections are the primary content building block. Every new section type requires
 | Astro/Svelte component | `astro/src/components/sections/<Name>.astro` or `.svelte` |
 | Astro registration     | `astro/src/components/Sections.astro`                     |
 
-Included section types: `example`, `media`, `projectsList`. (`productsList` is included on the Shopify branches.)
+Included section types: `example`, `media`, `projectsList`.
 
-### Shopify (Shopify branches only)
+<!-- #region shopify -->
+### Shopify
 
-Shopify integration (`main-shopify`, `previews-shopify`) is gated behind the `PUBLIC_ENABLE_SHOPIFY` environment variable. When disabled, all Shopify code is excluded at runtime.
+The Shopify Storefront API integration ships enabled. It is removed by
+`pnpm strip:shopify`, not by a runtime flag — there is no `isEnabled` gate.
 
-- Check `shopifyConfig.isEnabled` from `@utils/shopify` before any Shopify logic.
-- Cart state lives in `@stores/cart` as a nanostores atom (`cart`, `toggleCart`, `openCart`, `closeCart`, `removeItem`).
+- Product, Product Variant and Collection documents are synced by the Sanity Connect
+  Shopify app and are read-only in the Studio.
+- Cart state lives in `@stores/cart` as a nanostores atom (`cart`, `toggleCart`,
+  `openCart`, `closeCart`, `removeItem`).
+- Requests go straight to the Storefront GraphQL endpoint via `fetch` — there is no SDK
+  dependency.
+<!-- #endregion shopify -->
 
 ### State Management
 
 Client-side state uses nanostores atoms in `src/stores/`:
 
 - `@stores/nav` — Navigation open/close state
-- `@stores/cart` — Shopify cart state (Shopify branches only)
+<!-- #region shopify -->
+- `@stores/cart` — Shopify cart state
+<!-- #endregion shopify -->
 
 Nanostores implements the Svelte store contract natively, so you can read store values in Svelte components using the `$` prefix (e.g. `$nav`) without any additional imports.
 

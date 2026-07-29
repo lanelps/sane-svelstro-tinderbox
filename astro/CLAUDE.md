@@ -105,8 +105,8 @@ Use JSDoc for all functions, classes, and complex logic blocks.
 
 This is a monorepo with two sub-projects:
 
-- **`astro/`** — Astro 6 frontend, server-rendered on Cloudflare Workers. Uses Svelte 5 for interactive components and Tailwind v4 for styling.
-- **`sanity/`** — Sanity v5 Studio. The CMS that drives all content for the Astro frontend.
+- **`astro/`** — Astro 7 frontend, server-rendered on Cloudflare Workers. Uses Svelte 5 for interactive components and Tailwind v4 for styling.
+- **`sanity/`** — Sanity v6 Studio. The CMS that drives all content for the Astro frontend.
 
 ### Data Fetching (Sanity → Astro)
 
@@ -182,13 +182,13 @@ Client-side state uses [nanostores](https://github.com/nanostores/nanostores) at
 
 - `@stores/nav` — Navigation open/close state
 
-Create new stores as named atom exports in `src/stores/`. Nanostores implements the Svelte store contract natively — read store values in Svelte components using the `$` prefix (e.g. `$cart`, `$nav`) without any additional wrapper.
+Create new stores as named atom exports in `src/stores/`. Nanostores implements the Svelte store contract natively — read store values in Svelte components using the `$` prefix (e.g. `$nav`) without any additional wrapper.
 
 ### Types
 
 All shared types live in `src/types/` and are barrel-exported from `src/types/index.ts`.
 
-- Import types via `@/types` (barrel) or directly (e.g., `@/types/cart`).
+- Import types via `@/types` (barrel) or directly (e.g., `@/types/pages`).
 - Never inline complex types — add them to the appropriate file in `src/types/`.
 
 ### Key Conventions

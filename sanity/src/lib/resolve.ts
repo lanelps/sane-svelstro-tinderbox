@@ -3,6 +3,9 @@ import type {PresentationPluginOptions} from 'sanity/presentation'
 
 type PageDocument = Record<'title' | 'slug', any>
 type ProjectDocument = Record<'title' | 'slug', any>
+// #region shopify
+type ProductDocument = Record<'title' | 'slug', any>
+// #endregion shopify
 
 export const resolve: PresentationPluginOptions['resolve'] = {
   locations: {
@@ -27,5 +30,16 @@ export const resolve: PresentationPluginOptions['resolve'] = {
         }
       },
     }),
+    // #region shopify
+    product: defineLocations({
+      select: {title: 'store.title', slug: 'store.slug.current'},
+      resolve: (doc: ProductDocument | null) => {
+        if (!doc?.slug) return null
+        return {
+          locations: [{title: doc.title, href: `/products/${doc.slug}`}],
+        }
+      },
+    }),
+    // #endregion shopify
   },
 }

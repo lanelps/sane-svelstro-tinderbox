@@ -18,6 +18,7 @@ export const getPageSeo = (page: PageTypes) => {
   return seo;
 };
 
+// #region shopify
 /**
  * @name stripHtml
  * @function
@@ -28,3 +29,4 @@ export const getPageSeo = (page: PageTypes) => {
 export const stripHtml = (html: string) => {
   return html.replace(/<[^>]*>?/gm, "");
 };
+// #endregion shopify

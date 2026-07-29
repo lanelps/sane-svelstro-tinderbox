@@ -4,8 +4,8 @@
 
 This project is a monorepo with two sub-projects:
 
-- **`astro/`** — Astro 6 frontend, server-rendered on Cloudflare Workers. Uses Svelte 5 and Tailwind v4.
-- **`sanity/`** — Sanity v5 Studio CMS. Drives all content for the Astro frontend.
+- **`astro/`** — Astro 7 frontend, server-rendered on Cloudflare Workers. Uses Svelte 5 and Tailwind v4.
+- **`sanity/`** — Sanity v6 Studio CMS. Drives all content for the Astro frontend.
 
 ## Sub-project Instructions
 

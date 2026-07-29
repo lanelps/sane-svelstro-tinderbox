@@ -1,4 +1,7 @@
 ---
+// #region shopify
+import CartCount from "@components/CartCount.svelte";
+// #endregion shopify
 import Link from "@components/Link.svelte";
 import type { Links } from "@/types";
 
@@ -17,5 +20,8 @@ const { links } = Astro.props;
 
   <nav class="flex gap-x-2 sm-t:gap-x-4">
     {links.map((link) => <Link link={link} />)}
+    {/* #region shopify */}
+    <CartCount client:load />
+    {/* #endregion shopify */}
   </nav>
 </header>

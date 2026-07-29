@@ -1,0 +1,17 @@
+---
+import Layout from "@layouts/Layout.astro";
+
+const pageSeo = {
+  title: "Page not found",
+  description: "",
+  keywords: [],
+};
+---
+
+<Layout seo={pageSeo}>
+  <h1 class="text-h1">404 — Page not found</h1>
+
+  <p>Sorry, that page doesn't exist.</p>
+
+  <a href="/">Back to home</a>
+</Layout>

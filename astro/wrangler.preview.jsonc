@@ -1,0 +1,12 @@
+{
+  // Preview Worker — SSR, DRAFT content, target of SANITY_STUDIO_PREVIEW_URL.
+  // Built by `pnpm build:preview`.
+  //
+  // ⚠️ This Worker serves unpublished content. Put a Cloudflare Access policy
+  // in front of it (Zero Trust → Access → Applications) before deploying, or
+  // anyone with the URL can read your drafts.
+  "name": "sane-svelstro-tinderbox-preview",
+  "compatibility_flags": ["nodejs_compat"],
+  // Set this to today's date
+  "compatibility_date": "2026-04-15",
+}

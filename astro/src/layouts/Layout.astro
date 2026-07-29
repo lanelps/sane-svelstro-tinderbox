@@ -1,6 +1,9 @@
 ---
 import { ClientRouter } from "astro:transitions";
 
+// #region shopify
+import Cart from "@components/Cart.svelte";
+// #endregion shopify
 import DevMark from "@components/DevMark.astro";
 import Header from "@components/Header.astro";
 import Seo from "@components/Seo.astro";
@@ -18,6 +21,16 @@ interface Props {
 }
 
 const isDev = import.meta.env.DEV;
+const isPreview = import.meta.env.PUBLIC_BUILD_MODE === "preview";
+
+/**
+ * Loaded dynamically so the ~650kB Visual Editing bundle is not emitted at all
+ * in production builds. Vite inlines `isPreview` at build time, so Rollup drops
+ * this import entirely when PUBLIC_BUILD_MODE !== "preview".
+ */
+const VisualEditing = isPreview
+  ? (await import("@sanity/astro/visual-editing")).VisualEditing
+  : null;
 
 const { seo, grid } = Astro.props;
 
@@ -62,9 +75,14 @@ const siteSEO: SEO = {
 
   <body>
     <Header links={site.navigation} />
+    {/* #region shopify */}
+    <Cart client:load transition:persist="site-cart" />
+    {/* #endregion shopify */}
 
     <main class:list={[grid && "grid-main"]}>
       <slot />
     </main>
+
+    {VisualEditing && <VisualEditing zIndex={1000} />}
   </body>
 </html>

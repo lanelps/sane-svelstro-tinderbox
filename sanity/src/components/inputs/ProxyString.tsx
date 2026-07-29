@@ -1,3 +1,4 @@
+// #shopify-file
 import {LockIcon} from '@sanity/icons/Lock'
 import {Box, Text, TextInput, Tooltip} from '@sanity/ui'
 import {

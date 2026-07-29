@@ -1,6 +1,9 @@
 import type {ComponentType} from 'react'
 import type {StructureBuilder, ListItemBuilder, Divider} from 'sanity/structure'
 import {DocumentIcon} from '@sanity/icons/Document'
+// #region shopify
+import {InfoOutlineIcon} from '@sanity/icons/InfoOutline'
+// #endregion shopify
 
 interface GroupStructureParams {
   title: string
@@ -31,22 +34,78 @@ interface GroupDocument {
 
 type Document = DocumentItem | GroupDocument
 
+// #region shopify
+export const productStructure = (S: StructureBuilder) =>
+  S.listItem()
+    .title('Products')
+    .schemaType('product')
+    .child(
+      S.documentTypeList('product').child(async (id) =>
+        S.list()
+          .title('Product')
+          .canHandleIntent(
+            (intentName, params) => intentName === 'edit' && params.type === 'product',
+          )
+          .items([
+            // Details
+            S.listItem()
+              .title('Details')
+              .icon(InfoOutlineIcon)
+              .schemaType('product')
+              .id(id)
+              .child(S.document().schemaType('product').documentId(id)),
+            // Product variants
+            S.listItem()
+              .title('Variants')
+              .schemaType('productVariant')
+              .child(
+                S.documentList()
+                  .title('Variants')
+                  .schemaType('productVariant')
+                  .filter(
+                    `
+                      _type == "productVariant"
+                      && store.productId == $productId
+                    `,
+                  )
+                  .params({
+                    productId: Number(id.replace('shopifyProduct-', '')),
+                  })
+                  .canHandleIntent(
+                    (intentName, params) =>
+                      intentName === 'edit' && params.type === 'productVariant',
+                  ),
+              ),
+          ]),
+      ),
+    )
+// #endregion shopify
+
+// Document types needing a bespoke desk structure instead of the default list.
+const specialStructures: Record<string, (S: StructureBuilder) => ListItemBuilder> = {
+  // #region shopify
+  product: productStructure,
+  // #endregion shopify
+}
+
 export const generateDocumentStructure = (
   S: StructureBuilder,
   {title, type, icon, divider, orderBy}: DocumentItem,
 ): StructureReturn => {
-  const structure = S.listItem()
-          .title(title)
-          .icon(icon || DocumentIcon)
-          .schemaType(type)
-          .child(
-            S.documentTypeList(type).defaultOrdering([
-              {
-                field: orderBy || 'title',
-                direction: 'asc',
-              },
-            ]),
-          )
+  const structure =
+    specialStructures[type]?.(S) ??
+    S.listItem()
+      .title(title)
+      .icon(icon || DocumentIcon)
+      .schemaType(type)
+      .child(
+        S.documentTypeList(type).defaultOrdering([
+          {
+            field: orderBy || 'title',
+            direction: 'asc',
+          },
+        ]),
+      )
 
   return divider ? [structure, S.divider()] : [structure]
 }
@@ -134,6 +193,20 @@ const documents: Document[] = [
     icon: () => '📁',
     divider: true,
   },
+  // #region shopify
+  {
+    title: 'Collections',
+    type: 'collection',
+    icon: () => '📦',
+    orderBy: 'titleProxy',
+  },
+  {
+    title: 'Products',
+    type: 'product',
+    icon: () => '🛍',
+    divider: true,
+  },
+  // #endregion shopify
   {
     title: 'Site',
     type: 'site',
@@ -148,7 +221,13 @@ const documents: Document[] = [
   },
 ]
 
-const hiddenDocuments = ['media.tag', 'mux.videoAsset']
+const hiddenDocuments = [
+  'media.tag',
+  'mux.videoAsset',
+  // #region shopify
+  'productVariant',
+  // #endregion shopify
+]
 
 const DOCUMENT_TYPES_IN_STRUCTURE = [
   ...hiddenDocuments,

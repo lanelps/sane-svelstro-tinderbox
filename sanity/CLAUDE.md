@@ -20,11 +20,11 @@
 
 ### Type Names (`name` property inside `defineType`)
 
-| Schema category        | Convention        | Examples                             |
-| ---------------------- | ----------------- | ------------------------------------ |
-| Documents & singletons | `camelCase`       | `page`, `homePage`, `productVariant` |
-| Composed objects       | `<domain>.<name>` | `seo.page`, `seo.site`               |
-| Simple objects         | `camelCase`       | `altImage`, `link`, `media`          |
+| Schema category        | Convention        | Examples                          |
+| ---------------------- | ----------------- | --------------------------------- |
+| Documents & singletons | `camelCase`       | `page`, `homePage`, `projectItem` |
+| Composed objects       | `<domain>.<name>` | `seo.page`, `seo.site`            |
+| Simple objects         | `camelCase`       | `altImage`, `link`, `media`       |
 
 ### Export Names
 
@@ -120,11 +120,11 @@ preview: {
 
 Centralised constants live in `src/constants.ts`. Do not duplicate their values in individual schema files — always import from there.
 
-| Constant                | Purpose                                                                 |
+| Constant | Purpose |
 | ----------------------- | ----------------------------------------------------------------------- | --- |
-| `GROUPS`                | Field group definitions (`content`, `seo`) used across document schemas |
-| `PAGE_REFERENCES`       | Internal link reference types for `link` fields                         |
-| `LOCKED_DOCUMENT_TYPES` | Singleton/system types that cannot be created, duplicated, or deleted   |     |
+| `GROUPS` | Field group definitions (`content`, `seo`) used across document schemas |
+| `PAGE_REFERENCES` | Internal link reference types for `link` fields |
+| `LOCKED_DOCUMENT_TYPES` | Singleton/system types that cannot be created, duplicated, or deleted | |
 
 ## 🏗 Project Architecture
 

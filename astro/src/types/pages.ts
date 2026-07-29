@@ -45,4 +45,14 @@ export type ProjectsData = {
   thumbnail: Media;
 }[];
 
+// #region shopify
+export interface ProductsData<T = string> {
+  _id: string;
+  slug: Slug;
+  productId: number;
+  title: string;
+  image: T;
+}
+// #endregion shopify
+
 export type PageTypes = HomePageData | PageData | ProjectData;

@@ -10,8 +10,13 @@ import cloudflare from "@astrojs/cloudflare";
 
 import { loadEnv } from "vite";
 
-const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET, SANITY_TOKEN } =
-  loadEnv(process.env.NODE_ENV || "development", process.cwd(), "");
+const {
+  PUBLIC_SANITY_PROJECT_ID,
+  PUBLIC_SANITY_DATASET,
+  SANITY_TOKEN,
+  PUBLIC_BUILD_MODE,
+  PUBLIC_SITE_URL,
+} = loadEnv(process.env.NODE_ENV || "development", process.cwd(), "");
 
 // Check if required environment variables are present
 if (!PUBLIC_SANITY_PROJECT_ID || !PUBLIC_SANITY_DATASET) {
@@ -20,13 +25,47 @@ if (!PUBLIC_SANITY_PROJECT_ID || !PUBLIC_SANITY_DATASET) {
   );
 }
 
+/**
+ * Build mode drives the difference between the two Cloudflare Worker deployments
+ * built from this single branch:
+ *
+ *   production (default) — SSG, published content, no visual editing
+ *   preview              — SSR, draft content, Sanity Visual Editing overlay
+ *
+ * The preview Worker is what SANITY_STUDIO_PREVIEW_URL should point at.
+ */
+const isPreview = PUBLIC_BUILD_MODE === "preview";
+
+// The `drafts` perspective requires an authenticated token, not just a public dataset.
+if (isPreview && !SANITY_TOKEN) {
+  console.warn(
+    "Warning: PUBLIC_BUILD_MODE=preview requires SANITY_TOKEN to read draft content"
+  );
+}
+
 // https://astro.build/config
 export default defineConfig({
-  site: "https://www.example.com",
+  site: PUBLIC_SITE_URL || "https://www.example.com",
+
+  output: isPreview ? "server" : "static",
 
   vite: {
     plugins: [tailwindcss()],
   },
+
+  // #region shopify
+  image: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.shopify.com",
+        port: "",
+        pathname: "/s/files/**",
+      },
+    ],
+  },
+  // #endregion shopify
+
   integrations: [
     svelte(),
     sanity({
@@ -35,6 +74,8 @@ export default defineConfig({
       token: SANITY_TOKEN,
       apiVersion: "2026-04-01",
       useCdn: false,
+      // Stega encodes content source maps so Visual Editing supports click-to-edit.
+      stega: isPreview,
     }),
     sitemap(),
     partytown({

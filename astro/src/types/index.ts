@@ -6,3 +6,7 @@ export * from "./stores";
 export * from "./sections";
 export * from "./seo";
 export * from "./pages";
+// #region shopify
+export * from "./products";
+export * from "./cart";
+// #endregion shopify

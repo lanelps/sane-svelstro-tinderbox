@@ -1,6 +1,12 @@
 import type { PortableText } from "./portableText";
 import type { Media } from "./images";
+// #region shopify
+import type { AstroImage } from "./images";
+// #endregion shopify
 import type { ProjectsData } from "./pages";
+// #region shopify
+import type { ProductsData } from "./pages";
+// #endregion shopify
 
 // ==============================
 // Sections
@@ -27,11 +33,27 @@ export interface ProjectsListSection extends BaseSection {
   projects: ProjectsData;
 }
 
-export type Section = ExampleSection | MediaSection | ProjectsListSection;
+// #region shopify
+export interface ProductsListSection extends BaseSection {
+  _type: "section.productsList";
+  products: ProductsData<AstroImage>[];
+}
+// #endregion shopify
+
+export type Section =
+  // #region shopify
+  | ProductsListSection
+  // #endregion shopify
+  | ExampleSection
+  | MediaSection
+  | ProjectsListSection;
 
 export type Sections = Section[];
 
 export type SectionMap = {
+  // #region shopify
+  productsList: ProductsListSection;
+  // #endregion shopify
   example: ExampleSection;
   media: MediaSection;
   projectsList: ProjectsListSection;

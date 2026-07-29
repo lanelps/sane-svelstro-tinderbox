@@ -27,3 +27,8 @@
 
 # Dotenv and similar local-only files
 *.local
+
+# Dotenv (keep .env.example tracked)
+.env
+.env.*
+!.env.example
