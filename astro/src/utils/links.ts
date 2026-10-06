@@ -81,7 +81,7 @@ const isStringLink = (link: Link): link is string => typeof link === "string";
  * @returns {boolean} True if the reference type should be included in the URL path.
  */
 const shouldIncludeType = (link: InternalLink): boolean =>
-  link.reference._type !== "page";
+  link.reference?._type !== "page";
 
 // Configuration object that defines how different types of links should be rendered
 const linkConfig = {
@@ -91,10 +91,17 @@ const linkConfig = {
     target: link.newTab ? "_blank" : "_self",
     rel: "noopener noreferrer",
   }),
-  internal: (link: InternalLink): LinkAttributes => {
+  // The home page singleton has no slug. A deleted, unpublished or slugless reference
+  // resolves to null, so the caller renders text instead of throwing.
+  internal: (link: InternalLink): LinkAttributes | null => {
+    if (link.reference?._type === "homePage") return { href: "/" };
+
+    const slug = link.reference?.slug?.current;
+    if (!slug) return null;
+
     const typePath = shouldIncludeType(link) ? `${link.reference._type}s/` : "";
     return {
-      href: `/${typePath}${link.reference.slug.current}/`,
+      href: `/${typePath}${slug}/`,
     };
   },
   file: (link: FileLink): LinkAttributes => ({

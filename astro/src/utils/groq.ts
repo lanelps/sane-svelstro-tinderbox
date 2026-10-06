@@ -23,15 +23,15 @@ export const image = `
    },
 `;
 
+// `mux.video.asset` is a reference to a `mux.videoAsset` document. Without `->` the
+// projection returns null and no video plays. `mux.video` has no poster field; the
+// frontend uses the Mux thumbnail.
 export const video = `
-     asset {
+     asset -> {
         playbackId,
         assetId,
         filename,
       },
-      poster {
-        ${image}
-      }
 `;
 
 export const media = `
@@ -115,6 +115,13 @@ export const link = `
         slug {
             current,
         },
+        // #region shopify
+        // Synced commerce documents keep their slug and title under store.
+        _type == "product" => {
+            "title": store.title,
+            "slug": store.slug,
+        },
+        // #endregion shopify
     },
 `;
 
@@ -136,6 +143,13 @@ export const inlineLink = `
         slug {
             current,
         },
+        // #region shopify
+        // Synced commerce documents keep their slug and title under store.
+        _type == "product" => {
+            "title": store.title,
+            "slug": store.slug,
+        },
+        // #endregion shopify
     },
 `;
 
