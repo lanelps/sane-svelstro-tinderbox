@@ -9,8 +9,9 @@ export type Slug = {
 export type Reference = {
   _id: string;
   _type: string;
-  title: string;
-  slug: Slug;
+  title?: string;
+  // Singletons such as the home page have no slug.
+  slug?: Slug | null;
 };
 
 // `label` is optional because the same shapes back both the `link` object (where the label is

@@ -23,15 +23,15 @@ export const image = `
    },
 `;
 
+// `mux.video.asset` is a reference to a `mux.videoAsset` document. Without `->` the
+// projection returns null and no video plays. `mux.video` has no poster field; the
+// frontend uses the Mux thumbnail.
 export const video = `
-     asset {
+     asset -> {
         playbackId,
         assetId,
         filename,
       },
-      poster {
-        ${image}
-      }
 `;
 
 export const media = `

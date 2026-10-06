@@ -53,7 +53,14 @@ const getImageUrl = (image: Image | string | undefined) => {
 
 // Construct JSON-LD data
 const orgName = organization?.name ?? title;
-const siteOrigin = Astro.url.origin;
+// `Astro.site` (PUBLIC_SITE_URL), not the request origin: on the preview Worker the
+// request origin is the preview host, and canonicals must always name production.
+const siteOrigin = (Astro.site ?? Astro.url).origin;
+
+// Development and the draft-reading preview Worker must never be indexed. Nothing sets
+// the old `IS_DEV` variable, so that check never fired.
+const noindex =
+  import.meta.env.DEV || import.meta.env.PUBLIC_BUILD_MODE === "preview";
 const canonicalUrl = `${siteOrigin}${Astro.url.pathname}`;
 
 // Article-family schema types map to og:type "article"; everything else defaults to "website"
@@ -93,7 +100,7 @@ const jsonLd = {
   headline: title,
   description: description,
   image: getImageUrl(resizedImage),
-  url: Astro.url.href,
+  url: canonicalUrl,
   datePublished: createdAt,
   dateCreated: createdAt,
   dateModified: updatedAt,
@@ -133,7 +140,7 @@ const jsonLd = {
 };
 ---
 
-{import.meta.env.IS_DEV === "true" && <meta name="robots" content="noindex" />}
+{noindex && <meta name="robots" content="noindex, nofollow" />}
 
 <link rel="canonical" href={canonicalUrl} />
 <meta property="og:url" content={canonicalUrl} />

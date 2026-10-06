@@ -80,11 +80,17 @@ export default defineConfig({
       stega: isPreview,
     }),
     sitemap(),
-    partytown({
-      config: {
-        forward: ["dataLayer.push"],
-      },
-    }),
+    // Not in preview: Partytown's bootstrap calls `window.top`, which throws inside the
+    // cross-origin Presentation iframe and breaks the overlay.
+    ...(isPreview
+      ? []
+      : [
+          partytown({
+            config: {
+              forward: ["dataLayer.push"],
+            },
+          }),
+        ]),
     // Static builds have no request to run middleware in, so redirects are baked into a
     // `_redirects` file Cloudflare serves at the edge. Preview is SSR — `src/middleware.ts`
     // resolves them per request there instead, so this is a no-op.

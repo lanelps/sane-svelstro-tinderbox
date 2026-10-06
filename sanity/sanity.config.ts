@@ -17,7 +17,8 @@ const devOnlyPlugins = [visionTool()]
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID!
 const dataset = process.env.SANITY_STUDIO_DATASET!
 
-const visualEditingEnabled = process.env.SANITY_STUDIO_VISUAL_EDITING_ENABLED
+// Compare against the exact string: any non-empty value, including "false", is truthy.
+const visualEditingEnabled = process.env.SANITY_STUDIO_VISUAL_EDITING_ENABLED === 'true'
 const previewUrl = process.env.SANITY_STUDIO_PREVIEW_URL
 
 export default defineConfig({
@@ -35,7 +36,13 @@ export default defineConfig({
           previewUrl: {origin: previewUrl},
         })
       : null,
-    muxInput(),
+    // Public, unsigned, DRM-free playback. The plugin defaults DRM on, and the frontend
+    // HLS player cannot play DRM assets.
+    muxInput({
+      defaultPublic: true,
+      defaultSigned: false,
+      defaultDrm: false,
+    }),
     customDocumentActions(),
     ...(isDev ? devOnlyPlugins : []),
   ].filter((plugin): plugin is PluginOptions => plugin !== null),

@@ -48,12 +48,11 @@ export interface AstroImage extends GetImageResult {
 export type Image = AstroImage | SanityImage;
 
 export interface MuxVideo {
-  asset: {
-    playbackId: string;
-    assetId: string;
-    filename: string;
-  };
-  poster: SanityImageData;
+  asset?: {
+    playbackId?: string | null;
+    assetId?: string | null;
+    filename?: string | null;
+  } | null;
 }
 
 export interface Media {

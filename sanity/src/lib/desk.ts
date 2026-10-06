@@ -1,5 +1,5 @@
 import type {ComponentType} from 'react'
-import type {StructureBuilder, ListItemBuilder, Divider} from 'sanity/structure'
+import type {StructureBuilder, ListItemBuilder} from 'sanity/structure'
 import {DocumentIcon} from '@sanity/icons/Document'
 // #region shopify
 import {InfoOutlineIcon} from '@sanity/icons/InfoOutline'
@@ -13,7 +13,7 @@ interface GroupStructureParams {
   divider?: boolean
 }
 
-type StructureReturn = (ListItemBuilder | Divider)[]
+type StructureReturn = (ListItemBuilder | ReturnType<StructureBuilder['divider']>)[]
 
 interface DocumentItem {
   title: string
@@ -222,6 +222,7 @@ const documents: Document[] = [
 ]
 
 const hiddenDocuments = [
+  'media.folder',
   'media.tag',
   'mux.videoAsset',
   // #region shopify

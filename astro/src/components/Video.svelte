@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Hls from "hls.js";
-  import { urlFor } from "@utils/image/sanity-image";
   import type { MuxVideo } from "@/types";
 
   interface Props {
@@ -11,9 +10,12 @@
 
   const { video, class: className }: Props = $props();
 
+  const playbackId = $derived(video.asset?.playbackId);
+
+  // `mux.video` has no poster field. Mux serves a thumbnail for every playback ID.
   const placeholder = $derived(
-    video.poster.asset
-      ? urlFor(video.poster, { quality: 50 }).width(16).url()
+    playbackId
+      ? `https://image.mux.com/${playbackId}/thumbnail.webp?width=1920&fit_mode=preserve`
       : ""
   );
 
@@ -23,24 +25,36 @@
   /**
    * @name onMount
    * @function
-   * @description Initializes HLS video playback on mount. Prefers native HLS when supported (Safari), falls back to hls.js for other browsers. Logs an error if neither is supported.
-   * @returns {void}
+   * @description Initializes HLS playback on mount. Uses hls.js first and native HLS only as the fallback: desktop Chrome answers "maybe" to the native HLS check and then fails with MEDIA_ERR_SRC_NOT_SUPPORTED. Skips autoplay when the visitor prefers reduced motion, and destroys hls.js on unmount.
+   * @returns {(() => void) | undefined} The cleanup function.
    */
   onMount(() => {
-    if (!videoElement) return;
+    if (!videoElement || !playbackId) return;
 
-    const playbackId = video.asset.playbackId;
     const videoSrc = `https://stream.mux.com/${playbackId}.m3u8`;
+    let hls: Hls | undefined;
 
-    if (videoElement.canPlayType("application/vnd.apple.mpegurl")) {
-      videoElement.src = videoSrc;
-    } else if (Hls.isSupported()) {
-      var hls = new Hls();
+    if (Hls.isSupported()) {
+      hls = new Hls();
       hls.loadSource(videoSrc);
       hls.attachMedia(videoElement);
+    } else if (videoElement.canPlayType("application/vnd.apple.mpegurl")) {
+      videoElement.src = videoSrc;
     } else {
       console.error("This browser does not support HLS.");
+      return;
     }
+
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      videoElement.controls = true;
+    } else {
+      void videoElement.play().catch(() => {});
+    }
+
+    return () => {
+      videoElement?.pause();
+      hls?.destroy();
+    };
   });
 
   /**
@@ -57,9 +71,8 @@
 <figure class={["relative aspect-video bg-gray-200", className]}>
   <video
     bind:this={videoElement}
-    data-playback-id={video.asset.playbackId}
+    data-playback-id={playbackId}
     muted
-    autoplay
     playsinline
     loop
     class="absolute inset-0 z-10 h-full w-full object-cover"
