@@ -38,6 +38,12 @@ if (!PUBLIC_SANITY_PROJECT_ID || !PUBLIC_SANITY_DATASET) {
  */
 const isPreview = PUBLIC_BUILD_MODE === "preview";
 
+if (process.env.NODE_ENV === "production" && !PUBLIC_SITE_URL) {
+  console.warn(
+    "Warning: PUBLIC_SITE_URL is not set — canonicals, og:url and the sitemap will name https://www.example.com"
+  );
+}
+
 // The `drafts` perspective requires an authenticated token, not just a public dataset.
 if (isPreview && !SANITY_TOKEN) {
   console.warn(

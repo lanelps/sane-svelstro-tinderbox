@@ -115,6 +115,13 @@ export const link = `
         slug {
             current,
         },
+        // #region shopify
+        // Synced commerce documents keep their slug and title under store.
+        _type == "product" => {
+            "title": store.title,
+            "slug": store.slug,
+        },
+        // #endregion shopify
     },
 `;
 
@@ -136,6 +143,13 @@ export const inlineLink = `
         slug {
             current,
         },
+        // #region shopify
+        // Synced commerce documents keep their slug and title under store.
+        _type == "product" => {
+            "title": store.title,
+            "slug": store.slug,
+        },
+        // #endregion shopify
     },
 `;
 

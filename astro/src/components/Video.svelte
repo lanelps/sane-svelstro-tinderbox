@@ -15,7 +15,7 @@
   // `mux.video` has no poster field. Mux serves a thumbnail for every playback ID.
   const placeholder = $derived(
     playbackId
-      ? `https://image.mux.com/${playbackId}/thumbnail.webp?width=1920&fit_mode=preserve`
+      ? `https://image.mux.com/${playbackId}/thumbnail.webp?width=960&fit_mode=preserve`
       : ""
   );
 
@@ -87,6 +87,6 @@
     alt=""
     aria-hidden="true"
     role="presentation"
-    loading="eager"
+    loading="lazy"
   />
 </figure>
